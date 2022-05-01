@@ -32,6 +32,10 @@ export default {
             path: 'demo-button',
             title: 'DemoButton 按钮',
           },
+          {
+            path: 'tabs',
+            title: 'tabs 按钮',
+          },
         ],
       },
     ],
