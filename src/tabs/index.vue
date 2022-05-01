@@ -71,7 +71,6 @@ const trackRef = ref();
 const tabsHeadRef = ref();
 
 const tabsSwitch = (index) => {
-  console.dir(tabsItemRefs);
   const { left, width } =
     tabsItemRefs[index]['childNodes'][0].getBoundingClientRect();
   const offsetX = index * -100;
@@ -113,7 +112,7 @@ onBeforeUpdate(() => {
 // )
 </script>
 
-<style lang="scss">
+<style lang="less">
 .tabs-box {
   min-width: 375px;
   overflow: hidden;
