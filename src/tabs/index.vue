@@ -32,7 +32,7 @@
 </template>
 
 <script setup>
-import { onBeforeUpdate, onMounted, useAttrs } from '@vue/runtime-core'
+import { onBeforeUpdate, onMounted, useAttrs, watch } from '@vue/runtime-core'
 import { ref, useSlots } from 'vue'
 
 const props = defineProps({
