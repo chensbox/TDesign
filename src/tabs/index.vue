@@ -114,7 +114,7 @@ onBeforeUpdate(() => {
 
 <style lang="less">
 .tabs-box {
-  min-width: 375px;
+  // min-width: 375px;
   overflow: hidden;
   .tabs-head {
     display: flex;
@@ -136,7 +136,7 @@ onBeforeUpdate(() => {
     }
     .line {
       position: absolute;
-      background-color: rgba(75, 118, 235, 1);
+      background-color: blue;
       height: 3px;
       width: 15px;
       border-radius: 3px;
