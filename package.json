@@ -48,9 +48,6 @@
       "@vant/stylelint-config"
     ]
   },
-  "prettier": {
-    "singleQuote": true
-  },
   "browserslist": [
     "Chrome >= 51",
     "iOS >= 10"

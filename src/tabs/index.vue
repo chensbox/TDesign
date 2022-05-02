@@ -32,84 +32,84 @@
 </template>
 
 <script setup>
-import { onBeforeUpdate, onMounted, useAttrs } from '@vue/runtime-core';
-import { ref, useSlots } from 'vue';
+import { onBeforeUpdate, onMounted, useAttrs } from '@vue/runtime-core'
+import { ref, useSlots } from 'vue'
 
 const props = defineProps({
   lineAnimation: {
     default: false,
-    type: Boolean,
+    type: Boolean
   },
   tabAnimation: {
     default: false,
-    type: Boolean,
+    type: Boolean
   },
   color: String,
   swipeable: {
     default: false,
-    type: Boolean,
-  },
-});
+    type: Boolean
+  }
+})
 const touchend = () => {
-  if (!props.swipeable) return;
-  direction = moveX - startX;
-  if (Math.abs(direction) < 70) return;
-  const to = direction > 0 ? attr.modelValue - 1 : attr.modelValue + 1;
-  if (to >= 0 && to < tabsItemRefs.length) return tabsSwitch(to);
-};
+  if (!props.swipeable) return
+  direction = moveX - startX
+  if (Math.abs(direction) < 70) return
+  const to = direction > 0 ? attr.modelValue - 1 : attr.modelValue + 1
+  if (to >= 0 && to < tabsItemRefs.length) return tabsSwitch(to)
+}
 
-let startX, moveX, direction;
-const touchstart = (e) => (startX = e.touches[0].pageX);
-const touchmove = (e) => (moveX = e.touches[0].pageX);
-const emit = defineEmits(['update:modelValue']);
-const setTabsItemRef = (el) => tabsItemRefs.push(el);
-const slots = useSlots().default();
-const attr = useAttrs();
-const lineRef = ref();
-const tabsItemRefs = [];
-const trackRef = ref();
-const tabsHeadRef = ref();
+let startX, moveX, direction
+const touchstart = e => (startX = e.touches[0].pageX)
+const touchmove = e => (moveX = e.touches[0].pageX)
+const emit = defineEmits(['update:modelValue'])
+const setTabsItemRef = el => tabsItemRefs.push(el)
+const slots = useSlots().default()
+const attr = useAttrs()
+const lineRef = ref()
+const tabsItemRefs = []
+const trackRef = ref()
+const tabsHeadRef = ref()
 
-const tabsSwitch = (index) => {
+const tabsSwitch = index => {
   const { left, width } =
-    tabsItemRefs[index]['childNodes'][0].getBoundingClientRect();
-  const offsetX = index * -100;
-  const mid = tabsHeadRef.value.clientWidth / 2;
-  const cur = left + width / 2;
-  const isLeft = mid > cur;
-  lineRef.value.style.width = width + 'px';
-  lineRef.value.style.left = `${left + tabsHeadRef.value.scrollLeft}px`;
-  trackRef.value.style.transform = `translateX(${offsetX}%)`;
+    tabsItemRefs[index]['childNodes'][0].getBoundingClientRect()
+  const offsetX = index * -100
+  const mid = tabsHeadRef.value.clientWidth / 2
+  const cur = left + width / 2
+  const isLeft = mid > cur
+  lineRef.value.style.width = width + 'px'
+  lineRef.value.style.left = `${left + tabsHeadRef.value.scrollLeft}px`
+  trackRef.value.style.transform = `translateX(${offsetX}%)`
 
-  let scrollL = 0;
+  let scrollL = 0
   if (isLeft && tabsHeadRef.value.scrollLeft) {
-    scrollL = Math.abs(mid - cur) * -1;
+    scrollL = Math.abs(mid - cur) * -1
   } else if (!isLeft) {
-    scrollL = Math.abs(mid - cur);
+    scrollL = Math.abs(mid - cur)
   }
 
   const move = setInterval(() => {
     if (Math.round(scrollL)) {
-      tabsHeadRef.value.scrollLeft += scrollL / 10;
-      scrollL -= scrollL / 10;
+      tabsHeadRef.value.scrollLeft += scrollL / 10
+      scrollL -= scrollL / 10
     } else {
-      clearInterval(move);
+      clearInterval(move)
     }
-  }, 10);
+  }, 10)
 
-  emit('update:modelValue', index);
-};
+  emit('update:modelValue', index)
+}
 
 onMounted(() => {
-  tabsSwitch(attr.modelValue);
-});
+  tabsSwitch(attr.modelValue)
+})
 onBeforeUpdate(() => {
-  tabsItemRefs.length = 0;
-});
-// watch(
-//   () => attr.modelValue,
-//   () => tabsSwitch(attr.modelValue)
-// )
+  tabsItemRefs.length = 0
+})
+watch(
+  () => attr.modelValue,
+  () => tabsSwitch(attr.modelValue)
+)
 </script>
 
 <style lang="less">
