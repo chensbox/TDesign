@@ -7,10 +7,10 @@ DemoButton 是一个示例按钮组件
 ### 引入
 
 ```js
-import Vue from 'vue';
-import { DemoButton } from 'TDesign';
+import Vue from 'vue'
+import { icon } from 'TDesign'
 
-Vue.use(DemoButton);
+Vue.use(icon)
 ```
 
 ## 代码演示

@@ -29,8 +29,8 @@ export default {
         title: '基础组件',
         items: [
           {
-            path: 'demo-button',
-            title: 'DemoButton 按钮',
+            path: 't-button',
+            title: 'Button 按钮',
           },
           {
             path: 'tabs',

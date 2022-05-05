@@ -57,6 +57,8 @@
 import tabs from '../index.vue'
 import tab from '../../tab/index.vue'
 import { ref } from '@vue/reactivity'
+import { hello } from '../hooks'
+hello()
 const active1 = ref(0)
 const active2 = ref(0)
 const active3 = ref(0)

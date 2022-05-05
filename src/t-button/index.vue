@@ -1,25 +1,25 @@
 <template>
-  <button class="demo-button">
+  <button class="t-button">
     <slot />
   </button>
 </template>
 
 <script>
 export default {
-  name: 'demo-button',
+  name: 't-button',
 
   props: {
     color: String,
     type: {
       type: String,
-      default: 'primary',
-    },
-  },
-};
+      default: 'primary'
+    }
+  }
+}
 </script>
 
 <style lang="less">
-.demo-button {
+.t-button {
   min-width: 120px;
   color: #fff;
   font-size: 16px;
