@@ -1,7 +1,7 @@
 <template>
   <demo-block title="基础用法">
     <tabs v-model="active1">
-      <tab title="标签1">标签1内容区</tab>
+      <tab title="标签1" disable>标签1内容区</tab>
       <tab title="标签2">标签2内容区</tab>
       <tab title="标签3">标签3内容区</tab>
       <tab title="标签4">标签4内容区</tab>
@@ -54,12 +54,12 @@
 </template>
 
 <script setup>
-import tabs from '../index.vue';
-import tab from '../../tab/index.vue';
-import { ref } from '@vue/reactivity';
-const active1 = ref(0);
-const active2 = ref(0);
-const active3 = ref(0);
-const active4 = ref(0);
-const active5 = ref(0);
+import tabs from '../index.vue'
+import tab from '../../tab/index.vue'
+import { ref } from '@vue/reactivity'
+const active1 = ref(0)
+const active2 = ref(0)
+const active3 = ref(0)
+const active4 = ref(0)
+const active5 = ref(0)
 </script>

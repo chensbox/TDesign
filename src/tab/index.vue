@@ -9,9 +9,8 @@
 <script setup>
 const props = defineProps({
   title: String,
-});
-
-console.log(props.title);
+  disable: Boolean
+})
 </script>
 
 <style lang="less" scoped>

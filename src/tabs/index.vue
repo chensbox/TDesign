@@ -6,9 +6,12 @@
         v-for="(it, id) in slots"
         :key="id"
         :ref="setTabsItemRef"
+        :class="{ 'not-allow': it.props.disable == '' || it.props.disable }"
         @click="tabsSwitch(id)"
       >
-        <span>{{ it.props.title }}</span>
+        <span :class="{ blod: attr.modelValue === id }">{{
+          it.props.title
+        }}</span>
       </div>
       <div
         class="line"
@@ -55,10 +58,10 @@ const touchend = () => {
   direction = moveX - startX
   if (Math.abs(direction) < 70) return
   const to = direction > 0 ? attr.modelValue - 1 : attr.modelValue + 1
-  if (to >= 0 && to < tabsItemRefs.length) return tabsSwitch(to)
+  if (to >= 0 && to < tabsItemRefs.length) tabsSwitch(to)
 }
 
-let startX, moveX, direction
+let startX, moveX, direction, active
 const touchstart = e => (startX = e.touches[0].pageX)
 const touchmove = e => (moveX = e.touches[0].pageX)
 const emit = defineEmits(['update:modelValue'])
@@ -69,10 +72,19 @@ const lineRef = ref()
 const tabsItemRefs = []
 const trackRef = ref()
 const tabsHeadRef = ref()
-
+console.log(slots)
 const tabsSwitch = index => {
-  const { left, width } =
+  if (index === active) {
+    return
+  }
+  if (tabsItemRefs[index].classList.value.includes('not-allow')) {
+    return
+  }
+  active = index
+  const BoundingClientRect =
     tabsItemRefs[index]['childNodes'][0].getBoundingClientRect()
+  const { left, width } = BoundingClientRect
+
   const offsetX = index * -100
   const mid = tabsHeadRef.value.clientWidth / 2
   const cur = left + width / 2
@@ -101,7 +113,11 @@ const tabsSwitch = index => {
 }
 
 onMounted(() => {
-  tabsSwitch(attr.modelValue)
+  if (tabsItemRefs[attr.modelValue].classList.value.includes('not-allow')) {
+    tabsSwitch(attr.modelValue + 1)
+  } else {
+    tabsSwitch(attr.modelValue)
+  }
 })
 onBeforeUpdate(() => {
   tabsItemRefs.length = 0
@@ -114,7 +130,6 @@ watch(
 
 <style lang="less">
 .tabs-box {
-  // min-width: 375px;
   overflow: hidden;
   .tabs-head {
     display: flex;
@@ -133,10 +148,11 @@ watch(
       margin: 0 14px;
       display: inline-block;
       cursor: pointer;
+      color: #646566;
     }
     .line {
       position: absolute;
-      background-color: blue;
+      background-color: #0052d9;
       height: 3px;
       width: 15px;
       border-radius: 3px;
@@ -181,5 +197,12 @@ watch(
 }
 .tabs_animation {
   transition: all 0.4s;
+}
+.blod {
+  color: #323233;
+}
+.not-allow {
+  cursor: not-allowed !important;
+  opacity: 0.4;
 }
 </style>
