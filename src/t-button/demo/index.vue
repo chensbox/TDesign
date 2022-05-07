@@ -6,6 +6,10 @@
   <demo-block title="自定义颜色">
     <t-button color="#03a9f4" style="margin-left: 15px">按钮</t-button>
   </demo-block>
+
+  <demo-block title="插入图标">
+    <t-button color="#4ec9b0" style="margin-left: 15px"> 按钮1</t-button>
+  </demo-block>
 </template>
 
 <script>
@@ -15,3 +19,5 @@ export default defineComponent({
   components: { TButton }
 })
 </script>
+
+<style lange="less" scoped></style>
