@@ -7,6 +7,13 @@ export default {
     site: {
       publicPath: '/TDesign/',
     },
+    configureVite(config){
+      const { BUILD_TARGET } = process.env;
+      config.server.fs = {
+        strict:false
+      }
+      return config
+    }
   },
   site: {
     title: 'TDesign',
@@ -34,7 +41,11 @@ export default {
           },
           {
             path: 'tabs',
-            title: 'tabs 按钮',
+            title: 'tabs 标签页',
+          },
+          {
+            path: 'icon',
+            title: 'icon 图标',
           },
         ],
       },
