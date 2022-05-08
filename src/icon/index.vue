@@ -1,5 +1,5 @@
 <template>
-  <span :class="[classMap.get(name)]" :style="{ 'font-size': sizeMap[size] }" />
+  <span :class="[classMap.get(name)]" :style="{ 'font-size': size }" />
 </template>
 
 <script setup>
@@ -7,22 +7,18 @@ import { reactive } from '@vue/reactivity'
 
 const classMap = reactive(
   new Map([
-    ['loading', 'icon-loading loading'],
-    ['close', 'icon-close'],
-    ['attachment', 'icon-attachment'],
-    ['camera', 'icon-camera '],
-    ['arrow-right', 'icon-arrow-right'],
-    ['bottom', 'icon-bottom'],
-    ['add', 'icon-add'],
-    ['ashbin', 'icon-ashbin'],
-    ['down', 'icon-down ']
+    ['loading', 'icon icon-loading loading'],
+    ['close', 'icon icon-close'],
+    ['attachment', 'icon icon-attachment'],
+    ['camera', 'icon icon-camera '],
+    ['arrow-right', 'icon icon-arrow-right'],
+    ['bottom', 'icon icon-bottom'],
+    ['add', 'icon icon-add'],
+    ['ashbin', 'icon icon-ashbin'],
+    ['down', 'icon icon-down ']
   ])
 )
-const sizeMap = reactive({
-  mini: '16px',
-  default: '30px',
-  middle: '50px'
-})
+
 const props = defineProps({
   name: {
     type: String,
@@ -30,7 +26,7 @@ const props = defineProps({
   },
   size: {
     type: String,
-    default: 'default'
+    default: 'inherit'
   }
 })
 </script>
@@ -39,7 +35,6 @@ const props = defineProps({
 @import 'style.css';
 .loading {
   display: inline-block;
-  font-size: 18px;
   color: rgb(236, 232, 232);
   animation: rotate 2s infinite linear;
 }
@@ -48,5 +43,9 @@ const props = defineProps({
   100% {
     transform: rotate(360deg);
   }
+}
+.icon {
+  vertical-align: middle;
+  font-size: inherit;
 }
 </style>
