@@ -1,11 +1,13 @@
 <template>
   <button
-    :class="['t-button', type, size, plain ? 'plain' : '']"
-    :style="{ background: color }"
+    :class="['t-button', type, size, disabled ? 'disabled' : '']"
+    :style="style"
     @click="onClick"
+    :disabled="disabled"
   >
-    <icon :name="icon" class="btn-icon" v-if="icon" />
-    <span class="btn-text"><slot /></span>
+    <icon :name="icon || loadingType" class="btn-icon" v-if="icon || loading" />
+    <span class="btn-text" v-if="!loading"><slot /></span>
+    <span class="btn-text" v-if="loading">加载中...</span>
   </button>
 </template>
 
@@ -26,16 +28,34 @@ const props = defineProps({
     type: Boolean,
     default: false
   },
-  icon: String
+  icon: String,
+  loading: Boolean,
+  loadingType: String,
+  disabled: Boolean
 })
+console.log(props.loadingType, props.loading)
+const colorMap = {
+  info: '#1989fa',
+  warning: '#ff976a',
+  danger: '#ee0a24',
+  primary: '#07c160'
+}
+const style = { background: props.color }
+if (props.plain) {
+  style.color = colorMap[props.type]
+  style.border = `1px solid ${colorMap[props.type]}`
+  style.background = '#ffffff'
+}
 const onClick = function (event) {
+  if (props.loading) {
+    return
+  }
   emit('click', event)
 }
 </script>
 
 <style lang="less">
 .t-button {
-  padding: 0px 10px;
   color: #fff;
   font-size: 16px;
   line-height: 36px;
@@ -69,25 +89,43 @@ const onClick = function (event) {
 }
 
 .large {
-  width: 100%;
-  margin: 0 5px;
+  width: 90%;
+  margin: 0 auto;
+  font-size: 20px;
 }
 .normal {
   padding: 0 15px;
+  font-size: 18px;
 }
 .small {
   height: 32px;
   padding: 0 8px;
+  line-height: 0;
 }
 .mini {
-  height: 24px;
-  padding: 0 4px;
+  padding: 4px 2px;
+  line-height: 12px;
+  font-size: 12px;
 }
 .plain {
   color: inherit;
   background: #ffffff;
 }
 button:active {
+  -webkit-filter: brightness(90%);
   filter: brightness(90%);
+  transform: scale(0.99);
+}
+.disabled {
+  cursor: not-allowed;
+  opacity: 0.7;
+}
+* {
+  -webkit-touch-callout: none; /*系统默认菜单被禁用*/
+  -webkit-user-select: none; /*webkit浏览器*/
+  -khtml-user-select: none; /*早期浏览器*/
+  -moz-user-select: none; /*火狐*/
+  -ms-user-select: none; /*IE10*/
+  user-select: none;
 }
 </style>

@@ -47,5 +47,6 @@ const props = defineProps({
 .icon {
   vertical-align: middle;
   font-size: inherit;
+  // font-size: 180px;
 }
 </style>
