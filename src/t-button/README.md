@@ -1,8 +1,8 @@
-# DemoButton 按钮
+# Button 按钮
 
 ### 介绍
 
-DemoButton 是一个示例按钮组件
+Button 是一个示例按钮组件
 
 ### 引入
 

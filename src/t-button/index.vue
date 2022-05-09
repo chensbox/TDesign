@@ -1,21 +1,23 @@
 <template>
   <button
-    :class="['t-button', type, size, disabled ? 'disabled' : '']"
+    :class="classList"
     :style="style"
     @click="onClick"
     :disabled="disabled"
   >
     <icon :name="icon || loadingType" class="btn-icon" v-if="icon || loading" />
-    <span class="btn-text" v-if="!loading"><slot /></span>
-    <span class="btn-text" v-if="loading && loadingText">{{
+    <span class="btn-text" v-if="!loading && slot.default"><slot /></span
+    ><span class="btn-text" v-if="loading && loadingText">{{
       loadingText
     }}</span>
   </button>
 </template>
 
 <script setup>
+import { useSlots } from '@vue/runtime-core'
 import Icon from '../icon/index.vue'
 const emit = defineEmits(['click'])
+const slot = useSlots()
 const props = defineProps({
   color: String,
   type: {
@@ -34,7 +36,9 @@ const props = defineProps({
   loading: Boolean,
   loadingType: String,
   loadingText: String,
-  disabled: Boolean
+  disabled: Boolean,
+  square: Boolean,
+  round: Boolean
 })
 // console.log(props.loadingType, props.loading)
 const colorMap = {
@@ -43,6 +47,14 @@ const colorMap = {
   danger: '#ee0a24',
   primary: '#07c160'
 }
+const classList = [
+  't-button',
+  props.type,
+  props.size,
+  props.disabled ? 'disabled' : '',
+  props.square ? 'square' : '',
+  props.round ? 'round' : ''
+]
 const style = { background: props.color }
 if (props.plain) {
   const color = props.color ? props.color : colorMap[props.type]
@@ -99,18 +111,21 @@ const onClick = function (event) {
   font-size: 20px;
 }
 .normal {
+  height: 42px;
   padding: 0 15px;
+  line-height: 42px;
   font-size: 18px;
 }
 .small {
   height: 32px;
   padding: 0 8px;
-  line-height: 0;
+  line-height: 32px;
 }
 .mini {
-  padding: 4px 2px;
-  line-height: 12px;
-  font-size: 12px;
+  height: 24px;
+  padding: 0 4px;
+  line-height: 24px;
+  font-size: 10px;
 }
 .plain {
   color: inherit;
@@ -123,7 +138,7 @@ button:active {
 }
 .disabled {
   cursor: not-allowed;
-  opacity: 0.7;
+  opacity: 0.6;
 }
 * {
   -webkit-touch-callout: none; /*系统默认菜单被禁用*/
@@ -132,5 +147,11 @@ button:active {
   -moz-user-select: none; /*火狐*/
   -ms-user-select: none; /*IE10*/
   user-select: none;
+}
+.square {
+  border-radius: 0;
+}
+.round {
+  border-radius: 999rem;
 }
 </style>

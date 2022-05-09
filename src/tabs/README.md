@@ -1,16 +1,17 @@
-# DemoButton 按钮
+# Tabs 标签页
 
 ### 介绍
 
-DemoButton 是一个示例按钮组件
+Tabs 是一个示例组件
 
 ### 引入
 
 ```js
-import Vue from 'vue';
-import { tabs } from 'TDesign';
+import Vue from 'vue'
+import { tabs, tab } from 'TDesign'
 
-Vue.use(tabs);
+Vue.use(tabs)
+Vue.use(tab)
 ```
 
 ## 代码演示

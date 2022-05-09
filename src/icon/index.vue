@@ -16,7 +16,18 @@ const classMap = reactive(
     ['add', 'icon icon-add'],
     ['ashbin', 'icon icon-ashbin'],
     ['down', 'icon icon-down '],
-    ['loading-spinner', 'icon icon-loading-spinner loading']
+    ['loading-spinner', 'icon icon-loading-spinner loading'],
+    ['check', 'icon icon-check '],
+    ['github-fill', 'icon icon-github-fill '],
+    ['info-circle', 'icon icon-info-circle '],
+    ['left', 'icon icon-left '],
+    ['location', 'icon icon-location '],
+    ['question-circle', 'icon icon-question-circle '],
+    ['right', 'icon icon-right '],
+    ['search', 'icon icon-search '],
+    ['setting', 'icon icon-setting '],
+    ['up', 'icon icon-up '],
+    ['user', 'icon icon-user ']
   ])
 )
 
@@ -36,8 +47,8 @@ const props = defineProps({
 @import 'style.css';
 .loading {
   display: inline-block;
-  // color: rgb(236, 232, 232);
   color: inherit;
+  line-height: 100%;
   animation: rotate 2s infinite linear;
 }
 
@@ -49,6 +60,8 @@ const props = defineProps({
 .icon {
   vertical-align: middle;
   font-size: inherit;
-  // font-size: 180px;
+  // font-weight: inherit;
+  line-height: 100%;
+  display: inline-block;
 }
 </style>

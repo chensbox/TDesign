@@ -9,9 +9,10 @@
         :class="{ 'not-allow': it.props.disable == '' || it.props.disable }"
         @click="tabsSwitch(id)"
       >
-        <span :class="{ blod: attr.modelValue === id }">{{
-          it.props.title
-        }}</span>
+        <span :class="{ blod: attr.modelValue === id }">
+          <icon :name="it.props.icon" v-if="it.props.icon"></icon>
+          {{ it.props.title }}</span
+        >
       </div>
       <div
         class="line"
@@ -35,6 +36,7 @@
 </template>
 
 <script setup>
+import icon from '../icon/index.vue'
 import { onBeforeUpdate, onMounted, useAttrs, watch } from '@vue/runtime-core'
 import { ref, useSlots } from 'vue'
 
@@ -72,7 +74,7 @@ const lineRef = ref()
 const tabsItemRefs = []
 const trackRef = ref()
 const tabsHeadRef = ref()
-console.log(slots)
+// console.log(slots)
 const tabsSwitch = index => {
   if (index === active) {
     return
@@ -155,7 +157,7 @@ watch(
       background-color: #0052d9;
       height: 3px;
       width: 15px;
-      border-radius: 3px;
+      border-radius: 999rem;
       bottom: 0;
       left: 28px;
     }
@@ -199,6 +201,7 @@ watch(
   transition: all 0.4s;
 }
 .blod {
+  font-weight: bold;
   color: #323233;
 }
 .not-allow {

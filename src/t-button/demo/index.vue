@@ -1,6 +1,6 @@
 <template>
   <demo-block title="基础用法">
-    <t-button type="primary" style="margin: 10px">主要按钮</t-button>
+    <t-button type="primary" style="margin: 5px">主要按钮</t-button>
     <t-button type="danger" class="show-btn">危险按钮</t-button>
     <t-button type="info" class="show-btn">信息按钮</t-button>
     <t-button type="warning" class="show-btn">警告按钮</t-button>
@@ -18,25 +18,18 @@
   </demo-block>
 
   <demo-block title="插入图标">
-    <t-button icon="add" class="show-btn"> 按钮</t-button>
-    <t-button icon="camera" class="show-btn" type="info"> 按钮</t-button>
-    <t-button icon="ashbin" class="show-btn" type="danger"> 按钮</t-button>
+    <t-button icon="add" class="show-btn"></t-button>
+    <t-button icon="camera" class="show-btn" type="info"></t-button>
+    <t-button icon="ashbin" class="show-btn" type="danger">删除</t-button>
   </demo-block>
   <demo-block title="加载状态">
-    <t-button
-      class="show-btn"
-      type="info"
-      loading-type="loading"
-      loading
-      size="normal"
-    >
+    <t-button class="show-btn" type="info" loading-type="loading" loading>
     </t-button>
     <t-button
       class="show-btn"
       type="info"
       loading-type="loading-spinner"
       loading
-      size="normal"
     >
     </t-button>
     <t-button
@@ -56,8 +49,18 @@
     <t-button class="show-btn" type="warning" plain> 朴素按钮</t-button>
   </demo-block>
 
+  <demo-block title="禁用状态">
+    <t-button type="primary" style="margin: 5px" disabled>主要按钮</t-button>
+    <t-button type="danger" class="show-btn" disabled>危险按钮</t-button>
+    <t-button type="info" class="show-btn" disabled>信息按钮</t-button>
+  </demo-block>
+
+  <demo-block title="按钮形状">
+    <t-button type="info" style="margin: 5px" square>方形按钮</t-button>
+    <t-button type="primary" style="margin: 5px" round>圆形按钮</t-button>
+  </demo-block>
   <demo-block title="不同尺寸">
-    <t-button class="show-btn" type="primary" size="large"> 大号按钮</t-button>
+    <t-button type="primary" size="large"> 大号按钮</t-button>
     <t-button class="show-btn" type="primary"> 普通按钮</t-button>
     <t-button class="show-btn" type="primary" size="small"> 小型按钮</t-button>
 

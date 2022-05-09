@@ -1,7 +1,7 @@
 <template>
   <demo-block title="基础用法">
     <tabs v-model="active1">
-      <tab title="标签1" disable>标签1内容区</tab>
+      <tab title="标签1">标签1内容区</tab>
       <tab title="标签2">标签2内容区</tab>
       <tab title="标签3">标签3内容区</tab>
       <tab title="标签4">标签4内容区</tab>
@@ -25,7 +25,20 @@
       <tab title="标签4">标签4内容区</tab>
     </tabs>
   </demo-block>
-
+  <demo-block title="自定义图标">
+    <tabs v-model="active6" lineAnimation tabAnimation>
+      <tab title="标签1" icon="setting">标签1内容区</tab>
+      <tab title="标签2" icon="info-circle">标签2内容区</tab>
+      <tab title="标签3" icon="question-circle">标签3内容区</tab>
+    </tabs>
+  </demo-block>
+  <demo-block title="禁用标签">
+    <tabs v-model="active7" lineAnimation tabAnimation>
+      <tab title="标签1" icon="setting">标签1内容区</tab>
+      <tab title="标签2" icon="info-circle" disable>标签2内容区</tab>
+      <tab title="标签3" icon="question-circle">标签3内容区</tab>
+    </tabs>
+  </demo-block>
   <demo-block title="标签栏自滚动居中">
     <tabs v-model="active4" lineAnimation tabAnimation>
       <tab title="标签1">标签1内容区</tab>
@@ -64,4 +77,6 @@ const active2 = ref(0)
 const active3 = ref(0)
 const active4 = ref(0)
 const active5 = ref(0)
+const active6 = ref(0)
+const active7 = ref(0)
 </script>
