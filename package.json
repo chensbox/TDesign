@@ -1,8 +1,7 @@
 {
-  "name": "TDesign",
+  "name": "esign",
   "version": "1.0.0",
   "description": "",
-  // "main": "lib/TDesign.js",
   "main": "lib/index.js",
   "module": "es/index.js",
   "style": "lib/index.css",
