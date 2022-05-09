@@ -1,5 +1,6 @@
 <template>
   <demo-block title="基础图标">
+    <h1 @click="reset">css module test</h1>
     <icon name="loading" size="50px"></icon>
 
     <icon name="close" size="50px"></icon>
@@ -45,7 +46,22 @@
 </template>
 
 <script setup>
+import { ref } from '@vue/reactivity'
 import icon from '../index.vue'
+let red = ref('red')
+
+function reset() {
+  const { value } = red
+  if (value == 'pink') {
+    red.value = 'red'
+  } else {
+    red.value = 'pink'
+  }
+}
 </script>
 
-<style lange="less" scoped></style>
+<style lange="less" scoped>
+h1 {
+  color: v-bind(red);
+}
+</style>
