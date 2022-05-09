@@ -1,14 +1,14 @@
 <template>
-  <demo-block title="标签栏自滚动居中">
-    <icon name="loading" size="middle"></icon>
-    <icon name="close"></icon>
-    <icon name="attachment"></icon>
-    <icon name="camera"></icon>
-    <icon name="arrow-right"></icon>
-    <icon name="bottom"></icon>
-    <icon name="add"></icon>
-    <icon name="ashbin"></icon>
-    <icon name="down"></icon>
+  <demo-block title="基础图标">
+    <icon name="loading" size="50px"></icon>
+    <icon name="close" size="50px"></icon>
+    <icon name="attachment" size="50px"></icon>
+    <icon name="camera" size="50px"></icon>
+    <icon name="arrow-right" size="50px"></icon>
+    <icon name="bottom" size="50px"></icon>
+    <icon name="ashbin" size="50px"></icon>
+    <icon name="down" size="50px"></icon>
+    <icon name="loading-spinner" size="50px"></icon>
   </demo-block>
 </template>
 

@@ -15,7 +15,8 @@ const classMap = reactive(
     ['bottom', 'icon icon-bottom'],
     ['add', 'icon icon-add'],
     ['ashbin', 'icon icon-ashbin'],
-    ['down', 'icon icon-down ']
+    ['down', 'icon icon-down '],
+    ['loading-spinner', 'icon icon-loading-spinner loading']
   ])
 )
 
@@ -35,7 +36,8 @@ const props = defineProps({
 @import 'style.css';
 .loading {
   display: inline-block;
-  color: rgb(236, 232, 232);
+  // color: rgb(236, 232, 232);
+  color: inherit;
   animation: rotate 2s infinite linear;
 }
 

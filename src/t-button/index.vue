@@ -7,7 +7,9 @@
   >
     <icon :name="icon || loadingType" class="btn-icon" v-if="icon || loading" />
     <span class="btn-text" v-if="!loading"><slot /></span>
-    <span class="btn-text" v-if="loading">加载中...</span>
+    <span class="btn-text" v-if="loading && loadingText">{{
+      loadingText
+    }}</span>
   </button>
 </template>
 
@@ -31,9 +33,10 @@ const props = defineProps({
   icon: String,
   loading: Boolean,
   loadingType: String,
+  loadingText: String,
   disabled: Boolean
 })
-console.log(props.loadingType, props.loading)
+// console.log(props.loadingType, props.loading)
 const colorMap = {
   info: '#1989fa',
   warning: '#ff976a',
@@ -42,8 +45,9 @@ const colorMap = {
 }
 const style = { background: props.color }
 if (props.plain) {
-  style.color = colorMap[props.type]
-  style.border = `1px solid ${colorMap[props.type]}`
+  const color = props.color ? props.color : colorMap[props.type]
+  style.color = color
+  style.border = `1px solid ${color}`
   style.background = '#ffffff'
 }
 const onClick = function (event) {
@@ -66,7 +70,7 @@ const onClick = function (event) {
 }
 
 .btn-text {
-  margin-left: 2px;
+  margin: 0 2px;
   vertical-align: middle;
 }
 
@@ -89,8 +93,9 @@ const onClick = function (event) {
 }
 
 .large {
-  width: 90%;
+  width: 100%;
   margin: 0 auto;
+  padding: 5px 15px;
   font-size: 20px;
 }
 .normal {
