@@ -9,8 +9,11 @@ export default {
     },
     configureVite(config){
       const { BUILD_TARGET } = process.env;
-      config.server.fs = {
-        strict:false
+      if (BUILD_TARGET === 'site') {
+        // 修改文档站点构建配置
+        config.server.fs = {
+          strict:false
+        }
       }
       return config
     }
