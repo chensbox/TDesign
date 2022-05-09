@@ -1,6 +1,6 @@
 {
-  "name": "esign",
-  "version": "1.0.0",
+  "name": "chensesign",
+  "version": "1.0.1",
   "description": "",
   "main": "lib/index.js",
   "module": "es/index.js",
