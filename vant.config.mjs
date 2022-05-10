@@ -50,6 +50,10 @@ export default {
             path: 'icon',
             title: 'icon 图标',
           },
+          {
+            path: 'toast',
+            title: 'toast 弹窗',
+          },
         ],
       },
     ],
