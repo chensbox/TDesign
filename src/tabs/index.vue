@@ -136,14 +136,18 @@ watch(
   .tabs-head {
     display: flex;
     position: relative;
-    background: #ffffff;
+    // background: #ffffff;
+    background: #eeeeee;
     overflow-x: scroll;
     overflow-y: hidden;
     padding: 10px;
     justify-content: space-between;
     transition: all 0.4s;
     .tabs-select-item {
+      position: relative;
       flex: 1 0 auto; //很关键
+      z-index: 999;
+      padding: 0 5px;
       font-size: 14px;
       user-select: none; /* Standard syntax */
       text-align: center;
@@ -151,15 +155,23 @@ watch(
       display: inline-block;
       cursor: pointer;
       color: #646566;
+      span {
+        padding: 0 10px;
+      }
     }
     .line {
       position: absolute;
-      background-color: #0052d9;
+      //background-color: #0052d9;
+      background: #ffffff;
+      box-shadow: rgb(0 0 0 / 15%) 0px 2px 4px;
       height: 3px;
       width: 15px;
-      border-radius: 999rem;
+      border-radius: 4px;
       bottom: 0;
       left: 28px;
+      height: 80%;
+      top: 50%;
+      transform: translateY(-50%);
     }
   }
   .tabs-track {
