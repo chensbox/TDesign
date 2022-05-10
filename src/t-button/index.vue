@@ -61,6 +61,7 @@ if (props.plain) {
   style.color = color
   style.border = `1px solid ${color}`
   style.background = '#ffffff'
+  style['line-height'] = 0
 }
 const onClick = function (event) {
   if (props.loading) {
@@ -72,6 +73,7 @@ const onClick = function (event) {
 
 <style lang="less">
 .t-button {
+  // box-sizing: content-box;
   color: #fff;
   font-size: 16px;
   line-height: 36px;
@@ -105,8 +107,8 @@ const onClick = function (event) {
 }
 
 .large {
+  height: 50px;
   width: 100%;
-  margin: 0 auto;
   padding: 5px 15px;
   font-size: 20px;
 }
