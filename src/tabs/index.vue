@@ -10,16 +10,17 @@
         @click="tabsSwitch(id)"
       >
         <span :class="{ blod: attr.modelValue === id }">
-          <icon :name="it.props.icon" v-if="it.props.icon"></icon>
-          {{ it.props.title }}</span
-        >
+          <icon :name="it.props.icon" v-if="it.props.icon" />
+          {{ it.props.title }}
+        </span>
       </div>
+
       <div
         class="line"
         ref="lineRef"
         :class="{ line_animation: lineAnimation }"
         :style="{ background: color }"
-      ></div>
+      />
     </div>
 
     <div
@@ -30,7 +31,7 @@
       @touchend="touchend"
       :class="{ tabs_animation: tabAnimation }"
     >
-      <slot></slot>
+      <slot />
     </div>
   </div>
 </template>
