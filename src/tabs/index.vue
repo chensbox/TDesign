@@ -1,5 +1,5 @@
 <template>
-  <div class="tabs-box">
+  <div :class="['tabs-box', cover ? 'cover' : '']">
     <div class="tabs-head" ref="tabsHeadRef">
       <div
         class="tabs-select-item"
@@ -53,7 +53,8 @@ const props = defineProps({
   swipeable: {
     default: false,
     type: Boolean
-  }
+  },
+  cover: Boolean
 })
 const touchend = () => {
   if (!props.swipeable) return
@@ -68,7 +69,11 @@ const touchstart = e => (startX = e.touches[0].pageX)
 const touchmove = e => (moveX = e.touches[0].pageX)
 const emit = defineEmits(['update:modelValue'])
 const setTabsItemRef = el => tabsItemRefs.push(el)
-const slots = useSlots().default()
+
+const useSlot = useSlots().default()
+const slots =
+  useSlot[0].children instanceof Array ? useSlot[0].children : useSlot
+
 const attr = useAttrs()
 const lineRef = ref()
 const tabsItemRefs = []
@@ -136,8 +141,7 @@ watch(
   .tabs-head {
     display: flex;
     position: relative;
-    // background: #ffffff;
-    background: #eeeeee;
+    background: #ffffff;
     overflow-x: scroll;
     overflow-y: hidden;
     padding: 10px;
@@ -155,30 +159,21 @@ watch(
       display: inline-block;
       cursor: pointer;
       color: #646566;
-      span {
-        padding: 0 10px;
-      }
     }
     .line {
       position: absolute;
-      //background-color: #0052d9;
-      background: #ffffff;
-      box-shadow: rgb(0 0 0 / 15%) 0px 2px 4px;
+      background-color: #0052d9;
       height: 3px;
       width: 15px;
       border-radius: 4px;
       bottom: 0;
       left: 28px;
-      height: 80%;
-      top: 50%;
-      transform: translateY(-50%);
     }
   }
   .tabs-track {
     display: flex;
     width: 100%;
     height: 100%;
-    //transition: all 0.4s; //开启切换动画
     .tabs-body {
       box-sizing: border-box;
       flex-shrink: 0;
@@ -189,21 +184,6 @@ watch(
       background-color: #ffffff;
     }
   }
-}
-* {
-  -webkit-touch-callout: none; /*系统默认菜单被禁用*/
-  -webkit-user-select: none; /*webkit浏览器*/
-  -khtml-user-select: none; /*早期浏览器*/
-  -moz-user-select: none; /*火狐*/
-  -ms-user-select: none; /*IE10*/
-  user-select: none;
-}
-* {
-  -webkit-tap-highlight-color: rgba(0, 0, 0, 0);
-  -webkit-tap-highlight-color: transparent; /* For some Androids */
-}
-::-webkit-scrollbar {
-  display: none; /* Chrome Safari */
 }
 
 .line_animation {
@@ -219,5 +199,40 @@ watch(
 .not-allow {
   cursor: not-allowed !important;
   opacity: 0.4;
+}
+
+.cover {
+  .tabs-head {
+    background: #eeeeee;
+    .line {
+      background: #ffffff;
+      box-shadow: rgb(0 0 0 / 15%) 0px 2px 4px;
+      height: 70%;
+      top: 50%;
+      transform: translateY(-50%);
+    }
+    .tabs-select-item {
+      margin: 0;
+      span {
+        padding: 0 10px;
+      }
+    }
+  }
+}
+
+* {
+  -webkit-touch-callout: none; /*系统默认菜单被禁用*/
+  -webkit-user-select: none; /*webkit浏览器*/
+  -khtml-user-select: none; /*早期浏览器*/
+  -moz-user-select: none; /*火狐*/
+  -ms-user-select: none; /*IE10*/
+  user-select: none;
+}
+* {
+  -webkit-tap-highlight-color: rgba(0, 0, 0, 0);
+  -webkit-tap-highlight-color: transparent; /* For some Androids */
+}
+::-webkit-scrollbar {
+  display: none; /* Chrome Safari */
 }
 </style>
