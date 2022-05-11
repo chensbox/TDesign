@@ -54,6 +54,10 @@ export default {
             path: 'toast',
             title: 'toast 弹窗',
           },
+          {
+            path: 'dialog',
+            title: 'dialog 对话框',
+          },
         ],
       },
     ],

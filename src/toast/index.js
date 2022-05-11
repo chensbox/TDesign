@@ -14,7 +14,7 @@ function toast(props = {}) {
   setTimeout(() => {
     toastInstance.unmount(monuntNode)
     document.body.removeChild(monuntNode)
-  }, 3000)
+  }, 1000)
 }
 
 toast.Component = __toast__.install = function (app) {
