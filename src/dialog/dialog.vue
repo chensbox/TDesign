@@ -20,18 +20,18 @@ const props = defineProps({
 })
 const dialogRef = ref()
 function handleClick(action) {
-  console.log(dialogRef, '>>>>>>>>')
+  dialogRef.value.style.opacity = 0
   setTimeout(() => {
     show.value = false
-  }, 1000)
-  // props.callback(action)
+  }, 100)
+  props.callback(action)
 
-  setTimeout(props.callback, 0, action)
+  // setTimeout(props.callback, 200, action)
 }
 console.log(props)
 </script>
 
-<style lange="less" scoped>
+<style lang="less" scoped>
 .dialog-warp {
   position: fixed;
   top: 50%;
@@ -40,23 +40,18 @@ console.log(props)
   padding: 10px;
   border: 1px solid #000;
   background: #ffff;
-  /* animation: test 0.2s linear; */
+  transition: opacity 0.1s linear;
+  animation: scaleIn 0.1s linear;
 }
 
-@keyframes test {
+@keyframes scaleIn {
   0% {
-    opacity: 0;
+    /* opacity: 0; */
+    transform: translate(-50%, -50%) scale(0);
   }
 
   100% {
-    opacity: 1;
+    transform: translate(-50%, -50%) scale(1);
   }
-}
-.fade-enter-active,
-.fade-leave-active {
-  transition: opacity 0.5s;
-}
-.fade-enter, .fade-leave-to /* .fade-leave-active below version 2.1.8 */ {
-  opacity: 0;
 }
 </style>
