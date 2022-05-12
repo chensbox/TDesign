@@ -42,6 +42,11 @@
     <icon name="up" size="50px"></icon>
 
     <icon name="user" size="50px"></icon>
+    <icon name="setting" size="50px"></icon>
+
+    <icon name="setting" size="50px"></icon>
+
+    <icon name="setting" size="50px"></icon>
   </demo-block>
 </template>
 
