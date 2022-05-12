@@ -13,12 +13,9 @@
   </button>
 </template>
 
-<script setup>
-import { useSlots } from '@vue/runtime-core'
+<script>
 import Icon from '../icon/index.vue'
-const emit = defineEmits(['click'])
-const slot = useSlots()
-const props = defineProps({
+const props = {
   color: String,
   type: {
     type: String,
@@ -39,35 +36,49 @@ const props = defineProps({
   disabled: Boolean,
   square: Boolean,
   round: Boolean
-})
-// console.log(props.loadingType, props.loading)
-const colorMap = {
-  info: '#1989fa',
-  warning: '#ff976a',
-  danger: '#ee0a24',
-  primary: '#07c160'
 }
-const classList = [
-  't-button',
-  props.type,
-  props.size,
-  props.disabled ? 'disabled' : '',
-  props.square ? 'square' : '',
-  props.round ? 'round' : ''
-]
-const style = { background: props.color }
-if (props.plain) {
-  const color = props.color ? props.color : colorMap[props.type]
-  style.color = color
-  style.border = `1px solid ${color}`
-  style.background = '#ffffff'
-  style['line-height'] = 0
-}
-const onClick = function (event) {
-  if (props.loading) {
-    return
+export default {
+  name: 't-button',
+  props,
+  emits: ['click'],
+  components: { Icon },
+  setup(props, { attrs, slots, emit }) {
+    const colorMap = {
+      info: '#1989fa',
+      warning: '#ff976a',
+      danger: '#ee0a24',
+      primary: '#07c160'
+    }
+    const classList = [
+      't-button',
+      props.type,
+      props.size,
+      props.disabled ? 'disabled' : '',
+      props.square ? 'square' : '',
+      props.round ? 'round' : ''
+    ]
+    const style = { background: props.color }
+    if (props.plain) {
+      const color = props.color ? props.color : colorMap[props.type]
+      style.color = color
+      style.border = `1px solid ${color}`
+      style.background = '#ffffff'
+      style['line-height'] = 0
+    }
+    const onClick = function (event) {
+      if (props.loading) {
+        return
+      }
+      emit('click', event)
+    }
+
+    return {
+      onClick,
+      style,
+      classList,
+      slot: slots
+    }
   }
-  emit('click', event)
 }
 </script>
 

@@ -44,13 +44,12 @@
     >
   </demo-block>
   <demo-block title="朴素按钮">
-    <t-button plain type="info" size="large"> 朴素按钮</t-button>
+    <t-button class="show-btn" type="warning" plain> 朴素按钮</t-button>
     <t-button class="show-btn" plain type="primary" size="small">
       朴素按钮</t-button
     >
-    <t-button class="show-btn" type="warning" plain> 朴素按钮</t-button>
 
-    <t-button class="show-btn" type="warning" plain size="mini">
+    <t-button class="show-btn" type="danger" plain size="mini">
       朴素按钮</t-button
     >
   </demo-block>
