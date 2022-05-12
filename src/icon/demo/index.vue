@@ -47,10 +47,15 @@
     <icon name="setting" size="50px"></icon>
 
     <icon name="setting" size="50px"></icon>
+
+    <t-button type="danger" size="mini">按钮</t-button>
+    <t-button type="danger" size="mini">按钮</t-button>
+    <t-button type="danger" size="mini">按钮</t-button>
   </demo-block>
 </template>
 
 <script setup>
+import TButton from '../../../es/t-button/index'
 import { ref } from '@vue/reactivity'
 import icon from '../index.vue'
 let red = ref('red')

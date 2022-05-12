@@ -1,7 +1,7 @@
 <template>
   <div class="dialog-warp" v-if="show" ref="dialogRef">
     <div class="dialog-content">
-      <h3 class="dialog-content-title">标题</h3>
+      <h3 class="dialog-content-title"></h3>
       <div class="dialog-content-text">这是一个弹出对话框</div>
     </div>
     <div class="dialog-button">
@@ -11,24 +11,39 @@
   </div>
 </template>
 
-<script setup>
-import { ref } from '@vue/reactivity'
-import { nextTick } from '@vue/runtime-core'
-const show = ref(true)
-const props = defineProps({
-  callback: Function
-})
-const dialogRef = ref()
-function handleClick(action) {
-  dialogRef.value.style.opacity = 0
-  setTimeout(() => {
-    show.value = false
-  }, 100)
-  props.callback(action)
-
-  // setTimeout(props.callback, 200, action)
+<script>
+const props = {
+  callback: Function,
+  show: {
+    type: Boolean,
+    default: true
+  }
 }
-console.log(props)
+import { reactive, ref } from '@vue/reactivity'
+
+const setup = (props, context) => {
+  const show = ref(true)
+  const dialogRef = ref()
+  console.log(dialogRef)
+  function handleClick(action) {
+    dialogRef.value.style.opacity = 0
+    setTimeout(() => {
+      show.value = false
+    }, 100)
+    props.callback(action)
+  }
+
+  return {
+    handleClick,
+    show,
+    dialogRef
+  }
+}
+export default {
+  name: 'TDialog',
+  props,
+  setup
+}
 </script>
 
 <style lang="less" scoped>

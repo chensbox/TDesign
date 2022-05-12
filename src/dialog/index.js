@@ -1,10 +1,8 @@
 import __dialog__ from './dialog.vue'
 import { createApp } from 'vue'
-
 let instance, root
 function dialog(props = {}) {
-  // console.warn('>>>>>>>>>>>dialog调用了')
-  // console.warn('看看props', props)
+  console.warn(props)
   return new Promise((resolve, reject) => {
     props.callback = action => {
       ;(action === 'confirm' ? resolve : reject)()
@@ -20,10 +18,10 @@ function dialog(props = {}) {
     instance.mount(root)
   })
 }
-
-dialog.Component = __dialog__.install = function (app) {
-  app.component('dialog', __dialog__)
+__dialog__.install = function (app) {
+  app.component('Tdialog', __dialog__)
 }
+dialog.Component = __dialog__
 
 dialog.install = function (app) {
   app.use(dialog.Component)
