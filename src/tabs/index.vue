@@ -66,23 +66,14 @@ const emits = ['update:modelValue']
 
 function setup(props, { attrs, slots, emit }) {
   let startX, moveX, direction, active
-
   const lineRef = ref()
-
   const tabsItemRefs = []
-
   const trackRef = ref()
-
   const tabsHeadRef = ref()
-
   const useSlot = slots.default()
-
   slots = useSlot[0].children instanceof Array ? useSlot[0].children : useSlot
-
   const setTabsItemRef = el => tabsItemRefs.push(el)
-
   const touchstart = e => (startX = e.touches[0].pageX)
-
   const touchmove = e => (moveX = e.touches[0].pageX)
 
   const touchend = () => {
@@ -114,21 +105,13 @@ function setup(props, { attrs, slots, emit }) {
     }
 
     const [tabsNode] = tabsItemRefs[index]['childNodes']
-
     const { left, width } = tabsNode.getBoundingClientRect()
-
     const offsetX = index * -100
-
     const mid = tabsHeadRef.value.clientWidth / 2
-
     const cur = left + width / 2
-
     const isLeft = mid > cur
-
     lineRef.value.style.width = width + 'px'
-
     lineRef.value.style.left = `${left + tabsHeadRef.value.scrollLeft}px`
-
     trackRef.value.style.transform = `translateX(${offsetX}%)`
 
     let scrollL = 0
