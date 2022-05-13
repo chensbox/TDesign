@@ -1,22 +1,6 @@
-<template>
-  <button
-    :class="classList"
-    :style="style"
-    @click="onClick"
-    :disabled="disabled"
-  >
-    <icon :name="icon || loadingType" class="btn-icon" v-if="icon || loading" />
-    <span class="btn-text" v-if="!loading && slot.default"><slot /></span
-    ><span class="btn-text" v-if="loading && loadingText">{{
-      loadingText
-    }}</span>
-  </button>
-</template>
-
 <script>
 import Icon from '../icon/index.vue'
 const props = {
-  color: String,
   type: {
     type: String,
     default: 'primary'
@@ -29,6 +13,7 @@ const props = {
     type: Boolean,
     default: false
   },
+  color: String,
   icon: String,
   loading: Boolean,
   loadingType: String,
@@ -37,50 +22,74 @@ const props = {
   square: Boolean,
   round: Boolean
 }
-export default {
-  name: 't-button',
-  props,
-  emits: ['click'],
-  components: { Icon },
-  setup(props, { attrs, slots, emit }) {
-    const colorMap = {
-      info: '#1989fa',
-      warning: '#ff976a',
-      danger: '#ee0a24',
-      primary: '#07c160'
-    }
-    const classList = [
-      't-button',
-      props.type,
-      props.size,
-      props.disabled ? 'disabled' : '',
-      props.square ? 'square' : '',
-      props.round ? 'round' : ''
-    ]
-    const style = { background: props.color }
-    if (props.plain) {
-      const color = props.color ? props.color : colorMap[props.type]
-      style.color = color
-      style.border = `1px solid ${color}`
-      style.background = '#ffffff'
-      style['line-height'] = 0
-    }
-    const onClick = function (event) {
-      if (props.loading) {
-        return
-      }
-      emit('click', event)
-    }
+const name = 't-button'
+const emits = ['click']
+const components = { Icon }
+const colorMap = {
+  info: '#1989fa',
+  warning: '#ff976a',
+  danger: '#ee0a24',
+  primary: '#07c160'
+}
 
-    return {
-      onClick,
-      style,
-      classList,
-      slot: slots
+function setup(props, { attrs, slots, emit }) {
+  const classList = [
+    't-button',
+    props.type,
+    props.size,
+    props.disabled ? 'disabled' : '',
+    props.square ? 'square' : '',
+    props.round ? 'round' : ''
+  ]
+
+  const style = { background: props.color }
+
+  if (props.plain) {
+    const color = props.color ? props.color : colorMap[props.type]
+    style.color = color
+    style.border = `1px solid ${color}`
+    style.background = '#ffffff'
+    style['line-height'] = 0
+  }
+
+  const onClick = function (event) {
+    if (props.loading) {
+      return
     }
+    emit('click', event)
+  }
+
+  return {
+    style,
+    classList,
+    slots,
+    onClick
   }
 }
+
+export default {
+  name,
+  props,
+  emits,
+  components,
+  setup
+}
 </script>
+
+<template>
+  <button
+    :class="classList"
+    :style="style"
+    @click="onClick"
+    :disabled="disabled"
+  >
+    <icon :name="icon || loadingType" class="btn-icon" v-if="icon || loading" />
+    <span class="btn-text" v-if="!loading && slots.default"><slot /></span
+    ><span class="btn-text" v-if="loading && loadingText">{{
+      loadingText
+    }}</span>
+  </button>
+</template>
 
 <style lang="less">
 .t-button {
@@ -126,8 +135,8 @@ export default {
 .normal {
   height: 42px;
   padding: 0 15px;
-  line-height: 42px;
-  font-size: 18px;
+  //line-height: 42px;
+  font-size: 16px;
 }
 .small {
   height: 32px;
