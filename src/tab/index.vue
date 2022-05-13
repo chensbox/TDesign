@@ -1,22 +1,18 @@
 <template>
   <div class="tabs-body">
-    <slot
-      ><div class="empty">{{ title }}内容区</div></slot
-    >
+    <slot>
+      <div class="empty">{{ title }}内容区</div>
+    </slot>
   </div>
 </template>
-
-<script setup>
-const props = defineProps({
+<script>
+const name = 'tab'
+const props = {
   title: String,
   disable: Boolean
-})
-</script>
-
-<style lang="less" scoped>
-.empty {
-  color: #d6d6d6;
-  text-align: center;
-  line-height: 100px;
 }
-</style>
+export default {
+  name,
+  props
+}
+</script>

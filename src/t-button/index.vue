@@ -32,7 +32,7 @@ const colorMap = {
   primary: '#07c160'
 }
 
-function setup(props, { attrs, slots, emit }) {
+function setup(props, { slots, emit }) {
   const classList = [
     't-button',
     props.type,
@@ -52,7 +52,7 @@ function setup(props, { attrs, slots, emit }) {
     style['line-height'] = 0
   }
 
-  const onClick = function (event) {
+  const onClick = event => {
     if (props.loading) {
       return
     }

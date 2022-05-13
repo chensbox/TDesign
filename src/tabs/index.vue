@@ -9,7 +9,7 @@
         :class="{ 'not-allow': it.props.disable == '' || it.props.disable }"
         @click="tabsSwitch(id)"
       >
-        <span :class="{ blod: attr.modelValue === id }">
+        <span :class="{ blod: attrs.modelValue === id }">
           <icon :name="it.props.icon" v-if="it.props.icon" />
           {{ it.props.title }}
         </span>
@@ -36,104 +36,159 @@
   </div>
 </template>
 
-<script setup>
+<script>
+import { onBeforeUpdate, onMounted, watch } from '@vue/runtime-core'
+import { ref } from '@vue/reactivity'
 import icon from '../icon/index.vue'
-import { onBeforeUpdate, onMounted, useAttrs, watch } from '@vue/runtime-core'
-import { ref, useSlots } from 'vue'
 
-const props = defineProps({
+const name = 'tabs'
+
+const props = {
   lineAnimation: {
-    default: false,
-    type: Boolean
+    type: Boolean,
+    default: false
   },
   tabAnimation: {
-    default: false,
-    type: Boolean
+    type: Boolean,
+    default: false
+  },
+  swipeable: {
+    type: Boolean,
+    default: false
   },
   color: String,
-  swipeable: {
-    default: false,
-    type: Boolean
-  },
   cover: Boolean
-})
-const touchend = () => {
-  if (!props.swipeable) return
-  direction = moveX - startX
-  if (Math.abs(direction) < 70) return
-  const to = direction > 0 ? attr.modelValue - 1 : attr.modelValue + 1
-  if (to >= 0 && to < tabsItemRefs.length) tabsSwitch(to)
 }
 
-let startX, moveX, direction, active
-const touchstart = e => (startX = e.touches[0].pageX)
-const touchmove = e => (moveX = e.touches[0].pageX)
-const emit = defineEmits(['update:modelValue'])
-const setTabsItemRef = el => tabsItemRefs.push(el)
+const components = { icon }
 
-const useSlot = useSlots().default()
-const slots =
-  useSlot[0].children instanceof Array ? useSlot[0].children : useSlot
+const emits = ['update:modelValue']
 
-const attr = useAttrs()
-const lineRef = ref()
-const tabsItemRefs = []
-const trackRef = ref()
-const tabsHeadRef = ref()
-// console.log(slots)
-const tabsSwitch = index => {
-  if (index === active) {
-    return
-  }
-  if (tabsItemRefs[index].classList.value.includes('not-allow')) {
-    return
-  }
-  active = index
-  const BoundingClientRect =
-    tabsItemRefs[index]['childNodes'][0].getBoundingClientRect()
-  const { left, width } = BoundingClientRect
+function setup(props, { attrs, slots, emit }) {
+  let startX, moveX, direction, active
 
-  const offsetX = index * -100
-  const mid = tabsHeadRef.value.clientWidth / 2
-  const cur = left + width / 2
-  const isLeft = mid > cur
-  lineRef.value.style.width = width + 'px'
-  lineRef.value.style.left = `${left + tabsHeadRef.value.scrollLeft}px`
-  trackRef.value.style.transform = `translateX(${offsetX}%)`
+  const lineRef = ref()
 
-  let scrollL = 0
-  if (isLeft && tabsHeadRef.value.scrollLeft) {
-    scrollL = Math.abs(mid - cur) * -1
-  } else if (!isLeft) {
-    scrollL = Math.abs(mid - cur)
-  }
+  const tabsItemRefs = []
 
-  const move = setInterval(() => {
-    if (Math.round(scrollL)) {
-      tabsHeadRef.value.scrollLeft += scrollL / 10
-      scrollL -= scrollL / 10
-    } else {
-      clearInterval(move)
+  const trackRef = ref()
+
+  const tabsHeadRef = ref()
+
+  const useSlot = slots.default()
+
+  slots = useSlot[0].children instanceof Array ? useSlot[0].children : useSlot
+
+  const setTabsItemRef = el => tabsItemRefs.push(el)
+
+  const touchstart = e => (startX = e.touches[0].pageX)
+
+  const touchmove = e => (moveX = e.touches[0].pageX)
+
+  const touchend = () => {
+    if (!props.swipeable) {
+      return
     }
-  }, 10)
 
-  emit('update:modelValue', index)
+    direction = moveX - startX
+
+    if (Math.abs(direction) < 70) {
+      return
+    }
+
+    const to = direction > 0 ? attrs.modelValue - 1 : attrs.modelValue + 1
+
+    if (to >= 0 && to < tabsItemRefs.length) {
+      tabsSwitch(to)
+    }
+  }
+
+  const tabsSwitch = index => {
+    if (index === active) {
+      return
+    }
+    active = index
+
+    if (tabsItemRefs[index].classList.value.includes('not-allow')) {
+      return
+    }
+
+    const [tabsNode] = tabsItemRefs[index]['childNodes']
+
+    const { left, width } = tabsNode.getBoundingClientRect()
+
+    const offsetX = index * -100
+
+    const mid = tabsHeadRef.value.clientWidth / 2
+
+    const cur = left + width / 2
+
+    const isLeft = mid > cur
+
+    lineRef.value.style.width = width + 'px'
+
+    lineRef.value.style.left = `${left + tabsHeadRef.value.scrollLeft}px`
+
+    trackRef.value.style.transform = `translateX(${offsetX}%)`
+
+    let scrollL = 0
+
+    if (isLeft && tabsHeadRef.value.scrollLeft) {
+      scrollL = Math.abs(mid - cur) * -1
+    } else if (!isLeft) {
+      scrollL = Math.abs(mid - cur)
+    }
+
+    const move = setInterval(() => {
+      if (Math.round(scrollL)) {
+        tabsHeadRef.value.scrollLeft += scrollL / 10
+        scrollL -= scrollL / 10
+      } else {
+        clearInterval(move)
+      }
+    }, 10)
+
+    emit('update:modelValue', index)
+  }
+
+  onMounted(() => {
+    if (tabsItemRefs[attrs.modelValue].classList.value.includes('not-allow')) {
+      tabsSwitch(attrs.modelValue + 1)
+    } else {
+      tabsSwitch(attrs.modelValue)
+    }
+  })
+
+  onBeforeUpdate(() => {
+    tabsItemRefs.length = 0
+  })
+
+  watch(
+    () => attrs.modelValue,
+    () => tabsSwitch(attrs.modelValue)
+  )
+
+  return {
+    slots,
+    attrs,
+    tabsSwitch,
+    setTabsItemRef,
+    touchstart,
+    touchmove,
+    touchend,
+    tabsHeadRef,
+    lineRef,
+    trackRef
+  }
 }
 
-onMounted(() => {
-  if (tabsItemRefs[attr.modelValue].classList.value.includes('not-allow')) {
-    tabsSwitch(attr.modelValue + 1)
-  } else {
-    tabsSwitch(attr.modelValue)
-  }
-})
-onBeforeUpdate(() => {
-  tabsItemRefs.length = 0
-})
-watch(
-  () => attr.modelValue,
-  () => tabsSwitch(attr.modelValue)
-)
+export default {
+  name,
+  props,
+  emits,
+  components,
+  setup
+}
 </script>
 
 <style lang="less">
