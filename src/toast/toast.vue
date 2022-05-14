@@ -2,8 +2,9 @@
   <div class="toast" v-if="show">{{ text }}</div>
 </template>
 
-<script setup>
-const props = defineProps({
+<script>
+const name = 'toast'
+const props = {
   size: Number,
   text: {
     type: String,
@@ -13,7 +14,11 @@ const props = defineProps({
     type: Boolean,
     default: false
   }
-})
+}
+export default {
+  name,
+  props
+}
 </script>
 
 <style scoped>

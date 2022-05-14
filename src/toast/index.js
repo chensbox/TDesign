@@ -17,12 +17,13 @@ function toast(props = {}) {
   }, 1000)
 }
 
-toast.Component = __toast__.install = function (app) {
-  app.component('toast', __toast__)
+__toast__.install = function (app) {
+  app.component(__toast__.name, __toast__)
 }
+toast.Component = __toast__
 
 toast.install = function (app) {
-  app.use(toast.component)
+  app.use(toast.Component)
 }
 
 export { toast }

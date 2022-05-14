@@ -18,6 +18,7 @@
 </template>
 <script>
 // import { dialog } from '../index'
+// import { toast } from '../../toast/index'
 import { dialog } from '../../../es/dialog/index'
 import { toast } from '../../toast/index'
 console.log(toast)

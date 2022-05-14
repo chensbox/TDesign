@@ -57,7 +57,10 @@
 <script setup>
 import TButton from '../../../es/t-button/index'
 import { ref } from '@vue/reactivity'
-import icon from '../index.vue'
+// import icon from '../index.vue'
+import icon from '../../../es/icon'
+import TDesing from '../../../es/index'
+console.log(TDesing)
 let red = ref('red')
 
 function reset() {

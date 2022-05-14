@@ -74,7 +74,8 @@
 </template>
 
 <script>
-import TButton from '../index.vue'
+// import TButton from '../index.vue'
+import TButton from '../../../es/t-button'
 import { defineComponent } from 'vue'
 export default defineComponent({
   components: { TButton },

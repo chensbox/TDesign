@@ -3,6 +3,8 @@
 </template>
 
 <script>
+import { reactive } from '@vue/reactivity'
+const name = 'icon'
 const props = {
   name: {
     type: String,
@@ -13,10 +15,9 @@ const props = {
     default: 'inherit'
   }
 }
-import { reactive } from '@vue/reactivity'
 
 export default {
-  name: 'icon',
+  name,
   props,
   setup() {
     const classMap = reactive(

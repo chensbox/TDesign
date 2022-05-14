@@ -12,6 +12,8 @@
 </template>
 
 <script>
+import { ref } from '@vue/reactivity'
+const name = 'TDialog'
 const props = {
   callback: Function,
   show: {
@@ -19,9 +21,8 @@ const props = {
     default: true
   }
 }
-import { reactive, ref } from '@vue/reactivity'
 
-const setup = (props, context) => {
+const setup = props => {
   const show = ref(true)
   const dialogRef = ref()
   console.log(dialogRef)
@@ -40,7 +41,7 @@ const setup = (props, context) => {
   }
 }
 export default {
-  name: 'TDialog',
+  name,
   props,
   setup
 }
