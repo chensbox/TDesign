@@ -26,9 +26,6 @@
     <div
       class="tabs-track"
       ref="trackRef"
-      @touchstart="touchstart"
-      @touchmove="touchmove"
-      @touchend="touchend"
       :class="{ tabs_animation: tabAnimation }"
     >
       <slot />
@@ -40,22 +37,16 @@
 import { onBeforeUpdate, onMounted, watch } from '@vue/runtime-core'
 import { ref } from '@vue/reactivity'
 import icon from '../icon/index.vue'
+import { smoothMove } from './hooks/smoothMove'
+import { tabsChange } from './hooks/tabsChange'
+import { useSwipeable } from './hooks/useSwipeable'
 
 const name = 'tabs'
 
 const props = {
-  lineAnimation: {
-    type: Boolean,
-    default: false
-  },
-  tabAnimation: {
-    type: Boolean,
-    default: false
-  },
-  swipeable: {
-    type: Boolean,
-    default: false
-  },
+  lineAnimation: { type: Boolean, default: false },
+  tabAnimation: { type: Boolean, default: false },
+  swipeable: { type: Boolean, default: false },
   color: String,
   cover: Boolean
 }
@@ -65,7 +56,7 @@ const components = { icon }
 const emits = ['update:modelValue']
 
 function setup(props, { attrs, slots, emit }) {
-  let startX, moveX, direction, active
+  let active
   const lineRef = ref()
   const tabsItemRefs = []
   const trackRef = ref()
@@ -73,26 +64,6 @@ function setup(props, { attrs, slots, emit }) {
   const useSlot = slots.default()
   slots = useSlot[0].children instanceof Array ? useSlot[0].children : useSlot
   const setTabsItemRef = el => tabsItemRefs.push(el)
-  const touchstart = e => (startX = e.touches[0].pageX)
-  const touchmove = e => (moveX = e.touches[0].pageX)
-
-  const touchend = () => {
-    if (!props.swipeable) {
-      return
-    }
-
-    direction = moveX - startX
-
-    if (Math.abs(direction) < 70) {
-      return
-    }
-
-    const to = direction > 0 ? attrs.modelValue - 1 : attrs.modelValue + 1
-
-    if (to >= 0 && to < tabsItemRefs.length) {
-      tabsSwitch(to)
-    }
-  }
 
   const tabsSwitch = index => {
     if (index === active) {
@@ -104,47 +75,38 @@ function setup(props, { attrs, slots, emit }) {
       return
     }
 
-    const [tabsNode] = tabsItemRefs[index]['childNodes']
-    const { left, width } = tabsNode.getBoundingClientRect()
-    const offsetX = index * -100
-    const mid = tabsHeadRef.value.clientWidth / 2
-    const cur = left + width / 2
-    const isLeft = mid > cur
-    lineRef.value.style.width = width + 'px'
-    lineRef.value.style.left = `${left + tabsHeadRef.value.scrollLeft}px`
-    trackRef.value.style.transform = `translateX(${offsetX}%)`
+    const cur = tabsChange(index, tabsItemRefs, lineRef, trackRef, tabsHeadRef)
 
-    let scrollL = 0
-
-    if (isLeft && tabsHeadRef.value.scrollLeft) {
-      scrollL = Math.abs(mid - cur) * -1
-    } else if (!isLeft) {
-      scrollL = Math.abs(mid - cur)
-    }
-
-    const move = setInterval(() => {
-      if (Math.round(scrollL)) {
-        tabsHeadRef.value.scrollLeft += scrollL / 10
-        scrollL -= scrollL / 10
-      } else {
-        clearInterval(move)
-      }
-    }, 10)
+    smoothMove(tabsHeadRef, cur)
 
     emit('update:modelValue', index)
   }
 
+  const { touchstart, touchmove, touchend } = useSwipeable(
+    attrs,
+    tabsItemRefs,
+    tabsSwitch
+  )
+
   onMounted(() => {
-    if (tabsItemRefs[attrs.modelValue].classList.value.includes('not-allow')) {
+    const initSelectEl = tabsItemRefs[attrs.modelValue]
+
+    const isDisabled = initSelectEl.classList.value.includes('not-allow')
+
+    if (isDisabled) {
       tabsSwitch(attrs.modelValue + 1)
     } else {
       tabsSwitch(attrs.modelValue)
     }
+
+    if (props.swipeable) {
+      trackRef.value.addEventListener('touchstart', touchstart)
+      trackRef.value.addEventListener('touchmove', touchmove)
+      trackRef.value.addEventListener('touchend', touchend)
+    }
   })
 
-  onBeforeUpdate(() => {
-    tabsItemRefs.length = 0
-  })
+  onBeforeUpdate(() => (tabsItemRefs.length = 0))
 
   watch(
     () => attrs.modelValue,
@@ -192,7 +154,7 @@ export default {
       z-index: 999;
       padding: 0 5px;
       font-size: 14px;
-      user-select: none; /* Standard syntax */
+      user-select: none;
       text-align: center;
       margin: 0 14px;
       display: inline-block;
