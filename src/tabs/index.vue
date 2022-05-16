@@ -1,8 +1,8 @@
 <template>
-  <div :class="['tabs-box', cover ? 'cover' : '']">
+  <div :class="['tabs', cover ? 'cover' : '']">
     <div class="tabs-head" ref="tabsHeadRef">
       <div
-        class="tabs-select-item"
+        class="tabs-head-item"
         v-for="(it, id) in slots"
         :key="id"
         :ref="setTabsItemRef"
@@ -16,7 +16,7 @@
       </div>
 
       <div
-        class="line"
+        class="tabs-head-line"
         ref="lineRef"
         :class="{ line_animation: lineAnimation }"
         :style="{ background: color }"
@@ -137,9 +137,9 @@ export default {
 </script>
 
 <style lang="less">
-.tabs-box {
+.tabs {
   overflow: hidden;
-  .tabs-head {
+  &-head {
     display: flex;
     position: relative;
     overflow-x: scroll;
@@ -148,7 +148,7 @@ export default {
     justify-content: space-between;
     transition: all 0.4s;
     background: #ffffff;
-    .tabs-select-item {
+    &-item {
       position: relative;
       display: inline-block;
       flex: 1 0 auto; //很关键
@@ -161,7 +161,7 @@ export default {
       cursor: pointer;
       color: #646566;
     }
-    .line {
+    &-line {
       position: absolute;
       height: 3px;
       width: 15px;
@@ -171,19 +171,19 @@ export default {
       background-color: #0052d9;
     }
   }
-  .tabs-track {
+  &-track {
     display: flex;
     width: 100%;
     height: 100%;
-    .tabs-body {
-      box-sizing: border-box;
-      flex-shrink: 0;
-      min-height: 100px;
-      width: 100%;
-      padding: 20px;
-      font-size: 16px;
-      background-color: #ffffff;
-    }
+  }
+  &-body {
+    box-sizing: border-box;
+    flex-shrink: 0;
+    min-height: 100px;
+    width: 100%;
+    padding: 20px;
+    font-size: 16px;
+    background-color: #ffffff;
   }
 }
 
@@ -205,14 +205,14 @@ export default {
 .cover {
   .tabs-head {
     background: #eeeeee;
-    .line {
+    &-line {
       height: 70%;
       top: 50%;
       transform: translateY(-50%);
       background: #ffffff;
       box-shadow: rgb(0 0 0 / 15%) 0px 2px 4px;
     }
-    .tabs-select-item {
+    &-item {
       margin: 0;
       span {
         padding: 0 10px;
