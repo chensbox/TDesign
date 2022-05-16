@@ -16,7 +16,7 @@
   </demo-block>
 
   <demo-block title="切换动画">
-    <tabs v-model="active3" lineAnimation tabAnimation>
+    <tabs v-model="active3" line-animation tab-animation>
       <tab :title="'标签' + i" v-for="i in 4" :key="i">
         {{ `标签${i}内容区` }}
       </tab>
@@ -24,7 +24,7 @@
   </demo-block>
 
   <demo-block title="样式风格">
-    <tabs v-model="active3" lineAnimation tabAnimation cover>
+    <tabs v-model="active3" line-animation tab-animation cover>
       <tab :title="'标签' + i" v-for="i in 4" :key="i">
         {{ `标签${i}内容区` }}
       </tab>
@@ -32,7 +32,7 @@
   </demo-block>
 
   <demo-block title="自定义图标">
-    <tabs v-model="active6" lineAnimation tabAnimation>
+    <tabs v-model="active6" line-animation tab-animation>
       <tab title="标签1" icon="setting">标签1内容区</tab>
       <tab title="标签2" icon="info-circle">标签2内容区</tab>
       <tab title="标签3" icon="question-circle">标签3内容区</tab>
@@ -40,7 +40,7 @@
   </demo-block>
 
   <demo-block title="禁用标签">
-    <tabs v-model="active7" lineAnimation tabAnimation>
+    <tabs v-model="active7" line-animation tab-animation>
       <tab title="标签1" icon="setting">标签1内容区</tab>
       <tab title="标签2" icon="info-circle" disable>标签2内容区</tab>
       <tab title="标签3" icon="question-circle">标签3内容区</tab>
@@ -48,7 +48,7 @@
   </demo-block>
 
   <demo-block title="标签栏自滚动居中">
-    <tabs v-model="active4" lineAnimation tabAnimation>
+    <tabs v-model="active4" line-animation tab-animation>
       <tab :title="'标签' + i" v-for="i in 8" :key="i">
         {{ `标签${i}内容区` }}
       </tab>
@@ -56,7 +56,7 @@
   </demo-block>
 
   <demo-block title="手势滑动切换">
-    <tabs v-model="active5" lineAnimation tabAnimation swipeable>
+    <tabs v-model="active5" line-animation tab-animation swipeable>
       <tab :title="'标签' + i" v-for="i in 8" :key="i">
         {{ `标签${i}内容区` }}
       </tab>

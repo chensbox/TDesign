@@ -44,7 +44,8 @@ const props = {
   tabAnimation: { type: Boolean, default: false },
   swipeable: { type: Boolean, default: false },
   color: { type: String, default: '#0052d9' },
-  cover: Boolean
+  cover: Boolean,
+  swipeThreshold: { type: [Number, String], default: 5 }
 }
 
 const components = { icon }
@@ -53,7 +54,7 @@ const emits = ['update:modelValue']
 
 function setup(props, { attrs, slots, emit }) {
   let active
-  const { color } = toRefs(props)
+  const { color, swipeThreshold } = toRefs(props)
   const lineRef = ref()
   const tabsItemRefs = []
   const trackRef = ref()
@@ -66,14 +67,15 @@ function setup(props, { attrs, slots, emit }) {
       return
     }
     active = index
-
     if (tabsItemRefs[index].classList.value.includes('not-allow')) {
       return
     }
 
     const cur = tabsChange(index, tabsItemRefs, lineRef, trackRef, tabsHeadRef)
 
-    smoothMove(tabsHeadRef, cur)
+    if (slots.length > swipeThreshold.value) {
+      smoothMove(tabsHeadRef, cur)
+    }
 
     emit('update:modelValue', index)
   }
