@@ -142,33 +142,33 @@ export default {
   .tabs-head {
     display: flex;
     position: relative;
-    background: #ffffff;
     overflow-x: scroll;
     overflow-y: hidden;
     padding: 10px;
     justify-content: space-between;
     transition: all 0.4s;
+    background: #ffffff;
     .tabs-select-item {
       position: relative;
+      display: inline-block;
       flex: 1 0 auto; //很关键
       z-index: 999;
+      margin: 0 14px;
       padding: 0 5px;
       font-size: 14px;
       user-select: none;
       text-align: center;
-      margin: 0 14px;
-      display: inline-block;
       cursor: pointer;
       color: #646566;
     }
     .line {
       position: absolute;
-      background-color: #0052d9;
       height: 3px;
       width: 15px;
       border-radius: 4px;
       bottom: 0;
       left: 28px;
+      background-color: #0052d9;
     }
   }
   .tabs-track {
@@ -206,11 +206,11 @@ export default {
   .tabs-head {
     background: #eeeeee;
     .line {
-      background: #ffffff;
-      box-shadow: rgb(0 0 0 / 15%) 0px 2px 4px;
       height: 70%;
       top: 50%;
       transform: translateY(-50%);
+      background: #ffffff;
+      box-shadow: rgb(0 0 0 / 15%) 0px 2px 4px;
     }
     .tabs-select-item {
       margin: 0;
