@@ -16,17 +16,14 @@
       </div>
 
       <div
-        class="tabs-head-line"
+        :class="['tabs-head-line', lineAnimation ? 'line_animation' : '']"
         ref="lineRef"
-        :class="{ line_animation: lineAnimation }"
-        :style="{ background: color }"
       />
     </div>
 
     <div
-      class="tabs-track"
+      :class="['tabs-track', tabAnimation ? 'tabs_animation' : '']"
       ref="trackRef"
-      :class="{ tabs_animation: tabAnimation }"
     >
       <slot />
     </div>
@@ -35,19 +32,18 @@
 
 <script>
 import { onBeforeUpdate, onMounted, watch } from '@vue/runtime-core'
-import { ref } from '@vue/reactivity'
+import { ref, toRefs } from '@vue/reactivity'
 import icon from '../icon/index.vue'
 import { smoothMove } from './hooks/smoothMove'
 import { tabsChange } from './hooks/tabsChange'
 import { useSwipeable } from './hooks/useSwipeable'
 
 const name = 'tabs'
-
 const props = {
   lineAnimation: { type: Boolean, default: false },
   tabAnimation: { type: Boolean, default: false },
   swipeable: { type: Boolean, default: false },
-  color: String,
+  color: { type: String, default: '#0052d9' },
   cover: Boolean
 }
 
@@ -57,6 +53,7 @@ const emits = ['update:modelValue']
 
 function setup(props, { attrs, slots, emit }) {
   let active
+  const { color } = toRefs(props)
   const lineRef = ref()
   const tabsItemRefs = []
   const trackRef = ref()
@@ -64,7 +61,6 @@ function setup(props, { attrs, slots, emit }) {
   const useSlot = slots.default()
   slots = useSlot[0].children instanceof Array ? useSlot[0].children : useSlot
   const setTabsItemRef = el => tabsItemRefs.push(el)
-
   const tabsSwitch = index => {
     if (index === active) {
       return
@@ -168,7 +164,7 @@ export default {
       border-radius: 4px;
       bottom: 0;
       left: 28px;
-      background-color: #0052d9;
+      background: v-bind(color);
     }
   }
   &-track {
@@ -209,7 +205,7 @@ export default {
       height: 70%;
       top: 50%;
       transform: translateY(-50%);
-      background: #ffffff;
+      background: #ffffff !important;
       box-shadow: rgb(0 0 0 / 15%) 0px 2px 4px;
     }
     &-item {
