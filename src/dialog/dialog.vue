@@ -1,14 +1,16 @@
 <template>
-  <div class="dialog-warp" v-if="show" ref="dialogRef">
-    <div class="dialog-content">
-      <h3 class="dialog-content-title"></h3>
-      <div class="dialog-content-text">这是一个弹出对话框</div>
+  <transition name="fade">
+    <div class="dialog-warp" ref="dialogRef">
+      <div class="dialog-content">
+        <h3 class="dialog-content-title"></h3>
+        <div class="dialog-content-text">这是一个弹出对话框</div>
+      </div>
+      <div class="dialog-button">
+        <button @click="handleClick('confirm')">确定</button>
+        <button @click="handleClick('cancel')">取消</button>
+      </div>
     </div>
-    <div class="dialog-button">
-      <button @click="handleClick('confirm')">确定</button>
-      <button @click="handleClick('cancel')">取消</button>
-    </div>
-  </div>
+  </transition>
 </template>
 
 <script>
@@ -56,18 +58,28 @@ export default {
   padding: 10px;
   border: 1px solid #000;
   background: #ffff;
-  transition: opacity 0.1s linear;
-  animation: scaleIn 0.1s linear;
+  // transition: opacity 0.1s linear;
+  // animation: scaleIn 0.1s linear;
 }
 
-@keyframes scaleIn {
-  0% {
-    /* opacity: 0; */
-    transform: translate(-50%, -50%) scale(0);
-  }
+// @keyframes scaleIn {
+//   0% {
+//     /* opacity: 0; */
+//     transform: translate(-50%, -50%) scale(0);
+//   }
 
-  100% {
-    transform: translate(-50%, -50%) scale(1);
-  }
+//   100% {
+//     transform: translate(-50%, -50%) scale(1);
+//   }
+// }
+
+.fade-enter-active,
+.fade-leave-active {
+  transition: opacity 0.5s ease;
+}
+
+.fade-enter-from,
+.fade-leave-to {
+  opacity: 0;
 }
 </style>

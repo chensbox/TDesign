@@ -58,6 +58,10 @@ export default {
             path: 'dialog',
             title: 'dialog 对话框',
           },
+          {
+            path: 'popup',
+            title: 'popup 弹出层',
+          },
         ],
       },
     ],
