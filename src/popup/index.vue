@@ -1,9 +1,22 @@
 <template>
-  <div class="popup"></div>
+  <transition name="slide-fade">
+    <div class="popup" v-show="modelValue">
+      <overlay
+        v-model="modelValue"
+        @update:modelValue="$emit('update:modelValue', $event)"
+      ></overlay>
+    </div>
+  </transition>
 </template>
 
 <script>
-export default {}
+import overlay from '../overlay/index.vue'
+export default {
+  components: { overlay },
+  props: {
+    modelValue: Boolean
+  }
+}
 </script>
 
 <style lang="less" scoped>
@@ -15,5 +28,15 @@ export default {}
   width: 100%;
   height: 30%;
   background: #fff;
+}
+
+.slide-fade-enter-active,
+.slide-fade-leave-active {
+  transition: all 0.25s ease-out;
+}
+
+.slide-fade-enter-from,
+.slide-fade-leave-to {
+  transform: translateY(100%);
 }
 </style>

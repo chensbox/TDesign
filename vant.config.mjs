@@ -62,6 +62,10 @@ export default {
             path: 'popup',
             title: 'popup 弹出层',
           },
+          {
+            path: 'overlay',
+            title: 'overlay 遮罩层',
+          },
         ],
       },
     ],
