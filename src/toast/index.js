@@ -15,10 +15,13 @@ function toast(props = {}) {
   document.body.appendChild(monuntNode)
 
   toastInstance.mount(monuntNode)
-
+  const [el] = monuntNode.childNodes
   setTimeout(() => {
-    toastInstance.unmount(monuntNode)
-    document.body.removeChild(monuntNode)
+    el.style.opacity = 0
+    setTimeout(() => {
+      toastInstance.unmount(monuntNode)
+      document.body.removeChild(monuntNode)
+    }, 1000)
   }, 1000)
 }
 

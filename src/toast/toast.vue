@@ -1,8 +1,9 @@
 <template>
-  <div class="toast" v-if="show">{{ text }}</div>
+  <div class="toast" ref="toastRef">{{ text }}</div>
 </template>
 
 <script>
+import { onBeforeUnmount, onMounted, ref } from '@vue/runtime-core'
 const name = 'toast'
 const props = {
   size: Number,
@@ -15,13 +16,14 @@ const props = {
     default: false
   }
 }
+
 export default {
   name,
   props
 }
 </script>
 
-<style scoped>
+<style lang="less" scoped>
 .toast {
   height: 30px;
   width: 100px;
@@ -33,5 +35,16 @@ export default {
   line-height: 30px;
   text-align: center;
   transform: translate(-50%, -50%);
+  transition: opacity 0.25s ease-in;
+  animation: fade-in 0.25s ease-out;
+}
+
+@keyframes fade-in {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
 }
 </style>

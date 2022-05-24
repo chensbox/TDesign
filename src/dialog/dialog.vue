@@ -15,6 +15,7 @@
 
 <script>
 import { ref } from '@vue/reactivity'
+import { onMounted } from '@vue/runtime-core'
 const name = 'TDialog'
 const props = {
   callback: Function,

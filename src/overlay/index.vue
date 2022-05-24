@@ -4,6 +4,7 @@
       <div
         class="mask"
         v-show="modelValue"
+        @touchmove="touchmove"
         @click="$emit('update:modelValue', false)"
       ></div>
     </transition>
@@ -15,7 +16,12 @@ export default {
   props: {
     modelValue: Boolean
   },
-  emits: ['update:modelValue']
+  emits: ['update:modelValue'],
+  methods: {
+    touchmove(event) {
+      event.preventDefault() //锁定背景滚动
+    }
+  }
 }
 </script>
 
