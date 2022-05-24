@@ -1,15 +1,16 @@
 <template>
   <demo-block title="基础用法">
-    <button @click="onclick">点击</button>
+    <t-button @click="onclick">点击</t-button>
 
     <popup v-model="show"></popup>
   </demo-block>
 </template>
 
 <script>
+import TButton from '../../t-button/index.vue'
 import popup from '../index.vue'
 export default {
-  components: { popup },
+  components: { popup, TButton },
   data() {
     return {
       show: false

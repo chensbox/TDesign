@@ -28,11 +28,12 @@ const setup = props => {
   const show = ref(true)
   const dialogRef = ref()
   console.log(dialogRef)
+
   function handleClick(action) {
     dialogRef.value.style.opacity = 0
-    setTimeout(() => {
-      show.value = false
-    }, 100)
+    // setTimeout(() => {
+    //   show.value = false
+    // }, 100)
     props.callback(action)
   }
 
@@ -58,20 +59,20 @@ export default {
   padding: 10px;
   border: 1px solid #000;
   background: #ffff;
-  // transition: opacity 0.1s linear;
-  // animation: scaleIn 0.1s linear;
+  transition: opacity 0.1s linear;
+  animation: scaleIn 0.1s linear;
 }
 
-// @keyframes scaleIn {
-//   0% {
-//     /* opacity: 0; */
-//     transform: translate(-50%, -50%) scale(0);
-//   }
+@keyframes scaleIn {
+  0% {
+    /* opacity: 0; */
+    transform: translate(-50%, -50%) scale(0);
+  }
 
-//   100% {
-//     transform: translate(-50%, -50%) scale(1);
-//   }
-// }
+  100% {
+    transform: translate(-50%, -50%) scale(1);
+  }
+}
 
 .fade-enter-active,
 .fade-leave-active {
