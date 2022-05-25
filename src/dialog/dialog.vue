@@ -1,5 +1,5 @@
 <template>
-  <div class="dialog-warp" ref="dialogRef" v-show="attrs.modelValue">
+  <div class="dialog-warp" ref="dialogRef" v-if="attrs.modelValue">
     <div class="dialog-content">
       <h3 class="dialog-content-title"></h3>
       <div class="dialog-content-text">这是一个弹出对话框</div>
@@ -8,8 +8,8 @@
       <button @click="handleClick('confirm')">确定</button>
       <button @click="handleClick('cancel')">取消</button>
     </div>
-    <overlay v-model="attrs.modelValue"></overlay>
   </div>
+  <overlay :show="attrs.modelValue"></overlay>
 </template>
 
 <script>
@@ -21,13 +21,18 @@ const name = 'TDialog'
 const props = {
   callback: Function
 }
-const emits = ['update:modelValue']
+const emits = ['confirm', 'cancel', 'update:modelValue']
 const components = { overlay }
 const setup = (props, { attrs, slots, emit }) => {
   const dialogRef = ref()
   function handleClick(action) {
     dialogRef.value.style.opacity = 0
-    props.callback(action)
+
+    if (props.callback) {
+      props.callback(action)
+    } else {
+      emit(action)
+    }
     sleep().then(() => {
       emit('update:modelValue', false)
     })

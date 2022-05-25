@@ -3,9 +3,9 @@
     <transition name="slide-fade">
       <div
         class="mask"
-        v-show="modelValue"
-        @touchmove="touchmove"
-        @click="$emit('update:modelValue', false)"
+        v-show="show"
+        @touchmove.prevent="touchmove"
+        @click="$emit('click')"
       ></div>
     </transition>
   </teleport>
@@ -14,14 +14,9 @@
 <script>
 export default {
   props: {
-    modelValue: Boolean
+    show: Boolean
   },
-  emits: ['update:modelValue'],
-  methods: {
-    touchmove(event) {
-      event.preventDefault() //锁定背景滚动
-    }
-  }
+  emits: ['click']
 }
 </script>
 

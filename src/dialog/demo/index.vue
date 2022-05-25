@@ -16,7 +16,7 @@ import { toast } from '../../toast/index'
 import TButton from '../../t-button/index.vue'
 
 export default {
-  components: { TDialog: dialog, TButton },
+  components: { TDialog: dialog.Component, TButton },
   data() {
     return {
       show: false

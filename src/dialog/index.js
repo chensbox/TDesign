@@ -17,7 +17,7 @@ function dialog(props = {}) {
 }
 
 dialog_sfc.install = function (app) {
-  app.component('Tdialog', dialog_sfc)
+  app.component(dialog_sfc.name, dialog_sfc)
 }
 
 dialog.Component = dialog_sfc

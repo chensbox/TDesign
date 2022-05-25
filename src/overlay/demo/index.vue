@@ -2,7 +2,7 @@
   <demo-block title="基础用法">
     <div class="block-item">
       <TButton @click="onclick">显示遮罩层</TButton>
-      <overlay v-model="show"></overlay>
+      <overlay :show="show" @click="show = false"></overlay>
     </div>
   </demo-block>
 </template>

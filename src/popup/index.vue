@@ -1,9 +1,13 @@
 <template>
   <transition name="slide-fade">
-    <div class="popup" v-show="modelValue">
+    <div
+      class="popup"
+      v-show="modelValue"
+      @click="$emit('update:modelValue', false)"
+    >
       <overlay
-        v-model="modelValue"
-        @update:modelValue="$emit('update:modelValue', $event)"
+        :show="modelValue"
+        @click="$emit('update:modelValue', false)"
       ></overlay>
     </div>
   </transition>
