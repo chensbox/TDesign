@@ -1,19 +1,11 @@
 <template>
-  <!-- <demo-block title="组件用法">
-    <dialog text="组件调用" :show="show"></dialog>
+  <demo-block title="组件用法">
+    <t-dialog title="组件调用" v-model="show"> </t-dialog>
     <button @click="cpnClick">组件调用</button>
   </demo-block>
 
   <demo-block title="函数调用">
-    <button @click="onClick">函数调用</button>
-  </demo-block> -->
-
-  <!-- <demo-block title="函数调用">
-    <button @click="onClick">函数调用</button>
-  </demo-block> -->
-  <demo-block title="组件调用">
-    <button @click="onClick">函数调用</button>
-    <!-- <t-dialog :show="true"></t-dialog> -->
+    <t-button @click="onClick">函数调用</t-button>
   </demo-block>
 </template>
 <script>
@@ -21,16 +13,21 @@ import { dialog } from '../index'
 // import { toast } from '../../toast/index'
 // import { dialog } from '../../../es/dialog/index'
 import { toast } from '../../toast/index'
-console.log(toast)
+import TButton from '../../t-button/index.vue'
+
 export default {
-  components: { TDialog: dialog },
+  components: { TDialog: dialog, TButton },
+  data() {
+    return {
+      show: false
+    }
+  },
   methods: {
     onClick() {
       dialog({
         text: 'dfdf'
       })
         .then(() => {
-          console.log('>>>>>>>>>')
           toast({
             text: '确定',
             show: true
@@ -42,6 +39,9 @@ export default {
             show: true
           })
         })
+    },
+    cpnClick() {
+      this.show = !this.show
     }
   }
 }

@@ -2,12 +2,14 @@ import dialog_sfc from './dialog.vue'
 import { createInstance } from '../utils'
 let instance, mountNode
 function dialog(props = {}) {
+  props.modelValue = props.modelValue == undefined ? true : props.modelValue
   return new Promise((resolve, reject) => {
     props.callback = action => {
       ;(action === 'confirm' ? resolve : reject)()
       setTimeout(() => {
         instance.unmount(mountNode)
         document.body.removeChild(mountNode)
+        mountNode = instance = null
       }, 100)
     }
     ;({ instance, mountNode } = createInstance(dialog_sfc, props))

@@ -3,7 +3,6 @@
 </template>
 
 <script>
-import { onBeforeUnmount, onMounted, ref } from '@vue/runtime-core'
 const name = 'toast'
 const props = {
   size: Number,
@@ -25,11 +24,12 @@ export default {
 
 <style lang="less" scoped>
 .toast {
+  position: fixed;
   height: 30px;
   width: 100px;
+  border-radius: 5px;
   background: rgba(0, 0, 0, 0.7);
   color: white;
-  position: fixed;
   left: 50%;
   top: 50%;
   line-height: 30px;

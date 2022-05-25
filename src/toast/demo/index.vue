@@ -1,25 +1,16 @@
 <template>
-  <demo-block title="组件用法">
-    <toast text="组件调用" :show="show"></toast>
-    <button @click="cpnClick">组件调用</button>
-  </demo-block>
-
   <demo-block title="函数调用">
-    <button @click="onClick">函数调用</button>
+    <t-button @click="onClick">函数调用</t-button>
   </demo-block>
 </template>
 
 <script setup>
-import { ref } from '@vue/reactivity'
+import TButton from '../../t-button/index.vue'
+
 import { toast } from '../index'
-const show = ref(false)
 function onClick() {
   toast({
-    text: '函数调用',
-    show: true
+    text: '函数调用'
   })
-}
-function cpnClick() {
-  show.value = !show.value
 }
 </script>
