@@ -6,7 +6,9 @@
         v-show="show"
         @touchmove.prevent="touchmove"
         @click="$emit('click')"
-      ></div>
+      >
+        <slot></slot>
+      </div>
     </transition>
   </teleport>
 </template>

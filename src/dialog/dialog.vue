@@ -8,12 +8,12 @@
       <button @click="handleClick('confirm')">确定</button>
       <button @click="handleClick('cancel')">取消</button>
     </div>
+    <overlay :show="maskShow">{{ maskShow }}</overlay>
   </div>
-  <overlay :show="attrs.modelValue"></overlay>
 </template>
 
 <script>
-import { ref } from '@vue/reactivity'
+import { ref, toRef } from '@vue/reactivity'
 import { onMounted } from '@vue/runtime-core'
 import overlay from '../overlay/index.vue'
 import { sleep } from '../utils'
@@ -25,15 +25,17 @@ const emits = ['confirm', 'cancel', 'update:modelValue']
 const components = { overlay }
 const setup = (props, { attrs, slots, emit }) => {
   const dialogRef = ref()
+  const maskShow = ref(true)
+  console.log(maskShow.value)
   function handleClick(action) {
     dialogRef.value.style.opacity = 0
-
     if (props.callback) {
       props.callback(action)
     } else {
       emit(action)
     }
     sleep().then(() => {
+      maskShow.value = false
       emit('update:modelValue', false)
     })
   }
@@ -41,7 +43,8 @@ const setup = (props, { attrs, slots, emit }) => {
   return {
     handleClick,
     attrs,
-    dialogRef
+    dialogRef,
+    maskShow
   }
 }
 export default {
