@@ -26,7 +26,6 @@ export default {
   components: { TDialog: dialog },
   methods: {
     onClick() {
-      console.log(dialog)
       dialog({
         text: 'dfdf'
       })

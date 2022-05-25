@@ -1,27 +1,24 @@
-import __dialog__ from './dialog.vue'
-import { createApp } from 'vue'
-let instance, root
+import dialog_sfc from './dialog.vue'
+import { createInstance } from '../utils'
+let instance, mountNode
 function dialog(props = {}) {
-  console.warn(props)
   return new Promise((resolve, reject) => {
     props.callback = action => {
       ;(action === 'confirm' ? resolve : reject)()
       setTimeout(() => {
-        instance.unmount(root)
-        document.body.removeChild(root)
+        instance.unmount(mountNode)
+        document.body.removeChild(mountNode)
       }, 100)
     }
-
-    instance = createApp(__dialog__, props)
-    root = document.createElement('div')
-    document.body.appendChild(root)
-    instance.mount(root)
+    ;({ instance, mountNode } = createInstance(dialog_sfc, props))
   })
 }
-__dialog__.install = function (app) {
-  app.component('Tdialog', __dialog__)
+
+dialog_sfc.install = function (app) {
+  app.component('Tdialog', dialog_sfc)
 }
-dialog.Component = __dialog__
+
+dialog.Component = dialog_sfc
 
 dialog.install = function (app) {
   app.use(dialog.Component)
