@@ -1,8 +1,11 @@
 <template>
-  <div class="toast" ref="toastRef">{{ text }}</div>
+  <div class="toast" ref="toastRef">
+    <span>{{ state.text }}</span>
+  </div>
 </template>
 
 <script>
+import { reactive, ref } from '@vue/reactivity'
 const name = 'toast'
 const props = {
   size: Number,
@@ -14,7 +17,16 @@ const props = {
 
 export default {
   name,
-  props
+  props,
+  setup(props, context) {
+    const state = reactive({
+      show: true,
+      text: props.text
+    })
+    return {
+      state
+    }
+  }
 }
 </script>
 
