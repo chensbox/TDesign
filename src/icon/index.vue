@@ -1,5 +1,5 @@
 <template>
-  <span :class="[classMap.get(name)]" :style="{ 'font-size': size }" />
+  <i :class="[classMap.get(name)]" :style="{ 'font-size': size }" />
 </template>
 
 <script>

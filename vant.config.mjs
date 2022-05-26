@@ -43,6 +43,10 @@ export default {
             title: 'Button 按钮',
           },
           {
+            path: 'cell',
+            title: 'cell 单元格',
+          },
+          {
             path: 'tabs',
             title: 'tabs 标签页',
           },
