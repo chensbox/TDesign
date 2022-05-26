@@ -15,6 +15,9 @@ export default {
 
 <style lang="less">
 .cell-group {
+  overflow: hidden;
+  border-radius: 10px;
+  margin: 15px;
   .cell {
     display: flex;
     justify-content: space-between;

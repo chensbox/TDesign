@@ -1,5 +1,5 @@
 <template>
-  <div class="cell">
+  <div class="cell" @click="$emit('click')">
     <div class="cell-title cell-item">
       <icon class="left-icon" name="setting" size="17px" v-if="icon" />{{
         title
@@ -30,6 +30,7 @@ export default {
   position: relative;
   padding: 0 15px;
   min-height: 43px;
+  cursor: pointer;
   background: #fff;
   &-title {
     color: #323233;
