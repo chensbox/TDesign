@@ -7,3 +7,5 @@ export function createInstance(option, props) {
 
   return { instance, mountNode }
 }
+
+export function createVnode(tag, props, child) {}

@@ -1,28 +1,23 @@
 import dialog_sfc from './dialog.vue'
-import { createInstance } from '../utils'
+import { sleep } from '../utils'
 import { render, h } from 'vue'
-let instance, mountNode
 
-function dialog(props = {}) {
-  console.log(props)
-  props.modelValue = props.modelValue == undefined ? true : props.modelValue
-  const container = document.createElement('div')
-  document.body.appendChild(container)
+function Dialog(props = {}) {
+  props.modelValue = true
+  const mountNode = document.createElement('div')
+  document.body.appendChild(mountNode)
 
   return new Promise((resolve, reject) => {
     props.callback = action => {
       ;(action === 'confirm' ? resolve : reject)()
-      setTimeout(() => {
-        instance?.unmount(mountNode)
-        document.body.removeChild(mountNode || container)
-        mountNode = instance = null
-      }, 100)
+      Vnode.el.style.opacity = 0
+      sleep(200).then(() => {
+        document.body.removeChild(mountNode)
+      })
     }
 
     const Vnode = h(dialog_sfc, props)
-    console.log('vnode', Vnode)
-    render(Vnode, container)
-    // ;({ instance, mountNode } = createInstance(dialog_sfc, props))
+    render(Vnode, mountNode)
   })
 }
 
@@ -30,10 +25,10 @@ dialog_sfc.install = function (app) {
   app.component(dialog_sfc.name, dialog_sfc)
 }
 
-dialog.Component = dialog_sfc
+Dialog.Component = dialog_sfc
 
-dialog.install = function (app) {
-  app.use(dialog.Component)
+Dialog.install = function (app) {
+  app.use(Dialog.Component)
 }
 
-export { dialog }
+export { Dialog }

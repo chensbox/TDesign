@@ -6,7 +6,7 @@ function destroy(instance, mountNode) {
   document.body.removeChild(mountNode)
 }
 
-async function toast(props = {}) {
+async function Toast(props = {}) {
   const { instance, mountNode } = createInstance(toast_sfc, props)
   const [el] = mountNode.childNodes
 
@@ -20,10 +20,10 @@ toast_sfc.install = function (app) {
   app.component(toast_sfc.name, toast_sfc)
 }
 
-toast.Component = toast_sfc
+Toast.Component = toast_sfc
 
-toast.install = function (app) {
-  app.use(toast.Component)
+Toast.install = function (app) {
+  app.use(Toast.Component)
 }
 
-export { toast }
+export { Toast }

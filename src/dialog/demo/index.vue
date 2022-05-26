@@ -1,7 +1,7 @@
 <template>
   <demo-block title="组件用法">
     <t-dialog title="组件调用" v-model="show"> </t-dialog>
-    <button @click="cpnClick">组件调用</button>
+    <t-button @click="show = !show" type="info">组件调用</t-button>
   </demo-block>
 
   <demo-block title="函数调用">
@@ -9,14 +9,14 @@
   </demo-block>
 </template>
 <script>
-import { dialog } from '../index'
+import { Dialog } from '../index'
 // import { toast } from '../../toast/index'
 // import { dialog } from '../../../es/dialog/index'
-import { toast } from '../../toast/index'
+import { Toast } from '../../toast/index'
 import TButton from '../../t-button/index.vue'
 
 export default {
-  components: { TDialog: dialog.Component, TButton },
+  components: { TDialog: Dialog.Component, TButton },
   data() {
     return {
       show: false
@@ -24,24 +24,19 @@ export default {
   },
   methods: {
     onClick() {
-      dialog({
+      Dialog({
         text: 'dfdf'
       })
         .then(() => {
-          toast({
-            text: '确定',
-            show: true
+          Toast({
+            text: '确定'
           })
         })
         .catch(() => {
-          toast({
-            text: '取消',
-            show: true
+          Toast({
+            text: '取消'
           })
         })
-    },
-    cpnClick() {
-      this.show = !this.show
     }
   }
 }

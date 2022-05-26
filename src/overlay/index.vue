@@ -3,7 +3,7 @@
     <transition name="slide-fade">
       <div
         class="mask"
-        v-show="show"
+        v-if="show"
         @touchmove.prevent="touchmove"
         @click="$emit('click')"
       >

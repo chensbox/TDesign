@@ -7,9 +7,9 @@
 <script setup>
 import TButton from '../../t-button/index.vue'
 
-import { toast } from '../index'
+import { Toast } from '../index'
 function onClick() {
-  toast({
+  Toast({
     text: '函数调用'
   })
 }

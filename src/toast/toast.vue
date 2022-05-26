@@ -9,10 +9,6 @@ const props = {
   text: {
     type: String,
     default: 'default test~~'
-  },
-  show: {
-    type: Boolean,
-    default: false
   }
 }
 
