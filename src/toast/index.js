@@ -7,13 +7,14 @@ function destroy(instance, mountNode) {
   document.body.removeChild(mountNode)
 }
 
-async function Toast(props = {}) {
+function Toast(props = {}) {
   const { instance, mountNode } = createInstance(toast_sfc, props)
   const [el] = mountNode.childNodes
-  await sleep(2000)
-  el.style.opacity = 0
-  await sleep(500)
-  destroy(instance, mountNode)
+  // await sleep(2000)
+  // el.style.opacity = 0
+  // await sleep(500)
+  // destroy(instance, mountNode)
+  // console.log(instance)
   instance.state = instance._instance.ctx.state
   return instance
 }

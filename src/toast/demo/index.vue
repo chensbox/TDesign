@@ -13,7 +13,7 @@ function onClick() {
     text: '10'
   })
   // console.log(toast._instance.ctx.$props.text)
-  console.warn(toast._instance.ctx)
+  console.warn(toast.state)
 
   let secode = 9
   const task = setInterval(() => {

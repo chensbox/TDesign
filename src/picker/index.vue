@@ -1,29 +1,34 @@
 <template>
   <div class="picker">
     <div class="picker-toolbar">
-      <button>取消</button>
+      <button class="picker-toolbar-cancel">取消</button>
       <span class="picker-toolbar-title">标题</span>
-      <button>确定</button>
+      <button class="picker-toolbar-confirm">确定</button>
     </div>
-    <div class="picker-columns">
+    <div
+      class="picker-columns"
+      @touchstart="touchstart"
+      @touchmove="touchmove"
+      @touchend="touchend"
+    >
       <div class="picker-columns-col">
         <ul class="picker-columns-col-wrap" ref="scrollAreaRef">
           <li class="picker-columns-col-wrap-item">1</li>
-          <li class="picker-columns-col-wrap-item">1</li>
-          <li class="picker-columns-col-wrap-item">1</li>
-          <li class="picker-columns-col-wrap-item">1</li>
-          <li class="picker-columns-col-wrap-item">1</li>
-          <li class="picker-columns-col-wrap-item">1</li>
-          <li class="picker-columns-col-wrap-item">1</li>
-          <li class="picker-columns-col-wrap-item">1</li>
-          <li class="picker-columns-col-wrap-item">1</li>
-          <li class="picker-columns-col-wrap-item">1</li>
-          <li class="picker-columns-col-wrap-item">1</li>
-          <li class="picker-columns-col-wrap-item">1</li>
-          <li class="picker-columns-col-wrap-item">1</li>
-          <li class="picker-columns-col-wrap-item">1</li>
-          <li class="picker-columns-col-wrap-item">1</li>
-          <li class="picker-columns-col-wrap-item">1</li>
+          <li class="picker-columns-col-wrap-item">2</li>
+          <li class="picker-columns-col-wrap-item">3</li>
+          <li class="picker-columns-col-wrap-item">4</li>
+          <li class="picker-columns-col-wrap-item">5</li>
+          <li class="picker-columns-col-wrap-item">6</li>
+          <li class="picker-columns-col-wrap-item">7</li>
+          <li class="picker-columns-col-wrap-item">8</li>
+          <li class="picker-columns-col-wrap-item">9</li>
+          <li class="picker-columns-col-wrap-item">10</li>
+          <li class="picker-columns-col-wrap-item">11</li>
+          <li class="picker-columns-col-wrap-item">12</li>
+          <li class="picker-columns-col-wrap-item">13</li>
+          <li class="picker-columns-col-wrap-item">14</li>
+          <li class="picker-columns-col-wrap-item">15</li>
+          <li class="picker-columns-col-wrap-item">16</li>
         </ul>
       </div>
       <div class="picker-columns-mask"></div>
@@ -40,23 +45,40 @@ export default {
   setup(props, ctx) {
     const scrollAreaRef = ref()
     const hairlineRef = ref()
-    let startY, moveY,
+    let startY, moveY, curY, maxY, minY, toY
 
-    const touchstart = e => (startY = e.touches[0].pageY)
+    const touchstart = e => {
+      startY = e.touches[0].pageY
+    }
+    const touchmove = e => {
+      moveY = e.touches[0].pageY
+      console.warn(moveY - startY)
+      toY = curY + moveY - startY
+      console.log(curY, toY)
+      if (toY <= maxY && toY >= minY) {
+        scrollAreaRef.value.style.transform = `translateY(${toY}px)`
+      }
+    }
 
-    const touchmove = e => (moveY = e.touches[0].pageY)
-
-    const touchend = () => moveY - startY
+    const touchend = () => {
+      curY = toY
+    }
 
     onMounted(() => {
       const { value: hairlineEl } = hairlineRef
       const initY = hairlineEl.offsetTop - hairlineEl.clientHeight / 2
       scrollAreaRef.value.style.transform = `translateY(${initY}px)`
+      curY = initY
+      maxY = initY + hairlineEl.clientHeight
+      minY = initY - hairlineEl.clientHeight * 16
     })
 
     return {
       scrollAreaRef,
-      hairlineRef
+      hairlineRef,
+      touchstart,
+      touchmove,
+      touchend
     }
   }
 }
@@ -75,6 +97,12 @@ export default {
     display: flex;
     justify-content: space-between;
     height: 44px;
+    &-cancel {
+      color: #969799;
+    }
+    &-confirm {
+      color: #576b91;
+    }
     &-title {
       line-height: 44px;
       font-size: 17px;
