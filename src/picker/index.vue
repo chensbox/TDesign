@@ -71,21 +71,25 @@ export default {
         curY = toY
         return (scrollAreaRef.value.style.transform = `translateY(${toY}px)`)
       }
-      console.log(moveY - startY)
+      console.warn(moveY - startY)
       const move = Math.abs(moveY - startY)
 
       const itemHeight = hairlineRef.value.clientHeight
       if (move < itemHeight / 2) {
+        console.log('move < itemHeight / 2', move)
         scrollAreaRef.value.style.transform = `translateY(${curY}px)`
         return
       }
 
       if (moveY - startY > 0) {
         toY = curY + itemHeight
+        console.log('moveY - startY > 0', toY)
       } else {
         toY = curY - itemHeight
+        console.log('moveY - startY <0', toY)
       }
       scrollAreaRef.value.style.transform = `translateY(${toY}px)`
+      curY = toY
     }
 
     onMounted(() => {
