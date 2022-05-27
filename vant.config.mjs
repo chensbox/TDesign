@@ -70,6 +70,10 @@ export default {
             path: 'overlay',
             title: 'overlay 遮罩层',
           },
+          {
+            path: 'picker',
+            title: 'picker 选择器',
+          },
         ],
       },
     ],
