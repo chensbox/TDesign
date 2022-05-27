@@ -1,7 +1,9 @@
 <template>
-  <div class="toast" ref="toastRef">
-    <span>{{ state.text }}</span>
-  </div>
+  <transition name="slide-fade" appear>
+    <div class="toast" ref="toastRef">
+      <span>{{ state.text }}</span>
+    </div>
+  </transition>
 </template>
 
 <script>
@@ -44,7 +46,7 @@ export default {
   text-align: center;
   transform: translate(-50%, -50%);
   transition: opacity 0.25s ease-in;
-  animation: fade-in 0.25s ease-out;
+  // animation: fade-in 0.25s ease-out;
 }
 
 @keyframes fade-in {
@@ -54,5 +56,14 @@ export default {
   to {
     opacity: 1;
   }
+}
+.slide-fade-enter-active,
+.slide-fade-leave-active {
+  transition: all 0.25s ease-in-out;
+}
+
+.slide-fade-enter-from,
+.slide-fade-leave-to {
+  opacity: 0;
 }
 </style>
