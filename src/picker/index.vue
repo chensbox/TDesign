@@ -5,14 +5,15 @@
       <span class="picker-toolbar-title">标题</span>
       <button class="picker-toolbar-confirm">确定</button>
     </div>
-    <div
-      class="picker-columns"
-      @touchstart="touchstart"
-      @touchmove="touchmove"
-      @touchend="touchend"
-    >
+    <div class="picker-columns">
       <div class="picker-columns-col">
-        <ul class="picker-columns-col-wrap" ref="scrollAreaRef">
+        <ul
+          class="picker-columns-col-wrap"
+          ref="scrollAreaRef"
+          @touchstart.prevent="touchstart"
+          @touchmove.prevent="touchmove"
+          @touchend.prevent="touchend"
+        >
           <li class="picker-columns-col-wrap-item">1</li>
           <li class="picker-columns-col-wrap-item">2</li>
           <li class="picker-columns-col-wrap-item">3</li>
@@ -52,16 +53,39 @@ export default {
     }
     const touchmove = e => {
       moveY = e.touches[0].pageY
-      console.warn(moveY - startY)
       toY = curY + moveY - startY
-      console.log(curY, toY)
+      // console.log(curY, toY)
       if (toY <= maxY && toY >= minY) {
         scrollAreaRef.value.style.transform = `translateY(${toY}px)`
       }
     }
 
-    const touchend = () => {
-      curY = toY
+    const touchend = e => {
+      if (toY > maxY) {
+        toY = maxY - itemHeight
+        curY = toY
+
+        return (scrollAreaRef.value.style.transform = `translateY(${toY}px)`)
+      } else if (toY < minY) {
+        toY = minY + itemHeight
+        curY = toY
+        return (scrollAreaRef.value.style.transform = `translateY(${toY}px)`)
+      }
+      console.log(moveY - startY)
+      const move = Math.abs(moveY - startY)
+
+      const itemHeight = hairlineRef.value.clientHeight
+      if (move < itemHeight / 2) {
+        scrollAreaRef.value.style.transform = `translateY(${curY}px)`
+        return
+      }
+
+      if (moveY - startY > 0) {
+        toY = curY + itemHeight
+      } else {
+        toY = curY - itemHeight
+      }
+      scrollAreaRef.value.style.transform = `translateY(${toY}px)`
     }
 
     onMounted(() => {
@@ -121,7 +145,7 @@ export default {
     &-col {
       height: 100%;
       &-wrap {
-        transition: all 0.5s linear;
+        // transition: all 0.5s linear;
         // transform: translateY(110px);
         cursor: grab;
         &-item {
