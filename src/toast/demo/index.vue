@@ -13,16 +13,16 @@ function onClick() {
     text: '10'
   })
   // console.log(toast._instance.ctx.$props.text)
-  console.warn(toast.state)
+  // console.warn(toast.state)
 
-  let secode = 9
-  const task = setInterval(() => {
-    if (secode) {
-      // toast._instance.ctx.state.text = secode--
-      toast.state.text = secode--
-    } else {
-      clearInterval(task)
-    }
-  }, 1000)
+  // let secode = 9
+  // const task = setInterval(() => {
+  //   if (secode) {
+  //     // toast._instance.ctx.state.text = secode--
+  //     toast.state.text = secode--
+  //   } else {
+  //     clearInterval(task)
+  //   }
+  // }, 1000)
 }
 </script>

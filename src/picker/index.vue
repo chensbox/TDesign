@@ -26,16 +26,16 @@
 </template>
 
 <script>
-import { onMounted, ref } from '@vue/runtime-core'
+import { nextTick, onMounted, ref } from '@vue/runtime-core'
 import { sleep } from '../utils'
+import { Toast } from '../toast'
 const name = 't-picker'
 const setPositon = (y, el, immediate = false) => {
   if (!immediate) {
     el.value.style.transition = 'all 0.2s linear'
   }
   el.value.style.transform = `translateY(${y}px)`
-
-  sleep().then(() => (el.value.style.transition = 'all 0s linear'))
+  sleep(200).then(() => (el.value.style.transition = 'none'))
 }
 export default {
   name,
@@ -57,27 +57,34 @@ export default {
     const touchend = e => {
       if (!moveY) {
         const index = e.target.__vnode.key
-        curY = toY = initY - (index - 1) * itemHeight
-        return setPositon(toY, scrollAreaRef)
+        toY = initY - (index - 1) * itemHeight
       }
 
       if (toY > maxY - itemHeight) {
-        curY = toY = maxY - itemHeight
-        return setPositon(toY, scrollAreaRef)
+        toY = maxY - itemHeight
       } else if (toY < minY + itemHeight) {
-        curY = toY = minY + itemHeight
-        return setPositon(toY, scrollAreaRef)
+        toY = minY + itemHeight
       }
+
       const distance = Math.abs(initY - toY)
       const m = distance % itemHeight
+
       if (m < itemHeight >> 1) {
         toY = initY - (distance - m)
       } else {
         toY = initY - (distance + (itemHeight - m))
       }
+
       setPositon(toY, scrollAreaRef)
       curY = toY
       moveY = 0
+      const index = Math.abs(initY - curY)
+
+      sleep(100).then(() => {
+        Toast({
+          text: `当前选中第${index / itemHeight + 1}项`
+        })
+      })
     }
 
     onMounted(() => {
