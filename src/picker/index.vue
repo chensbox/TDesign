@@ -14,22 +14,9 @@
           @touchmove.prevent="touchmove"
           @touchend.prevent="touchend"
         >
-          <li class="picker-columns-col-wrap-item">1</li>
-          <li class="picker-columns-col-wrap-item">2</li>
-          <li class="picker-columns-col-wrap-item">3</li>
-          <li class="picker-columns-col-wrap-item">4</li>
-          <li class="picker-columns-col-wrap-item">5</li>
-          <li class="picker-columns-col-wrap-item">6</li>
-          <li class="picker-columns-col-wrap-item">7</li>
-          <li class="picker-columns-col-wrap-item">8</li>
-          <li class="picker-columns-col-wrap-item">9</li>
-          <li class="picker-columns-col-wrap-item">10</li>
-          <li class="picker-columns-col-wrap-item">11</li>
-          <li class="picker-columns-col-wrap-item">12</li>
-          <li class="picker-columns-col-wrap-item">13</li>
-          <li class="picker-columns-col-wrap-item">14</li>
-          <li class="picker-columns-col-wrap-item">15</li>
-          <li class="picker-columns-col-wrap-item">16</li>
+          <li class="picker-columns-col-wrap-item" v-for="i in 16" :key="i">
+            第 {{ i }} 项
+          </li>
         </ul>
       </div>
       <div class="picker-columns-mask"></div>
@@ -40,67 +27,66 @@
 
 <script>
 import { onMounted, ref } from '@vue/runtime-core'
+import { sleep } from '../utils'
 const name = 't-picker'
+const setPositon = (y, el, immediate = false) => {
+  if (!immediate) {
+    el.value.style.transition = 'all 0.2s linear'
+  }
+  el.value.style.transform = `translateY(${y}px)`
+
+  sleep().then(() => (el.value.style.transition = 'all 0s linear'))
+}
 export default {
   name,
   setup(props, ctx) {
     const scrollAreaRef = ref()
     const hairlineRef = ref()
-    let startY, moveY, curY, maxY, minY, toY
+    let initY, startY, moveY, curY, maxY, minY, toY, itemHeight
 
-    const touchstart = e => {
-      startY = e.touches[0].pageY
-    }
+    const touchstart = e => (startY = e.touches[0].pageY)
+
     const touchmove = e => {
       moveY = e.touches[0].pageY
       toY = curY + moveY - startY
-      // console.log(curY, toY)
       if (toY <= maxY && toY >= minY) {
-        scrollAreaRef.value.style.transform = `translateY(${toY}px)`
+        setPositon(toY, scrollAreaRef, true)
       }
     }
 
     const touchend = e => {
-      const itemHeight = hairlineRef.value.clientHeight
-
-      if (toY > maxY) {
-        toY = maxY - itemHeight
-        curY = toY
-
-        return (scrollAreaRef.value.style.transform = `translateY(${toY}px)`)
-      } else if (toY < minY) {
-        toY = minY + itemHeight
-        curY = toY
-        return (scrollAreaRef.value.style.transform = `translateY(${toY}px)`)
+      if (!moveY) {
+        const index = e.target.__vnode.key
+        curY = toY = initY - (index - 1) * itemHeight
+        return setPositon(toY, scrollAreaRef)
       }
-      // console.warn(moveY - startY)
-      const move = Math.abs(moveY - startY)
-      if (move < itemHeight) {
-        if (move < itemHeight / 2) {
-          console.log('move < itemHeight / 2', move)
-          scrollAreaRef.value.style.transform = `translateY(${curY}px)`
-          return
-        }
 
-        if (moveY - startY > 0) {
-          toY = curY + itemHeight
-          console.log('moveY - startY > 0', toY)
-        } else {
-          toY = curY - itemHeight
-          console.log('moveY - startY <0', toY)
-        }
-        scrollAreaRef.value.style.transform = `translateY(${toY}px)`
+      if (toY > maxY - itemHeight) {
+        curY = toY = maxY - itemHeight
+        return setPositon(toY, scrollAreaRef)
+      } else if (toY < minY + itemHeight) {
+        curY = toY = minY + itemHeight
+        return setPositon(toY, scrollAreaRef)
       }
+      const distance = Math.abs(initY - toY)
+      const m = distance % itemHeight
+      if (m < itemHeight >> 1) {
+        toY = initY - (distance - m)
+      } else {
+        toY = initY - (distance + (itemHeight - m))
+      }
+      setPositon(toY, scrollAreaRef)
       curY = toY
+      moveY = 0
     }
 
     onMounted(() => {
       const { value: hairlineEl } = hairlineRef
-      const initY = hairlineEl.offsetTop - hairlineEl.clientHeight / 2
+      curY = initY = hairlineEl.offsetTop - hairlineEl.clientHeight / 2
       scrollAreaRef.value.style.transform = `translateY(${initY}px)`
-      curY = initY
       maxY = initY + hairlineEl.clientHeight
       minY = initY - hairlineEl.clientHeight * 16
+      itemHeight = hairlineEl.clientHeight
     })
 
     return {
