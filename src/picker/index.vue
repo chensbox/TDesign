@@ -30,9 +30,9 @@ import { nextTick, onMounted, ref } from '@vue/runtime-core'
 import { sleep } from '../utils'
 import { Toast } from '../toast'
 const name = 't-picker'
-const setPositon = (y, el, immediate = false) => {
+const setPositon = (y, el, immediate = false, duration = 0.2) => {
   if (!immediate) {
-    el.value.style.transition = 'all 0.2s linear'
+    el.value.style.transition = `all ${duration}s ease-out`
   }
   el.value.style.transform = `translateY(${y}px)`
   sleep(200).then(() => (el.value.style.transition = 'none'))
@@ -42,9 +42,13 @@ export default {
   setup(props, ctx) {
     const scrollAreaRef = ref()
     const hairlineRef = ref()
-    let initY, startY, moveY, curY, maxY, minY, toY, itemHeight
+    let initY, startY, moveY, curY, maxY, minY, toY, itemHeight, startTime
 
-    const touchstart = e => (startY = e.touches[0].pageY)
+    const touchstart = e => {
+      console.log(e)
+      startTime = e.timeStamp
+      startY = e.touches[0].pageY
+    }
 
     const touchmove = e => {
       moveY = e.touches[0].pageY
@@ -68,6 +72,12 @@ export default {
 
       const distance = Math.abs(initY - toY)
       const m = distance % itemHeight
+
+      // fast moving
+      // if (moveY && e.timeStamp - startTime < 300) {
+      //   console.log(e.timeStamp - startTime)
+      //   distance *= 2
+      // }
 
       if (m < itemHeight >> 1) {
         toY = initY - (distance - m)
@@ -144,7 +154,7 @@ export default {
     &-col {
       height: 100%;
       &-wrap {
-        // transition: all 0.5s linear;
+        // transition: all 0.5s ease-out;
         // transform: translateY(110px);
         cursor: grab;
         &-item {
