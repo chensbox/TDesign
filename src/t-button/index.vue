@@ -99,6 +99,7 @@ export default {
   line-height: 36px;
   background-color: #f44;
   border: none;
+  outline: none;
   border-radius: 3px;
   cursor: pointer;
 }

@@ -73,9 +73,11 @@ export default {
     justify-content: space-between;
     height: 44px;
     &-cancel {
+      font-size: 14px;
       color: #969799;
     }
     &-confirm {
+      font-size: 14px;
       color: #576b91;
     }
     &-title {
@@ -86,6 +88,7 @@ export default {
       width: 50px;
       background: transparent;
       border: none;
+      outline: none;
       cursor: pointer;
     }
   }

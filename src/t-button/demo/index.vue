@@ -74,8 +74,8 @@
 </template>
 
 <script>
-// import TButton from '../index.vue'
-import TButton from '../../../es/t-button'
+import TButton from '../index.vue'
+// import TButton from '../../../es/t-button'
 import { defineComponent } from 'vue'
 export default defineComponent({
   components: { TButton },
@@ -88,6 +88,7 @@ export default defineComponent({
     onclick() {
       console.log('1')
       this.loading = true
+
       setTimeout(() => {
         this.loading = false
       }, 3000)
