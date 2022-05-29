@@ -6,19 +6,11 @@
       <button class="picker-toolbar-confirm">确定</button>
     </div>
     <div class="picker-columns">
-      <div class="picker-columns-col">
-        <ul
-          class="picker-columns-col-wrap"
-          ref="scrollerRef"
-          @touchstart.prevent="touchstart"
-          @touchmove.prevent="touchmove"
-          @touchend.prevent="touchend"
-        >
-          <li class="picker-columns-col-wrap-item" v-for="i in 16" :key="i">
-            第 {{ i }} 项
-          </li>
-        </ul>
-      </div>
+      <template v-if="initY">
+        <colum :initY="initY" :itemHeight="itemHeight" />
+        <colum :initY="initY" :itemHeight="itemHeight" />
+        <colum :initY="initY" :itemHeight="itemHeight" />
+      </template>
       <div class="picker-columns-mask"></div>
       <div class="picker-columns-hairline" ref="hairlineRef"></div>
     </div>
@@ -26,103 +18,40 @@
 </template>
 
 <script>
-import { computed, onMounted, reactive, ref } from '@vue/runtime-core'
-import { sleep } from '../utils'
-import { Toast } from '../toast'
+import { onMounted, ref } from '@vue/runtime-core'
+import colum from './colum.vue'
 const name = 't-picker'
-const setPositon = (y, el, duration = 0) => {
-  el.value.style.transition = `all ${duration}s ease-out`
-  el.value.style.transform = `translateY(${y}px)`
-}
+
 export default {
   name,
+  components: { colum },
   setup(props, ctx) {
-    const scrollerRef = ref()
     const hairlineRef = ref()
-    let initY, startY, moveY, curY, maxY, minY, toY, itemHeight, startTime
-
-    const touchstart = e => {
-      startTime = e.timeStamp
-      startY = e.touches[0].pageY
-    }
-
-    const touchmove = e => {
-      moveY = e.touches[0].pageY
-      toY = Math.round(curY + moveY - startY) //浮点数会影响渲染速度
-      if (toY <= maxY && toY >= minY) {
-        setPositon(toY, scrollerRef)
-      }
-    }
-
-    const touchend = e => {
-      let duration = 0.2
-      if (!moveY) {
-        const index = e.target.__vnode.key
-        toY = initY - (index - 1) * itemHeight
-      }
-
-      // 启用惯性加速
-      if (moveY && e.timeStamp - startTime < 300) {
-        toY -= curY
-        toY *= 3
-        toY += curY
-        duration = 0.5
-      }
-
-      //超出极限距离Y坐标修正
-      if (toY > maxY - itemHeight) {
-        toY = maxY - itemHeight
-      } else if (toY < minY + itemHeight) {
-        toY = minY + itemHeight
-      }
-
-      const distance = Math.abs(initY - toY)
-      const m = distance % itemHeight
-
-      if (m < itemHeight >> 1) {
-        toY = initY - (distance - m)
-      } else {
-        toY = initY - (distance + (itemHeight - m))
-      }
-
-      setPositon(toY, scrollerRef, duration)
-      curY = toY
-      moveY = 0
-      const index = Math.abs(initY - curY)
-
-      // sleep(500).then(() => {
-      //   Toast({
-      //     text: `value change：第 ${index / itemHeight + 1} 项`
-      //   })
-      // })
-    }
-
+    const curY = ref('')
+    const initY = ref('')
+    const itemHeight = ref('')
     onMounted(() => {
       const { value: hairlineEl } = hairlineRef
-      curY = initY = hairlineEl.offsetTop - hairlineEl.clientHeight / 2
-      scrollerRef.value.style.transform = `translateY(${initY}px)`
-      maxY = initY + hairlineEl.clientHeight
-      minY = initY - hairlineEl.clientHeight * 16
-      itemHeight = hairlineEl.clientHeight
+      curY.value = initY.value =
+        hairlineEl.offsetTop - hairlineEl.clientHeight / 2
+      itemHeight.value = hairlineEl.clientHeight
     })
 
     return {
-      scrollerRef,
       hairlineRef,
-      touchstart,
-      touchmove,
-      touchend
+      curY,
+      initY,
+      itemHeight
     }
   }
 }
 </script>
 
-<style lang="less" scoped>
+<style lang="less">
 .picker {
   overflow: hidden;
   height: 307px;
   margin: 10px;
-  // padding-top: 8px;
   border-radius: 8px;
   user-select: none;
   background: #ffffff;
@@ -148,10 +77,12 @@ export default {
     }
   }
   &-columns {
+    display: flex;
     overflow: hidden;
     height: 263px;
     position: relative;
     &-col {
+      flex: 1;
       height: 100%;
       &-wrap {
         // transition: all 0.5s ease-out;
