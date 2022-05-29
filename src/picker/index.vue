@@ -7,9 +7,13 @@
     </div>
     <div class="picker-columns">
       <template v-if="initY">
-        <colum :initY="initY" :itemHeight="itemHeight" />
-        <colum :initY="initY" :itemHeight="itemHeight" />
-        <colum :initY="initY" :itemHeight="itemHeight" />
+        <colum
+          :initY="initY"
+          :itemHeight="itemHeight"
+          :list="col"
+          v-for="(col, index) in columsList"
+          :key="index"
+        />
       </template>
       <div class="picker-columns-mask"></div>
       <div class="picker-columns-hairline" ref="hairlineRef"></div>
@@ -24,12 +28,20 @@ const name = 't-picker'
 
 export default {
   name,
+  props: ['colums'],
   components: { colum },
   setup(props, ctx) {
     const hairlineRef = ref()
     const curY = ref('')
     const initY = ref('')
     const itemHeight = ref('')
+    const columsList = ref([])
+    const [el] = props.colums
+    if (typeof el !== 'object') {
+      columsList.value.push(props.colums)
+    } else {
+      columsList.value.push(...props.colums.map(it => it.values))
+    }
     onMounted(() => {
       const { value: hairlineEl } = hairlineRef
       curY.value = initY.value =
@@ -41,7 +53,8 @@ export default {
       hairlineRef,
       curY,
       initY,
-      itemHeight
+      itemHeight,
+      columsList
     }
   }
 }

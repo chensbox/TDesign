@@ -1,14 +1,17 @@
 <template>
-  <div class="picker-columns-col">
-    <ul
-      class="picker-columns-col-wrap"
-      ref="scrollerRef"
-      @touchstart.prevent="touchstart"
-      @touchmove.prevent="touchmove"
-      @touchend.prevent="touchend"
-    >
-      <li class="picker-columns-col-wrap-item" v-for="i in 16" :key="i">
-        第 {{ i }} 项
+  <div
+    class="picker-columns-col"
+    @touchstart.prevent="touchstart"
+    @touchmove.prevent="touchmove"
+    @touchend.prevent="touchend"
+  >
+    <ul class="picker-columns-col-wrap" ref="scrollerRef">
+      <li
+        class="picker-columns-col-wrap-item"
+        v-for="(li, i) in list"
+        :key="i + 1"
+      >
+        {{ li }}
       </li>
     </ul>
   </div>
@@ -22,8 +25,9 @@ const setPositon = (y, el, duration = 0) => {
 }
 export default {
   name: 'colum',
-  props: ['initY', 'itemHeight'],
-  setup(props) {
+  props: ['initY', 'itemHeight', 'list'],
+  emits: ['change'],
+  setup(props, { emit }) {
     const scrollerRef = ref()
     let startY, moveY, curY, maxY, minY, toY, startTime
 
@@ -44,7 +48,11 @@ export default {
       let duration = 0.2
       if (!moveY) {
         const index = e.target.__vnode.key
+        if (!index) {
+          return
+        }
         toY = props.initY - (index - 1) * props.itemHeight
+        console.log(e)
       }
 
       // 启用惯性加速
@@ -81,14 +89,15 @@ export default {
       curY = props.initY
       scrollerRef.value.style.transform = `translateY(${props.initY}px)`
       maxY = props.initY + props.itemHeight
-      minY = props.initY - props.itemHeight * 16
+      minY = props.initY - props.itemHeight * props.list.length
     })
 
     return {
       scrollerRef,
       touchstart,
       touchmove,
-      touchend
+      touchend,
+      list: props.list
     }
   }
 }
