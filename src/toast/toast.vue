@@ -36,7 +36,7 @@ export default {
 .toast {
   position: fixed;
   height: 30px;
-  width: 100px;
+  padding: 5px 10px;
   border-radius: 5px;
   background: rgba(0, 0, 0, 0.7);
   color: white;

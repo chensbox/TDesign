@@ -9,7 +9,7 @@
       <div class="picker-columns-col">
         <ul
           class="picker-columns-col-wrap"
-          ref="scrollAreaRef"
+          ref="scrollerRef"
           @touchstart.prevent="touchstart"
           @touchmove.prevent="touchmove"
           @touchend.prevent="touchend"
@@ -32,14 +32,12 @@ import { Toast } from '../toast'
 const name = 't-picker'
 const setPositon = (y, el, duration = 0) => {
   el.value.style.transition = `all ${duration}s ease-out`
-
   el.value.style.transform = `translateY(${y}px)`
-  // sleep(duration * 10000).then(() => (el.value.style.transition = 'none'))
 }
 export default {
   name,
   setup(props, ctx) {
-    const scrollAreaRef = ref()
+    const scrollerRef = ref()
     const hairlineRef = ref()
     let initY, startY, moveY, curY, maxY, minY, toY, itemHeight, startTime
 
@@ -51,9 +49,8 @@ export default {
     const touchmove = e => {
       moveY = e.touches[0].pageY
       toY = Math.round(curY + moveY - startY) //浮点数会影响渲染速度
-
       if (toY <= maxY && toY >= minY) {
-        setPositon(toY, scrollAreaRef)
+        setPositon(toY, scrollerRef)
       }
     }
 
@@ -69,9 +66,10 @@ export default {
         toY -= curY
         toY *= 3
         toY += curY
-        duration = 0.6
+        duration = 0.5
       }
 
+      //超出极限距离Y坐标修正
       if (toY > maxY - itemHeight) {
         toY = maxY - itemHeight
       } else if (toY < minY + itemHeight) {
@@ -87,29 +85,29 @@ export default {
         toY = initY - (distance + (itemHeight - m))
       }
 
-      setPositon(toY, scrollAreaRef, duration)
+      setPositon(toY, scrollerRef, duration)
       curY = toY
       moveY = 0
       const index = Math.abs(initY - curY)
 
-      sleep(500).then(() => {
-        Toast({
-          text: `当前选中${index / itemHeight + 1}项`
-        })
-      })
+      // sleep(500).then(() => {
+      //   Toast({
+      //     text: `value change：第 ${index / itemHeight + 1} 项`
+      //   })
+      // })
     }
 
     onMounted(() => {
       const { value: hairlineEl } = hairlineRef
       curY = initY = hairlineEl.offsetTop - hairlineEl.clientHeight / 2
-      scrollAreaRef.value.style.transform = `translateY(${initY}px)`
+      scrollerRef.value.style.transform = `translateY(${initY}px)`
       maxY = initY + hairlineEl.clientHeight
       minY = initY - hairlineEl.clientHeight * 16
       itemHeight = hairlineEl.clientHeight
     })
 
     return {
-      scrollAreaRef,
+      scrollerRef,
       hairlineRef,
       touchstart,
       touchmove,
