@@ -21,7 +21,11 @@ export default {
         'TypeScript',
         'Vue',
         'React',
-        'WebPack'
+        'WebPack',
+        'Uniapp',
+        'React navite',
+        'canvas',
+        'WebGl'
       ],
       columns2: [
         // 第一列
