@@ -26,16 +26,15 @@
 </template>
 
 <script>
-import { nextTick, onMounted, ref } from '@vue/runtime-core'
+import { computed, onMounted, reactive, ref } from '@vue/runtime-core'
 import { sleep } from '../utils'
 import { Toast } from '../toast'
 const name = 't-picker'
-const setPositon = (y, el, immediate = false, duration = 0.2) => {
-  if (!immediate) {
-    el.value.style.transition = `all ${duration}s ease-out`
-  }
+const setPositon = (y, el, duration = 0) => {
+  el.value.style.transition = `all ${duration}s ease-out`
+
   el.value.style.transform = `translateY(${y}px)`
-  sleep(200).then(() => (el.value.style.transition = 'none'))
+  // sleep(duration * 10000).then(() => (el.value.style.transition = 'none'))
 }
 export default {
   name,
@@ -45,23 +44,32 @@ export default {
     let initY, startY, moveY, curY, maxY, minY, toY, itemHeight, startTime
 
     const touchstart = e => {
-      console.log(e)
       startTime = e.timeStamp
       startY = e.touches[0].pageY
     }
 
     const touchmove = e => {
       moveY = e.touches[0].pageY
-      toY = curY + moveY - startY
+      toY = Math.round(curY + moveY - startY) //浮点数会影响渲染速度
+
       if (toY <= maxY && toY >= minY) {
-        setPositon(toY, scrollAreaRef, true)
+        setPositon(toY, scrollAreaRef)
       }
     }
 
     const touchend = e => {
+      let duration = 0.2
       if (!moveY) {
         const index = e.target.__vnode.key
         toY = initY - (index - 1) * itemHeight
+      }
+
+      // 启用惯性加速
+      if (moveY && e.timeStamp - startTime < 300) {
+        toY -= curY
+        toY *= 3
+        toY += curY
+        duration = 0.6
       }
 
       if (toY > maxY - itemHeight) {
@@ -73,26 +81,20 @@ export default {
       const distance = Math.abs(initY - toY)
       const m = distance % itemHeight
 
-      // fast moving
-      // if (moveY && e.timeStamp - startTime < 300) {
-      //   console.log(e.timeStamp - startTime)
-      //   distance *= 2
-      // }
-
       if (m < itemHeight >> 1) {
         toY = initY - (distance - m)
       } else {
         toY = initY - (distance + (itemHeight - m))
       }
 
-      setPositon(toY, scrollAreaRef)
+      setPositon(toY, scrollAreaRef, duration)
       curY = toY
       moveY = 0
       const index = Math.abs(initY - curY)
 
-      sleep(100).then(() => {
+      sleep(500).then(() => {
         Toast({
-          text: `当前选中第${index / itemHeight + 1}项`
+          text: `当前选中${index / itemHeight + 1}项`
         })
       })
     }
