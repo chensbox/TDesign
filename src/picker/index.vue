@@ -23,40 +23,49 @@
 
 <script>
 import { onMounted, ref } from '@vue/runtime-core'
+
 import colum from './colum.vue'
+
 const name = 't-picker'
 
+const props = {
+  colums: Array
+}
+
+const components = { colum }
+
+const setup = function (props, ctx) {
+  const hairlineRef = ref()
+  const curY = ref('')
+  const initY = ref('')
+  const itemHeight = ref('')
+  const columsList = ref([])
+  const [el] = props.colums
+  if (typeof el !== 'object') {
+    columsList.value.push(props.colums)
+  } else if (el.values) {
+    columsList.value.push(...props.colums.map(it => it.values))
+  }
+  onMounted(() => {
+    const { value: hairlineEl } = hairlineRef
+    curY.value = initY.value =
+      hairlineEl.offsetTop - hairlineEl.clientHeight / 2
+    itemHeight.value = hairlineEl.clientHeight
+  })
+
+  return {
+    hairlineRef,
+    curY,
+    initY,
+    itemHeight,
+    columsList
+  }
+}
 export default {
   name,
-  props: ['colums'],
-  components: { colum },
-  setup(props, ctx) {
-    const hairlineRef = ref()
-    const curY = ref('')
-    const initY = ref('')
-    const itemHeight = ref('')
-    const columsList = ref([])
-    const [el] = props.colums
-    if (typeof el !== 'object') {
-      columsList.value.push(props.colums)
-    } else {
-      columsList.value.push(...props.colums.map(it => it.values))
-    }
-    onMounted(() => {
-      const { value: hairlineEl } = hairlineRef
-      curY.value = initY.value =
-        hairlineEl.offsetTop - hairlineEl.clientHeight / 2
-      itemHeight.value = hairlineEl.clientHeight
-    })
-
-    return {
-      hairlineRef,
-      curY,
-      initY,
-      itemHeight,
-      columsList
-    }
-  }
+  props,
+  components,
+  setup
 }
 </script>
 
