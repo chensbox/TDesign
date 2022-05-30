@@ -66,6 +66,7 @@ const setup = function (props, { emit }) {
     }
 
     // 启用惯性加速
+
     if (
       moveY &&
       Math.abs(moveY - startY) > 50 &&

@@ -44,19 +44,20 @@ const setup = function (props, ctx) {
   const columsList = ref([])
   // console.warn(props.colums)
   const [el] = props.colums
+
   let isCascader = false
   const getChildren = Treelist => {
-    const res = []
+    const children = []
     const helper = list => {
       const cur = list.map(it => it.text)
       cur.value = list
-      res.push(cur)
+      children.push(cur)
       if (list[0].children) {
         helper(list[0].children)
       }
     }
     helper(Treelist)
-    return res
+    return children
   }
 
   const columChange = (columList, changeIndex, columIndex) => {
@@ -69,12 +70,10 @@ const setup = function (props, ctx) {
     columsList.value = columsList.value.slice(0, columIndex + 1)
     if (columIndex == 0) {
       columsList.value.push(...getChildren(props.colums[changeIndex].children))
-    } else if (columIndex == 1) {
+    } else {
       columsList.value.push(
         ...getChildren(columList.value[changeIndex].children)
       )
-      // console.log(...getChildren(props.colums[changeIndex]))
-      // console.log(columList[changeIndex])
     }
   }
   if (typeof el !== 'object') {
