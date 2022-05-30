@@ -1,11 +1,11 @@
 <template>
-  <!-- <demo-block title="单列">
+  <demo-block title="单列">
     <picker :colums="colums"></picker>
   </demo-block>
 
   <demo-block title="多列">
     <picker :colums="columns2"></picker>
-  </demo-block> -->
+  </demo-block>
 
   <demo-block title="级联选择器">
     <picker :colums="colums3"></picker>

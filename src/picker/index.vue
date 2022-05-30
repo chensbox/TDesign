@@ -65,11 +65,11 @@ const setup = function (props, ctx) {
     if (!isCascader) {
       return
     }
+
+    columsList.value = columsList.value.slice(0, columIndex + 1)
     if (columIndex == 0) {
-      columsList.value = columsList.value.slice(0, columIndex + 1)
       columsList.value.push(...getChildren(props.colums[changeIndex].children))
     } else if (columIndex == 1) {
-      columsList.value = columsList.value.slice(0, columIndex + 1)
       columsList.value.push(
         ...getChildren(columList.value[changeIndex].children)
       )
