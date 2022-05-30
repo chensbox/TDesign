@@ -62,9 +62,7 @@ const setup = function (props, { emit }) {
 
     // 启用惯性加速
     if (moveY > 50 && e.timeStamp - startTime < 300) {
-      toY -= curY
-      toY *= 3
-      toY += curY
+      toY = Math.round(curY + (moveY - startY) * 3)
       duration = 0.5
     }
 
