@@ -12,7 +12,9 @@
           :itemHeight="itemHeight"
           :list="col"
           v-for="(col, index) in columsList"
+          :index="index"
           :key="index"
+          @columChange="columChange"
         />
       </template>
       <div class="picker-columns-mask"></div>
@@ -40,12 +42,50 @@ const setup = function (props, ctx) {
   const initY = ref('')
   const itemHeight = ref('')
   const columsList = ref([])
+  // console.warn(props.colums)
   const [el] = props.colums
+  let isCascader = false
+  const getChildren = Treelist => {
+    const res = []
+    const helper = list => {
+      const cur = list.map(it => it.text)
+      cur.value = list
+      res.push(cur)
+      if (list[0].children) {
+        helper(list[0].children)
+      }
+    }
+    helper(Treelist)
+    return res
+  }
+
+  const columChange = (columList, changeIndex, columIndex) => {
+    console.log(columIndex)
+
+    if (!isCascader) {
+      return
+    }
+    if (columIndex == 0) {
+      columsList.value = columsList.value.slice(0, columIndex + 1)
+      columsList.value.push(...getChildren(props.colums[changeIndex].children))
+    } else if (columIndex == 1) {
+      columsList.value = columsList.value.slice(0, columIndex + 1)
+      columsList.value.push(
+        ...getChildren(columList.value[changeIndex].children)
+      )
+      // console.log(...getChildren(props.colums[changeIndex]))
+      // console.log(columList[changeIndex])
+    }
+  }
   if (typeof el !== 'object') {
     columsList.value.push(props.colums)
   } else if (el.values) {
     columsList.value.push(...props.colums.map(it => it.values))
+  } else if (el.children) {
+    isCascader = true
+    columsList.value.push(...getChildren(props.colums))
   }
+
   onMounted(() => {
     const { value: hairlineEl } = hairlineRef
     curY.value = initY.value =
@@ -58,7 +98,8 @@ const setup = function (props, ctx) {
     curY,
     initY,
     itemHeight,
-    columsList
+    columsList,
+    columChange
   }
 }
 export default {

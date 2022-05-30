@@ -18,22 +18,25 @@
 </template>
 
 <script>
-import { onMounted, ref } from '@vue/runtime-core'
+import { onMounted, ref, watch } from '@vue/runtime-core'
 const setPositon = (y, el, duration = 0) => {
+  // console.log('setPositon', y, el, duration)
   el.value.style.transition = `all ${duration}s ease-out`
   el.value.style.transform = `translateY(${y}px)`
 }
 const name = 'colum'
 
 const props = {
+  index: Number,
   initY: Number,
   itemHeight: Number,
   list: Array
 }
 
-const emits = ['change']
+const emits = ['columChange']
 
 const setup = function (props, { emit }) {
+  // console.log(props.list)
   const scrollerRef = ref()
   let startY, moveY, curY, maxY, minY, toY, startTime
 
@@ -52,7 +55,9 @@ const setup = function (props, { emit }) {
 
   const touchend = e => {
     let duration = 0.2
-    if (!moveY) {
+    if (!moveY || Math.abs(moveY - startY) < 20) {
+      // console.log(e, 'ddd')
+
       const index = e.target.__vnode.key
       if (!index) {
         return
@@ -61,7 +66,11 @@ const setup = function (props, { emit }) {
     }
 
     // 启用惯性加速
-    if (moveY > 50 && e.timeStamp - startTime < 300) {
+    if (
+      moveY &&
+      Math.abs(moveY - startY) > 50 &&
+      e.timeStamp - startTime < 300
+    ) {
       toY = Math.round(curY + (moveY - startY) * 3)
       duration = 0.5
     }
@@ -85,14 +94,23 @@ const setup = function (props, { emit }) {
     setPositon(toY, scrollerRef, duration)
     curY = toY
     moveY = 0
-    const index = Math.abs(props.initY - curY)
+    const index = Math.abs(props.initY - curY) / props.itemHeight
+    emit('columChange', props.list, index, props.index)
   }
+
+  watch(props, () => {
+    console.log('props.list', props.list)
+    maxY = props.initY + props.itemHeight
+    minY = props.initY - props.itemHeight * props.list.length
+    setPositon(props.initY, scrollerRef)
+  })
 
   onMounted(() => {
     curY = props.initY
     scrollerRef.value.style.transform = `translateY(${props.initY}px)`
     maxY = props.initY + props.itemHeight
     minY = props.initY - props.itemHeight * props.list.length
+    moveY = 0
   })
 
   return {
