@@ -29,8 +29,7 @@ export default {
         'Uniapp',
         'React navite',
         'canvas',
-        'WebGl',
-        'Node.js'
+        'WebGl'
       ],
       columns2: [
         // 第一列
@@ -51,9 +50,9 @@ export default {
             {
               text: '广州',
               children: [
-                { text: '天河区', children: [{ text: '棠东' }] },
+                { text: '天河区' },
                 { text: '越秀区' },
-                { text: '琶洲区' },
+                { text: '海珠区' },
                 { text: '白云区' }
               ]
             },
@@ -73,6 +72,15 @@ export default {
                 { text: '金湾区' },
                 { text: '斗门区' },
                 { text: '横琴区' }
+              ]
+            },
+            {
+              text: '肇庆',
+              children: [
+                { text: '端州区' },
+                { text: '高要区' },
+                { text: '四会市' },
+                { text: '怀集县' }
               ]
             }
           ]

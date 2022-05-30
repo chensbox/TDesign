@@ -5,7 +5,7 @@
     @touchmove.prevent="touchmove"
     @touchend.prevent="touchend"
   >
-    <ul class="picker-columns-col-wrap" ref="scrollerRef">
+    <ul class="picker-columns-col-wrap" :style="scrollerStyle">
       <li
         class="picker-columns-col-wrap-item"
         v-for="(li, i) in list"
@@ -18,12 +18,8 @@
 </template>
 
 <script>
-import { onMounted, ref, watch } from '@vue/runtime-core'
-const setPositon = (y, el, duration = 0) => {
-  // console.log('setPositon', y, el, duration)
-  el.value.style.transition = `all ${duration}s ease-out`
-  el.value.style.transform = `translateY(${y}px)`
-}
+import { computed, onMounted, reactive, ref, watch } from '@vue/runtime-core'
+
 const name = 'colum'
 
 const props = {
@@ -37,7 +33,15 @@ const emits = ['columChange']
 
 const setup = function (props, { emit }) {
   // console.log(props.list)
-  const scrollerRef = ref()
+
+  const duration = ref()
+  const offsetY = ref()
+  const scrollerStyle = computed(() => {
+    return {
+      transition: `all ${duration.value}s ease-out`,
+      transform: `translateY(${offsetY.value}px)`
+    }
+  })
   let startY, moveY, curY, maxY, minY, toY, startTime
 
   const touchstart = e => {
@@ -46,34 +50,46 @@ const setup = function (props, { emit }) {
   }
 
   const touchmove = e => {
+    duration.value = 0
     moveY = e.touches[0].pageY
     toY = Math.round(curY + moveY - startY) //浮点数会影响渲染速度
     if (toY <= maxY && toY >= minY) {
-      setPositon(toY, scrollerRef)
+      offsetY.value = toY
     }
   }
 
-  const touchend = e => {
-    let duration = 0.2
-    if (!moveY || Math.abs(moveY - startY) < 20) {
-      // console.log(e, 'ddd')
+  const roundByItmeHeight = (m, distance) => {
+    if (m < props.itemHeight >> 1) {
+      toY = props.initY - (distance - m)
+    } else if (m) {
+      toY = props.initY - (distance + (props.itemHeight - m))
+    }
+  }
 
-      const index = e.target.__vnode.key
-      if (!index) {
-        return
-      }
-      toY = props.initY - (index - 1) * props.itemHeight
+  const mockClickByTouch = e => {
+    const index = e.target.__vnode.key
+    if (!index) {
+      return
+    }
+    toY = props.initY - (index - 1) * props.itemHeight
+  }
+
+  const touchend = e => {
+    duration.value = 0.2
+
+    const distance = moveY - startY
+
+    if (!moveY) {
+      mockClickByTouch(e)
     }
 
     // 启用惯性加速
+    const isFastMove =
+      moveY && Math.abs(distance) > 50 && e.timeStamp - startTime < 300
 
-    if (
-      moveY &&
-      Math.abs(moveY - startY) > 50 &&
-      e.timeStamp - startTime < 300
-    ) {
-      toY = Math.round(curY + (moveY - startY) * 3)
-      duration = 0.5
+    if (isFastMove) {
+      duration.value = 0.5
+      toY = Math.round(curY + distance * 3)
     }
 
     //超出极限距离Y坐标修正
@@ -83,39 +99,37 @@ const setup = function (props, { emit }) {
       toY = minY + props.itemHeight
     }
 
-    const distance = Math.abs(props.initY - toY)
-    const m = distance % props.itemHeight
-
-    if (m < props.itemHeight >> 1) {
-      toY = props.initY - (distance - m)
-    } else {
-      toY = props.initY - (distance + (props.itemHeight - m))
+    const transformY = Math.abs(props.initY - toY)
+    const MOD = transformY % props.itemHeight
+    if (MOD !== 0) {
+      roundByItmeHeight(MOD, transformY)
     }
 
-    setPositon(toY, scrollerRef, duration)
-    curY = toY
     moveY = 0
+    curY = toY
+    offsetY.value = toY
+
     const index = Math.abs(props.initY - curY) / props.itemHeight
     emit('columChange', props.list, index, props.index)
   }
 
   watch(props, () => {
-    console.log('props.list', props.list)
     maxY = props.initY + props.itemHeight
     minY = props.initY - props.itemHeight * props.list.length
-    setPositon(props.initY, scrollerRef)
+
+    offsetY.value = props.initY
   })
 
   onMounted(() => {
     curY = props.initY
-    scrollerRef.value.style.transform = `translateY(${props.initY}px)`
+    offsetY.value = props.initY
     maxY = props.initY + props.itemHeight
     minY = props.initY - props.itemHeight * props.list.length
     moveY = 0
   })
 
   return {
-    scrollerRef,
+    scrollerStyle,
     touchstart,
     touchmove,
     touchend
