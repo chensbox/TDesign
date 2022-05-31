@@ -39,7 +39,7 @@ export default {
         title: '基础组件',
         items: [
           {
-            path: 't-button',
+            path: 'button',
             title: 'Button 按钮',
           },
           {
