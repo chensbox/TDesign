@@ -117,10 +117,11 @@ const setup = function (props, { emit }) {
         }
       }
     }
-    const value = columList[changeIndex]
-    changeValue[columIndex] = changeValue[columIndex] || {}
-    changeValue[columIndex].value = value
-    changeValue[columIndex].index = changeIndex
+
+    changeValue[columIndex] = {
+      value: columList[changeIndex],
+      index: changeIndex
+    }
 
     emit(
       'change',
