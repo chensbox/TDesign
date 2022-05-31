@@ -1,19 +1,38 @@
 <template>
   <demo-block title="单列">
-    <picker :colums="colums"></picker>
+    <picker
+      :colums="colums"
+      title="标题"
+      @change="onChange"
+      @confirm="onConfirm"
+      @cancel="onCancel"
+    ></picker>
   </demo-block>
 
   <demo-block title="多列">
-    <picker :colums="columns2"></picker>
+    <picker
+      :colums="columns2"
+      title="标题"
+      @change="onChange"
+      @confirm="onConfirm"
+      @cancel="onCancel"
+    ></picker>
   </demo-block>
 
   <demo-block title="级联选择器">
-    <picker :colums="colums3"></picker>
+    <picker
+      :colums="colums3"
+      title="标题"
+      @change="onChange"
+      @confirm="onConfirm"
+      @cancel="onCancel"
+    ></picker>
   </demo-block>
 </template>
 
 <script>
 import picker from '../index.vue'
+import { Toast } from '../../toast/index'
 export default {
   components: { picker },
   data() {
@@ -115,7 +134,21 @@ export default {
     }
   },
   methods: {
-    onclick() {}
+    onclick() {},
+    onChange(value, index) {
+      // console.warn(value, index)
+      const msg = '当前值：' + value.join() + '      索引:' + index.join()
+      // Toast({
+      //   text: msg
+      // })
+      console.warn(msg)
+    },
+    onConfirm(value, index) {
+      this.onChange(value, index)
+    },
+    onCancel(value, index) {
+      this.onChange(value, index)
+    }
   }
 }
 </script>

@@ -32,8 +32,6 @@ const props = {
 const emits = ['columChange']
 
 const setup = function (props, { emit }) {
-  // console.log(props.list)
-
   const duration = ref()
   const offsetY = ref()
   const scrollerStyle = computed(() => {
@@ -76,26 +74,29 @@ const setup = function (props, { emit }) {
 
   const touchend = e => {
     duration.value = 0.2
-
     const distance = moveY - startY
 
-    if (!moveY) {
+    const isClickEvent =
+      !moveY || (Math.abs(distance) < 10 && e.timeStamp - startTime < 100)
+
+    if (isClickEvent) {
       mockClickByTouch(e)
     }
 
-    // 启用惯性加速
-    const isFastMove =
-      moveY && Math.abs(distance) > 50 && e.timeStamp - startTime < 300
+    const isFastMoving =
+      moveY && Math.abs(distance) > 70 && e.timeStamp - startTime < 300
 
-    if (isFastMove) {
+    if (isFastMoving) {
       duration.value = 0.5
       toY = Math.round(curY + distance * 3)
     }
 
-    //超出极限距离Y坐标修正
-    if (toY > maxY - props.itemHeight) {
+    const isUpperLimitExceeded = toY > maxY - props.itemHeight
+    const isLowerLimitExceeded = toY < minY + props.itemHeight
+
+    if (isUpperLimitExceeded) {
       toY = maxY - props.itemHeight
-    } else if (toY < minY + props.itemHeight) {
+    } else if (isLowerLimitExceeded) {
       toY = minY + props.itemHeight
     }
 
@@ -108,9 +109,8 @@ const setup = function (props, { emit }) {
     moveY = 0
     curY = toY
     offsetY.value = toY
-
-    const index = Math.abs(props.initY - curY) / props.itemHeight
-    emit('columChange', props.list, index, props.index)
+    const changeIndex = Math.abs(props.initY - curY) / props.itemHeight
+    emit('columChange', props.list, changeIndex, props.index)
   }
 
   watch(props, () => {

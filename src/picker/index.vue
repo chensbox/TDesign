@@ -1,9 +1,13 @@
 <template>
   <div class="picker">
     <div class="picker-toolbar">
-      <button class="picker-toolbar-cancel">取消</button>
-      <span class="picker-toolbar-title">标题</span>
-      <button class="picker-toolbar-confirm">确定</button>
+      <button class="picker-toolbar-cancel" @click="onClick('confirm')">
+        取消
+      </button>
+      <span class="picker-toolbar-title">{{ title }}</span>
+      <button class="picker-toolbar-confirm" @click="onClick('cancel')">
+        确定
+      </button>
     </div>
     <div class="picker-columns">
       <template v-if="initY">
@@ -24,28 +28,60 @@
 </template>
 
 <script>
-import { onMounted, ref } from '@vue/runtime-core'
+import { onMounted, ref, watch } from '@vue/runtime-core'
 
 import colum from './colum.vue'
 
 const name = 't-picker'
 
 const props = {
-  colums: Array
+  colums: Array,
+  title: String
 }
-
+const emits = ['confirm', 'cancel', 'change']
 const components = { colum }
 
-const setup = function (props, ctx) {
+const setup = function (props, { emit }) {
   const hairlineRef = ref()
   const curY = ref('')
   const initY = ref('')
   const itemHeight = ref('')
   const columsList = ref([])
-  // console.warn(props.colums)
   const [el] = props.colums
+  let isCascader, changeValue
 
-  let isCascader = false
+  const onClick = Event => {
+    emit(
+      Event,
+      changeValue.map(it => it.value),
+      changeValue.map(it => it.index)
+    )
+  }
+  const formatData = () => {
+    if (typeof el !== 'object') {
+      columsList.value.push(props.colums)
+    } else if (el.values) {
+      columsList.value.push(...props.colums.map(it => it.values))
+    } else if (el.children) {
+      isCascader = true
+      columsList.value.push(...getChildren(props.colums))
+    }
+    changeValue = getFirstElement(columsList.value)
+    // console.log(changeValue)
+  }
+
+  const updateColums = (columList, changeIndex, columIndex) => {
+    let target = []
+    columsList.value = columsList.value.slice(0, columIndex + 1)
+    if (columIndex == 0) {
+      target = props.colums[changeIndex]
+    } else {
+      target = columList.value[changeIndex]
+    }
+    const children = getChildren(target.children)
+    columsList.value.push(...children)
+  }
+
   const getChildren = Treelist => {
     const children = []
     const helper = list => {
@@ -60,28 +96,37 @@ const setup = function (props, ctx) {
     return children
   }
 
-  const columChange = (columList, changeIndex, columIndex) => {
-    if (!isCascader) {
-      return
-    }
-
-    columsList.value = columsList.value.slice(0, columIndex + 1)
-
-    if (columIndex == 0) {
-      columsList.value.push(...getChildren(props.colums[changeIndex].children))
-    } else if (columIndex !== props.colums.length - 1) {
-      columsList.value.push(
-        ...getChildren(columList.value[changeIndex].children)
-      )
-    }
+  const getFirstElement = li => {
+    return li.map(it => {
+      return {
+        value: it[0],
+        index: 0
+      }
+    })
   }
-  if (typeof el !== 'object') {
-    columsList.value.push(props.colums)
-  } else if (el.values) {
-    columsList.value.push(...props.colums.map(it => it.values))
-  } else if (el.children) {
-    isCascader = true
-    columsList.value.push(...getChildren(props.colums))
+  const columChange = (columList, changeIndex, columIndex) => {
+    if (isCascader && columIndex !== props.colums.length - 1) {
+      updateColums(columList, changeIndex, columIndex)
+
+      if (columIndex == 0) {
+        changeValue = getFirstElement(columsList.value)
+      } else {
+        changeValue[columIndex + 1] = {
+          value: columList.value[changeIndex].children[0].text,
+          index: 0
+        }
+      }
+    }
+    const value = columList[changeIndex]
+    changeValue[columIndex] = changeValue[columIndex] || {}
+    changeValue[columIndex].value = value
+    changeValue[columIndex].index = changeIndex
+
+    emit(
+      'change',
+      changeValue.map(it => it.value),
+      changeValue.map(it => it.index)
+    )
   }
 
   onMounted(() => {
@@ -90,6 +135,7 @@ const setup = function (props, ctx) {
       hairlineEl.offsetTop - hairlineEl.clientHeight / 2
     itemHeight.value = hairlineEl.clientHeight
   })
+  formatData()
 
   return {
     hairlineRef,
@@ -97,12 +143,14 @@ const setup = function (props, ctx) {
     initY,
     itemHeight,
     columsList,
-    columChange
+    columChange,
+    onClick
   }
 }
 export default {
   name,
   props,
+  emits,
   components,
   setup
 }

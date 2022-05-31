@@ -155,13 +155,16 @@ export default {
   background: #ffffff;
 }
 button:active {
-  -webkit-filter: brightness(90%);
   filter: brightness(90%);
   transform: scale(0.99);
 }
 .disabled {
   cursor: not-allowed;
   opacity: 0.6;
+  &:active {
+    filter: brightness(100%);
+    transform: scale(1);
+  }
 }
 * {
   -webkit-touch-callout: none; /*系统默认菜单被禁用*/

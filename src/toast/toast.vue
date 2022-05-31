@@ -34,8 +34,10 @@ export default {
 
 <style lang="less" scoped>
 .toast {
+  z-index: 1000;
   position: fixed;
-  height: 30px;
+  min-height: 30px;
+  min-width: 60px;
   padding: 5px 10px;
   border-radius: 5px;
   background: rgba(0, 0, 0, 0.7);
@@ -44,6 +46,7 @@ export default {
   top: 50%;
   line-height: 30px;
   text-align: center;
+  pointer-events: none;
   transform: translate(-50%, -50%);
   transition: opacity 0.25s ease-in;
   // animation: fade-in 0.25s ease-out;
