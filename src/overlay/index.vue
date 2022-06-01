@@ -24,8 +24,11 @@ export default {
 
 <style lang="less" scoped>
 .mask {
+  display: flex;
+  align-items: center;
+  justify-content: center;
   position: fixed;
-  z-index: 1;
+  z-index: 10;
   height: 100%;
   width: 100%;
   left: 0;

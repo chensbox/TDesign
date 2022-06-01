@@ -44,20 +44,16 @@
     >
   </demo-block>
   <demo-block title="朴素按钮">
-    <t-button class="show-btn" type="warning" plain> 朴素按钮</t-button>
-    <t-button class="show-btn" plain type="primary" size="small">
-      朴素按钮</t-button
-    >
+    <t-button class="show-btn" type="info" plain> 朴素按钮</t-button>
+    <t-button class="show-btn" plain type="primary"> 朴素按钮</t-button>
 
-    <t-button class="show-btn" type="danger" plain size="mini">
-      朴素按钮</t-button
-    >
+    <t-button class="show-btn" type="danger" plain> 朴素按钮</t-button>
   </demo-block>
 
   <demo-block title="禁用状态">
-    <t-button type="primary" style="margin: 5px" disabled>主要按钮</t-button>
-    <t-button type="danger" class="show-btn" disabled>危险按钮</t-button>
-    <t-button type="info" class="show-btn" disabled>信息按钮</t-button>
+    <t-button type="primary" style="margin: 5px" disabled>禁用状态</t-button>
+    <t-button type="danger" class="show-btn" disabled>禁用状态</t-button>
+    <t-button type="info" class="show-btn" disabled>禁用状态</t-button>
   </demo-block>
 
   <demo-block title="按钮形状">

@@ -29,7 +29,7 @@ const props = {
 }
 const emits = ['close']
 //top bottom right left
-const setup = (props, { slots, emit }) => {
+const setup = (props, { emit }) => {
   const animation = ref('slide-fade-bottom')
   const style = reactive({})
   const iconPositon = reactive({})
@@ -39,7 +39,7 @@ const setup = (props, { slots, emit }) => {
     style.top = '50%'
     style.transform = 'translate(-50%, -50%)'
   }
-  console.log(props.closeIconPosition, '????????????')
+
   if (props.position == 'bottom') {
     style.left = '0px'
     style.bottom = '0px'

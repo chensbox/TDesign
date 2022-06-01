@@ -5,6 +5,15 @@
       <overlay :show="show" @click="show = false"></overlay>
     </div>
   </demo-block>
+
+  <demo-block title="嵌入内容">
+    <div class="block-item">
+      <TButton @click="slot = true">嵌入内容</TButton>
+      <overlay :show="slot" @click="slot = false">
+        <div class="block"></div>
+      </overlay>
+    </div>
+  </demo-block>
 </template>
 
 <script>
@@ -14,7 +23,8 @@ export default {
   components: { overlay, TButton },
   data() {
     return {
-      show: false
+      show: false,
+      slot: false
     }
   },
   methods: {
@@ -32,5 +42,10 @@ export default {
 }
 .block-item {
   padding: 0 16px;
+}
+.block {
+  height: 100px;
+  width: 100px;
+  background: #fff;
 }
 </style>
