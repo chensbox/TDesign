@@ -10,7 +10,7 @@ import TButton from '../../button/index.vue'
 import { Toast } from '../index'
 function onClick() {
   const toast = Toast({
-    text: '10'
+    message: '提示内容'
   })
   // console.log(toast._instance.ctx.$props.text)
   // console.warn(toast.state)

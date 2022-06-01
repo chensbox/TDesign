@@ -29,12 +29,12 @@ export default {
       })
         .then(() => {
           Toast({
-            text: '确定'
+            message: '确定'
           })
         })
         .catch(() => {
           Toast({
-            text: '取消'
+            message: '取消'
           })
         })
     }
