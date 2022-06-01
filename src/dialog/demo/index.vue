@@ -13,7 +13,7 @@ import { Dialog } from '../index'
 // import { toast } from '../../toast/index'
 // import { dialog } from '../../../es/dialog/index'
 import { Toast } from '../../toast/index'
-import TButton from '../../t-button/index.vue'
+import TButton from '../../button/index.vue'
 
 export default {
   components: { TDialog: Dialog.Component, TButton },

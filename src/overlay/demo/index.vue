@@ -8,7 +8,7 @@
 </template>
 
 <script>
-import TButton from '../../t-button/index.vue'
+import TButton from '../../button/index.vue'
 import overlay from '../index.vue'
 export default {
   components: { overlay, TButton },

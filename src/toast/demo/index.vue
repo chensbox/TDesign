@@ -5,7 +5,7 @@
 </template>
 
 <script setup>
-import TButton from '../../t-button/index.vue'
+import TButton from '../../button/index.vue'
 
 import { Toast } from '../index'
 function onClick() {
