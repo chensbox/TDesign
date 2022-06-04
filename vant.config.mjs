@@ -74,6 +74,10 @@ export default {
             path: 'picker',
             title: 'picker 选择器',
           },
+          {
+            path: 'cascader',
+            title: 'cascader 级联选择',
+          },
         ],
       },
     ],
