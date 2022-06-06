@@ -227,10 +227,7 @@ export default {
   -ms-user-select: none; /*IE10*/
   user-select: none;
 }
-* {
-  -webkit-tap-highlight-color: rgba(0, 0, 0, 0);
-  -webkit-tap-highlight-color: transparent; /* For some Androids */
-}
+
 ::-webkit-scrollbar {
   display: none; /* Chrome Safari */
 }

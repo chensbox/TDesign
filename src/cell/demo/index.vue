@@ -1,8 +1,8 @@
 <template>
   <demo-block title="基础用法">
     <cell-gropu>
-      <cell title="单元格" value="内容"></cell>
-      <cell title="单元格" value="内容"></cell>
+      <cell title="单元格" value="内容">顶顶顶顶顶顶顶</cell>
+      <cell title="单元格" value="内容" placeholder="请选择地区"></cell>
       <cell title="单元格" value="内容"></cell>
     </cell-gropu>
   </demo-block>
