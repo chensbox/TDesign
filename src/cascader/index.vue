@@ -8,7 +8,7 @@
         v-for="(item, index) in selected"
         :key="index"
         :ref="setTabsItemRef"
-        :class="{ gray: index == selected.length - 1 }"
+        :class="{ gray: index == selected.length - 1 && !isFinish }"
         @click="onTabSwitch(index)"
       >
         <span>{{ item.text || item }}</span>
@@ -48,6 +48,7 @@ const setup = (props, ctx) => {
   const trackRef = ref()
   const selectList = ref([props.options])
   const tabIndex = ref(0)
+  const isFinish = ref(false)
   const setTabsItemRef = el => tabsItemRefs.push(el)
 
   // console.log(props.options)
@@ -58,35 +59,30 @@ const setup = (props, ctx) => {
     const { left, width } = tabsNode.getBoundingClientRect()
     const offsetX = index * -100
 
-    lineRef.value.style.width = width + 'px'
+    lineRef.value.style.width = `${width}px`
     lineRef.value.style.left = `${left}px`
     trackRef.value.style.transform = `translateX(${offsetX}%)`
   }
 
   const onSelect = (val, idx) => {
-    // selected.value.push(val)
+    isFinish.value = val.children ? false : true
     selected.value = selected.value.slice(0, idx)
-    selected.value.push(val, '请选择')
-    // console.log(val)
-    // console.warn(idx)
     selectList.value = selectList.value.slice(0, idx + 1)
-    selectList.value.push(val.children)
-    // console.log(selectList.value)
-
+    if (val.children) {
+      selected.value.push(val, '请选择')
+    } else {
+      selected.value.push(val)
+    }
+    val.children && selectList.value.push(val.children)
     nextTick(() => {
-      onTabSwitch(idx + 1)
-      if (!val.children) {
-      }
+      val.children && onTabSwitch(idx + 1)
     })
   }
 
   onBeforeUpdate(() => (tabsItemRefs.length = 0))
 
   onMounted(() => {
-    // console.log(trackRef.value)
     onTabSwitch(tabIndex.value)
-
-    // console.dir(tabsItemRefs[0]['childNodes'][0].getBoundingClientRect())
   })
   return {
     selected,
@@ -94,6 +90,7 @@ const setup = (props, ctx) => {
     lineRef,
     selectList,
     tabIndex,
+    isFinish,
     setTabsItemRef,
     onTabSwitch,
     onSelect
@@ -120,7 +117,8 @@ export default {
       bottom: 0;
       left: 0;
       height: 3px;
-      transition: left 0.4s;
+      border-radius: 1rem;
+      transition: left 0.2s;
       background: #1989fa;
     }
     &-item {
@@ -134,13 +132,13 @@ export default {
   &-options {
     display: flex;
     width: 100%;
-    transition: all 0.4s;
+    transition: all 0.3s;
     &-list {
       box-sizing: border-box;
       flex-shrink: 0;
       min-height: 100px;
       width: 100%;
-      padding: 20px;
+      padding: 15px;
       font-size: 16px;
       background-color: #ffffff;
     }
