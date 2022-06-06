@@ -8,6 +8,7 @@
         v-for="(item, index) in selected"
         :key="index"
         :ref="setTabsItemRef"
+        :class="{ gray: index == selected.length - 1 }"
         @click="onTabSwitch(index)"
       >
         <span>{{ item.text || item }}</span>
@@ -63,9 +64,12 @@ const setup = (props, ctx) => {
   }
 
   const onSelect = (val, idx) => {
-    selected.value.push(val)
+    // selected.value.push(val)
+    selected.value = selected.value.slice(0, idx)
+    selected.value.push(val, '请选择')
     // console.log(val)
-
+    // console.warn(idx)
+    selectList.value = selectList.value.slice(0, idx + 1)
     selectList.value.push(val.children)
     // console.log(selectList.value)
 
@@ -125,10 +129,6 @@ export default {
       font-size: 14px;
       height: 48px;
       line-height: 48px;
-      &:last-child {
-        background: red;
-        color: #969799;
-      }
     }
   }
   &-options {
@@ -145,5 +145,9 @@ export default {
       background-color: #ffffff;
     }
   }
+}
+
+.gray {
+  color: #969799;
 }
 </style>
