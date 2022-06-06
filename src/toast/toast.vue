@@ -84,7 +84,8 @@ export default {
   transform: translate(-50%, -50%);
   transition: opacity 0.25s ease-in;
   color: #ffff;
-  background: rgba(0, 0, 0, 0.7);
+  // background: rgba(0, 0, 0, 0.7);
+  background: #4a4a4b;
 
   &-icon {
     margin-bottom: 5px;
