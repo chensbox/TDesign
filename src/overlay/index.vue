@@ -2,7 +2,7 @@
   <teleport to="body">
     <transition name="slide-fade">
       <div
-        class="mask"
+        :class="['mask', transparent ? 'transparent' : '']"
         v-if="show"
         @touchmove.prevent="touchmove"
         @click="$emit('click')"
@@ -16,7 +16,8 @@
 <script>
 export default {
   props: {
-    show: Boolean
+    show: Boolean,
+    transparent: Boolean
   },
   emits: ['click']
 }
@@ -35,7 +36,9 @@ export default {
   top: 0;
   background: rgba(0, 0, 0, 0.7);
 }
-
+.transparent {
+  background: rgba(0, 0, 0, 0);
+}
 .slide-fade-enter-active,
 .slide-fade-leave-active {
   transition: all 0.25s ease-in-out;

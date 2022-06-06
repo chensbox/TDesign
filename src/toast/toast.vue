@@ -1,37 +1,68 @@
 <template>
   <transition name="slide-fade" appear>
-    <div class="toast" ref="toastRef">
-      <span>{{ state.message }}</span>
+    <div class="toast" ref="toastRef" :style="style">
+      <icon :name="icon" class="toast-icon" v-if="showLoading || icon" />
+      <p>{{ state.message }}</p>
+      <overlay :transparent="true" :show="forbidClick" />
     </div>
   </transition>
 </template>
 
 <script>
-import { reactive, ref } from '@vue/reactivity'
+import { reactive, ref, toRefs } from '@vue/reactivity'
+import { sleep } from '../utils'
+import { onMounted } from '@vue/runtime-core'
+import icon from '../icon/index.vue'
+import overlay from '../overlay/index.vue'
+
 const name = 'toast'
+
+const components = { icon, overlay }
+
 const props = {
-  duration: Number,
-  message: String,
-  forbidClick: Boolean,
   success: Boolean,
   fail: Boolean,
-  loadingType: String,
-  close: Function
+  destroy: Function,
+  position: String,
+  showLoading: Boolean,
+  icon: String,
+  duration: { type: Number, default: 2000 },
+  message: { type: String, require: true },
+  forbidClick: { type: Boolean, default: false },
+  loadingType: { type: String, default: 'circle' }
 }
-const setup = (props, context) => {
+
+const setup = (props, { expose }) => {
+  const style = reactive({})
   const state = reactive({
-    show: true,
     message: props.message
   })
-  console.log(props.close)
-  setTimeout(() => {
-    props.close()
-  }, 5000)
-  return { state }
+  const toastRef = ref()
+
+  const close = () => {
+    if (toastRef.value) {
+      toastRef.value.style.opacity = 0
+      sleep(250).then(props.destroy)
+    }
+  }
+
+  if (props.showLoading || props.icon) {
+    style.padding = '25px 15px'
+  }
+
+  onMounted(() => {
+    if (props.duration > 0) {
+      sleep(props.duration).then(close)
+    }
+  })
+
+  expose({ close })
+  return { state, toastRef, style }
 }
 export default {
   name,
   props,
+  components,
   setup
 }
 </script>
@@ -45,14 +76,20 @@ export default {
   min-height: 30px;
   min-width: 100px;
   padding: 5px 10px;
-  border-radius: 5px;
+  border-radius: 10px;
   line-height: 30px;
   text-align: center;
   pointer-events: none;
+  user-select: none;
   transform: translate(-50%, -50%);
   transition: opacity 0.25s ease-in;
-  color: white;
+  color: #ffff;
   background: rgba(0, 0, 0, 0.7);
+
+  &-icon {
+    margin-bottom: 5px;
+    font-size: 40px !important;
+  }
 }
 
 .slide-fade-enter-active,

@@ -5,20 +5,32 @@ function destroy(instance, mountNode) {
   instance.unmount(mountNode)
   document.body.removeChild(mountNode)
 }
-
+let instance, mountNode
 function Toast(props = {}) {
-  props.close = function () {
+  if (instance) {
+    instance.close()
+    instance = mountNode = null
+  }
+  props.destroy = function () {
     destroy(instance, mountNode)
   }
-  const { instance, mountNode } = createInstance(toast_sfc, props)
-  const [el] = mountNode.childNodes
-  // await sleep(2000)
-  // el.style.opacity = 0
-  // await sleep(500)
-  // destroy(instance, mountNode)
+  ;({ instance, mountNode } = createInstance(toast_sfc, props))
+  instance.state = instance._instance.ctx.state
+  instance.close = instance._instance.exposed.close
   // console.log(instance)
-  // instance.state = instance._instance.ctx.state
-  // return instance
+  return instance
+}
+
+Toast.success = function (option) {
+  return Toast({ ...option, icon: 'check' })
+}
+
+Toast.fail = function (option) {
+  return Toast({ ...option, icon: 'close' })
+}
+
+Toast.loading = function (option) {
+  return Toast({ ...option, showLoading: true, icon: 'loading-spinner' })
 }
 
 toast_sfc.install = function (app) {
