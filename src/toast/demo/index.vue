@@ -22,8 +22,8 @@ import cellGroup from '../../cell-group/index.vue'
 import { Toast } from '../index'
 function onClick() {
   const toast = Toast({
-    message: '提示内容',
-    duration: 0
+    message: '提示内容'
+    // duration: 2000
   })
   let secode = 9
   const task = setInterval(() => {

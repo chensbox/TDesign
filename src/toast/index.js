@@ -5,16 +5,16 @@ function destroy(instance, mountNode) {
   instance.unmount(mountNode)
   document.body.removeChild(mountNode)
 }
-let instance, mountNode
 function Toast(props = {}) {
-  if (instance) {
-    instance.close()
-    instance = mountNode = null
-  }
+  // if (instance) {
+  //   instance.close()
+  //   instance = mountNode = null
+  //   return Toast(props)
+  // }
   props.destroy = function () {
     destroy(instance, mountNode)
   }
-  ;({ instance, mountNode } = createInstance(toast_sfc, props))
+  const { instance, mountNode } = createInstance(toast_sfc, props)
   instance.state = instance._instance.ctx.state
   instance.close = instance._instance.exposed.close
   // console.log(instance)
