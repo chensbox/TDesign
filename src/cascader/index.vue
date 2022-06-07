@@ -39,6 +39,8 @@
 import { ref } from '@vue/reactivity'
 import icon from '../icon/index.vue'
 import { onMounted, onBeforeUpdate, nextTick } from '@vue/runtime-core'
+
+const name = 'Cascader'
 const components = { icon }
 const props = { options: Array }
 const setup = (props, ctx) => {
@@ -97,6 +99,7 @@ const setup = (props, ctx) => {
   }
 }
 export default {
+  name,
   components,
   props,
   setup
