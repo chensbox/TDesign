@@ -93,6 +93,7 @@ export default {
 
 <style lang="less" scoped>
 .popup {
+  overflow: hidden;
   position: fixed;
   z-index: 100;
   min-width: 150px;
