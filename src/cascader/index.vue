@@ -20,16 +20,23 @@
     <div class="t-cascader-options" ref="trackRef">
       <ul
         class="t-cascader-options-list"
-        v-for="(item, index) in selected"
-        :key="index"
+        v-for="(item, tabIdx) in selected"
+        :key="tabIdx"
       >
         <li
           class="t-cascader-options-list-item"
-          v-for="(item, idx) in selectList[index]"
-          :key="idx"
-          @click="onSelect(item, index)"
+          v-for="(li, liIdx) in selectList[tabIdx]"
+          :key="liIdx"
+          :class="{ active: selected[tabIdx].active == liIdx }"
+          @click="onSelect(li, tabIdx, liIdx)"
         >
-          {{ item.text }}
+          {{ li.text }}
+          <icon
+            name="check"
+            class="check"
+            size="16px"
+            v-if="selected[tabIdx].active == liIdx"
+          />
         </li>
       </ul>
     </div>
@@ -66,7 +73,7 @@ const setup = (props, ctx) => {
     trackRef.value.style.transform = `translateX(${offsetX}%)`
   }
 
-  const onSelect = (val, idx) => {
+  const onSelect = (val, idx, i) => {
     isFinish.value = val.children ? false : true
     selected.value = selected.value.slice(0, idx)
     selectList.value = selectList.value.slice(0, idx + 1)
@@ -75,6 +82,7 @@ const setup = (props, ctx) => {
     } else {
       selected.value.push(val)
     }
+    selected.value[idx].active = i
     val.children && selectList.value.push(val.children)
     nextTick(() => {
       val.children && onTabSwitch(idx + 1)
@@ -110,6 +118,7 @@ export default {
   position: relative;
   background: #fff;
   &-title {
+    line-height: 50px;
     padding: 15px;
   }
   &-tab {
@@ -121,33 +130,54 @@ export default {
       left: 0;
       height: 3px;
       border-radius: 1rem;
-      transition: left 0.2s;
+      transition: left 0.4s;
       background: #1989fa;
     }
     &-item {
       display: inline-block;
       padding: 0 10px;
       font-size: 14px;
-      height: 48px;
-      line-height: 48px;
+      height: 38px;
+      line-height: 38px;
     }
   }
   &-options {
     display: flex;
     width: 100%;
-    transition: all 0.3s;
+    transition: all 0.4s;
     &-list {
+      padding-top: 10px;
       box-sizing: border-box;
       flex-shrink: 0;
-      min-height: 100px;
+      min-height: 300px;
       width: 100%;
-      padding: 15px;
-      font-size: 16px;
+      font-size: 14px;
       background-color: #ffffff;
+      &-item {
+        position: relative;
+        height: 40px;
+        padding: 0 15px;
+        line-height: 40px;
+        // background: palevioletred;
+        .check {
+          position: absolute;
+          right: 5%;
+          top: 50%;
+          font-weight: bolder;
+          transform: translateY(-50%);
+        }
+        &:active {
+          // background: #f2f3f5;
+          background: rgba(25, 137, 250, 0.1);
+        }
+      }
     }
   }
 }
-
+.active {
+  background: rgba(25, 137, 250, 0.1);
+  color: #1989fa;
+}
 .gray {
   color: #969799;
 }
