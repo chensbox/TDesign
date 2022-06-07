@@ -142,6 +142,7 @@ export default {
       font-size: 14px;
       height: 38px;
       line-height: 38px;
+      cursor: pointer;
     }
   }
   &-options {
