@@ -48,9 +48,10 @@ import icon from '../icon/index.vue'
 import { onMounted, onBeforeUpdate, nextTick } from '@vue/runtime-core'
 
 const name = 'Cascader'
+const emits = ['finish']
 const components = { icon }
 const props = { options: Array }
-const setup = (props, ctx) => {
+const setup = (props, { emit }) => {
   const selected = ref(['请选择'])
   const tabsItemRefs = []
   const lineRef = ref()
@@ -81,6 +82,7 @@ const setup = (props, ctx) => {
       selected.value.push(val, '请选择')
     } else {
       selected.value.push(val)
+      emit('finish', selected.value)
     }
     selected.value[idx].active = i
     val.children && selectList.value.push(val.children)
@@ -108,6 +110,7 @@ const setup = (props, ctx) => {
 }
 export default {
   name,
+  emits,
   components,
   props,
   setup
@@ -149,7 +152,7 @@ export default {
       padding-top: 10px;
       box-sizing: border-box;
       flex-shrink: 0;
-      min-height: 300px;
+      min-height: 380px;
       width: 100%;
       font-size: 14px;
       background-color: #ffffff;

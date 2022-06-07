@@ -1,16 +1,29 @@
 <template>
   <demo-block title="基础用法">
-    <cascader :options="options"></cascader>
+    <cell-group>
+      <cell title="单元格" placeholder="请选择地区" @click="show = true">{{
+        value
+      }}</cell>
+    </cell-group>
+    <popup v-model="show" round position="bottom">
+      <cascader :options="options" @finish="onFinish" />
+    </popup>
   </demo-block>
 </template>
 
 <script>
 import cascader from '../index.vue'
+import cell from '../../cell/index.vue'
+import cellGroup from '../../cell-group/index.vue'
+import popup from '../../popup/index.vue'
+
 export default {
-  components: { cascader },
+  components: { cascader, cell, cellGroup, popup },
   data() {
     return {
+      show: false,
       loading: false,
+      value: '请选择地区',
       options: [
         {
           text: '广东省',
@@ -42,7 +55,12 @@ export default {
     }
   },
   methods: {
-    onclick() {}
+    onclick() {},
+    onFinish(e) {
+      console.log(e)
+      this.show = false
+      this.value = e.map(i => i.text).join('/')
+    }
   }
 }
 </script>
