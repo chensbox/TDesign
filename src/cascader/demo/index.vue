@@ -1,7 +1,7 @@
 <template>
   <demo-block title="基础用法">
     <cell-group>
-      <cell title="单元格" placeholder="请选择地区" @click="show = true">{{
+      <cell title="地区" placeholder="请选择地区" @click="show = true">{{
         value
       }}</cell>
     </cell-group>

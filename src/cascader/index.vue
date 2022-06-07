@@ -162,7 +162,7 @@ export default {
         height: 40px;
         padding: 0 15px;
         line-height: 40px;
-        // background: palevioletred;
+        user-select: none;
         .check {
           position: absolute;
           right: 5%;
