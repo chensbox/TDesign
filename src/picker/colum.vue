@@ -10,6 +10,7 @@
         class="picker-columns-col-wrap-item"
         v-for="(li, i) in list"
         :key="i + 1"
+        :data-i="i + 1"
       >
         {{ li.text || li }}
       </li>
@@ -65,7 +66,7 @@ const setup = function (props, { emit }) {
   }
 
   const mockClickByTouch = e => {
-    const index = e.target.__vnode.key
+    const index = e.target.dataset.i
     if (!index) {
       return
     }
