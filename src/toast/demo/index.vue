@@ -14,6 +14,12 @@
       <cell title="自定义图标" @click="diyIcon2"></cell>
     </cell-group>
   </demo-block>
+
+  <demo-block title="动态更新提示">
+    <cell-group>
+      <cell title="动态更新" @click="updateMessage"></cell>
+    </cell-group>
+  </demo-block>
 </template>
 
 <script setup>
@@ -66,5 +72,22 @@ function diyIcon2() {
     message: '自定义图标',
     icon: 'github-fill'
   })
+}
+
+function updateMessage() {
+  let second = 3
+  const toast = Toast.loading({
+    message: '倒计时 3 秒',
+    duration: 0,
+    forbidClick: true
+  })
+
+  const task = setInterval(() => {
+    if (second--) {
+      toast.state.message = `倒计时 ${second} 秒`
+    } else {
+      toast.close()
+    }
+  }, 1000)
 }
 </script>

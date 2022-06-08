@@ -21,7 +21,7 @@
 
   <demo-block title="圆角弹窗">
     <cell-gropu>
-      <cell title="底部弹出" @click="round = true"> </cell>
+      <cell title="圆角弹窗" @click="round = true"> </cell>
     </cell-gropu>
     <popup v-model="round" round position="bottom" :style="{ height: '30%' }">
     </popup>
