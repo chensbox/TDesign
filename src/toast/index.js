@@ -29,7 +29,7 @@ Toast.success = function (option) {
 
 Toast.fail = function (option) {
   option = parsObj(option)
-  return Toast({ ...option, icon: 'close' })
+  return Toast({ ...option, icon: 'close-circle' })
 }
 
 Toast.loading = function (option) {

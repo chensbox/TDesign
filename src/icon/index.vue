@@ -42,7 +42,9 @@ export default {
         ['search', 'icon icon-search '],
         ['setting', 'icon icon-setting '],
         ['up', 'icon icon-up '],
-        ['user', 'icon icon-user ']
+        ['user', 'icon icon-user '],
+        ['check-circle', 'icon icon-check-circle'],
+        ['close-circle', 'icon icon-close-circle']
       ])
     )
 
