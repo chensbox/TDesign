@@ -84,19 +84,20 @@ export default {
     :disabled="disabled"
   >
     <icon :name="icon || loadingType" class="btn-icon" v-if="icon || loading" />
-    <span class="btn-text" v-if="!loading && slots.default"><slot /></span
-    ><span class="btn-text" v-if="loading && loadingText">{{
-      loadingText
-    }}</span>
+    <span :class="{ 'btn-text': icon }" v-if="!loading && slots.default">
+      <slot />
+    </span>
+    <span class="btn-text" v-if="loading && loadingText">
+      {{ loadingText }}
+    </span>
   </button>
 </template>
 
 <style lang="less">
 .t-button {
-  // box-sizing: content-box;
   color: #fff;
   font-size: 16px;
-  line-height: 36px;
+  line-height: 100%;
   background-color: #f44;
   border: none;
   outline: none;
@@ -136,18 +137,17 @@ export default {
 .normal {
   height: 42px;
   padding: 0 15px;
-  //line-height: 42px;
   font-size: 16px;
 }
 .small {
   height: 32px;
   padding: 0 8px;
-  line-height: 32px;
+  // line-height: 32px;
 }
 .mini {
   height: 24px;
   padding: 0 4px;
-  line-height: 24px;
+  // line-height: 24px;
   font-size: 10px;
 }
 .plain {
