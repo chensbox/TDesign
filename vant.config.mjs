@@ -5,7 +5,7 @@ export default {
       preprocessor: 'less',
     },
     site: {
-      publicPath: '/site-dist',
+      publicPath: '/TDesign/site-dist',
     },
     configureVite(config){
       const { BUILD_TARGET } = process.env;
