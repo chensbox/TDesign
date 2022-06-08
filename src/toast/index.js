@@ -1,5 +1,6 @@
 import toast_sfc from './toast.vue'
 import { sleep, createInstance } from '../utils'
+import { ref } from 'vue'
 
 function destroy(instance, mountNode) {
   instance.unmount(mountNode)
@@ -12,13 +13,14 @@ function Toast(props) {
   //   return Toast(props)
   // }
   props = parsObj(props)
+  props.message = ref(props.message)
   props.destroy = function () {
     destroy(instance, mountNode)
   }
   const { instance, mountNode } = createInstance(toast_sfc, props)
-  instance.state = instance._instance.ctx.state
-  instance.close = instance._instance.exposed.close
-  // console.log(instance)
+  instance.message = props.message
+  instance.close = props.destroy
+  console.log(instance)
   return instance
 }
 

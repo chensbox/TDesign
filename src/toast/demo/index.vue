@@ -84,8 +84,10 @@ function updateMessage() {
 
   const task = setInterval(() => {
     if (second--) {
-      toast.state.message = `倒计时 ${second} 秒`
+      console.log(toast.state)
+      toast.message.value = `倒计时 ${second} 秒`
     } else {
+      clearInterval(task)
       toast.close()
     }
   }, 1000)
