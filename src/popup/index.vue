@@ -9,7 +9,9 @@
         v-if="closeable"
         @click="onclick"
       />
-      <slot />
+      <template v-if="lazyLoad">
+        <slot />
+      </template>
       <overlay :show="modelValue" @click="onclick" />
     </div>
   </transition>
@@ -19,6 +21,7 @@
 import { reactive, ref } from '@vue/reactivity'
 import overlay from '../overlay/index.vue'
 import icon from '../icon/index.vue'
+import { watchEffect } from '@vue/runtime-core'
 const components = { overlay, icon }
 const props = {
   modelValue: Boolean,
@@ -33,6 +36,7 @@ const setup = (props, { emit }) => {
   const animation = ref('slide-fade-bottom')
   const style = reactive({})
   const iconPositon = reactive({})
+  const lazyLoad = ref()
   if (!props.position) {
     animation.value = 'fade-in'
     style.left = '50%'
@@ -78,11 +82,16 @@ const setup = (props, { emit }) => {
       iconPositon[abscissa] = '15px'
     }
   }
-
+  const stop = watchEffect(() => {
+    if (props.modelValue) {
+      lazyLoad.value = props.modelValue
+      stop()
+    }
+  })
   const onclick = event => {
     emit('update:modelValue', false)
   }
-  return { style, animation, iconPositon, onclick }
+  return { style, animation, iconPositon, lazyLoad, onclick }
 }
 export default {
   components,

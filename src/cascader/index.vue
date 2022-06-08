@@ -94,7 +94,9 @@ const setup = (props, { emit }) => {
   onBeforeUpdate(() => (tabsItemRefs.length = 0))
 
   onMounted(() => {
-    onTabSwitch(tabIndex.value)
+    nextTick(() => {
+      onTabSwitch(tabIndex.value)
+    })
   })
   return {
     selected,
@@ -130,7 +132,8 @@ export default {
     &-line {
       position: absolute;
       bottom: 0;
-      left: 0;
+      // left: 15px;
+      // width: 42px;
       height: 3px;
       border-radius: 1rem;
       transition: left 0.4s;
