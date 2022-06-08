@@ -1,7 +1,7 @@
 <template>
   <div class="cell" @click="$emit('click')">
     <div class="cell-title cell-item">
-      <icon class="left-icon" name="setting" size="17px" v-if="icon" />
+      <icon class="left-icon" :name="icon" size="17px" v-if="icon" />
       {{ title }}
     </div>
     <div class="cell-input-value cell-item">
