@@ -5,12 +5,13 @@ function destroy(instance, mountNode) {
   instance.unmount(mountNode)
   document.body.removeChild(mountNode)
 }
-function Toast(props = {}) {
+function Toast(props) {
   // if (instance) {
   //   instance.close()
   //   instance = mountNode = null
   //   return Toast(props)
   // }
+  props = parsObj(props)
   props.destroy = function () {
     destroy(instance, mountNode)
   }
@@ -22,15 +23,25 @@ function Toast(props = {}) {
 }
 
 Toast.success = function (option) {
+  option = parsObj(option)
   return Toast({ ...option, icon: 'check' })
 }
 
 Toast.fail = function (option) {
+  option = parsObj(option)
   return Toast({ ...option, icon: 'close' })
 }
 
 Toast.loading = function (option) {
+  option = parsObj(option)
   return Toast({ ...option, showLoading: true, icon: 'loading-spinner' })
+}
+
+function parsObj(message) {
+  if (typeof message !== 'object') {
+    return { message }
+  }
+  return message
 }
 
 toast_sfc.install = function (app) {

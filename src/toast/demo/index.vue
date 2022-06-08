@@ -37,7 +37,7 @@ function onClick() {
 }
 
 function baseText() {
-  Toast({ message: '提示内容' })
+  Toast('提示内容')
 }
 
 function loading() {
@@ -49,14 +49,10 @@ function loading() {
 }
 
 function success() {
-  Toast.success({
-    message: '成功提示'
-  })
+  Toast.success('成功提示')
 }
 function fail() {
-  Toast.fail({
-    message: '失败提示'
-  })
+  Toast.fail('失败提示')
 }
 function diyIcon() {
   Toast({
