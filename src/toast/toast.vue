@@ -1,7 +1,11 @@
 <template>
   <transition name="slide-fade" appear>
     <div class="toast" ref="toastRef" :style="style">
-      <icon :name="state.icon" class="toast-icon" v-if="showLoading || icon" />
+      <icon
+        :name="state.icon"
+        class="toast-icon"
+        v-if="showLoading || state.icon"
+      />
       <p>{{ state.message }}</p>
       <overlay :transparent="true" :show="forbidClick" />
     </div>
@@ -47,7 +51,7 @@ const setup = (props, { expose }) => {
     }
   }
 
-  if (props.showLoading || props.icon) {
+  if (props.showLoading || props.icon.value) {
     style.padding = '25px 15px'
   }
 
