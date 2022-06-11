@@ -61,11 +61,11 @@
     <t-button type="primary" style="margin: 5px" round>圆形按钮</t-button>
   </demo-block>
   <demo-block title="不同尺寸">
-    <t-button type="primary" size="large"> 大号按钮</t-button>
-    <t-button class="show-btn" type="primary"> 普通按钮</t-button>
-    <t-button class="show-btn" type="primary" size="small"> 小型按钮</t-button>
+    <t-button type="info" size="large"> 大号按钮</t-button>
+    <t-button class="show-btn" type="info"> 普通按钮</t-button>
+    <t-button class="show-btn" type="info" size="small"> 小型按钮</t-button>
 
-    <t-button class="show-btn" type="primary" size="mini"> 迷你按钮</t-button>
+    <t-button class="show-btn" type="info" size="mini"> 迷你按钮</t-button>
   </demo-block>
 </template>
 

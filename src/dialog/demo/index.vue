@@ -5,7 +5,7 @@
   </demo-block>
 
   <demo-block title="函数调用">
-    <t-button @click="onClick">函数调用</t-button>
+    <t-button @click="onClick" type="info">函数调用</t-button>
   </demo-block>
 </template>
 <script>
