@@ -1,7 +1,7 @@
 <template>
   <transition name="slide-fade" appear>
     <div class="toast" ref="toastRef" :style="style">
-      <icon :name="icon" class="toast-icon" v-if="showLoading || icon" />
+      <icon :name="state.icon" class="toast-icon" v-if="showLoading || icon" />
       <p>{{ state.message }}</p>
       <overlay :transparent="true" :show="forbidClick" />
     </div>
@@ -35,7 +35,8 @@ const props = {
 const setup = (props, { expose }) => {
   const style = reactive({})
   const state = reactive({
-    message: props.message
+    message: props.message,
+    icon: props.icon
   })
   const toastRef = ref()
 

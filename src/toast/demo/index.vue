@@ -84,11 +84,12 @@ function updateMessage() {
 
   const task = setInterval(() => {
     if (second--) {
-      console.log(toast.state)
       toast.message.value = `倒计时 ${second} 秒`
     } else {
+      toast.message.value = 'success'
+      toast.icon.value = 'check-circle'
       clearInterval(task)
-      toast.close()
+      setTimeout(toast.close, 1000)
     }
   }, 1000)
 }

@@ -7,18 +7,15 @@ function destroy(instance, mountNode) {
   document.body.removeChild(mountNode)
 }
 function Toast(props) {
-  // if (instance) {
-  //   instance.close()
-  //   instance = mountNode = null
-  //   return Toast(props)
-  // }
   props = parsObj(props)
   props.message = ref(props.message)
+  props.icon = ref(props.icon)
   props.destroy = function () {
     destroy(instance, mountNode)
   }
   const { instance, mountNode } = createInstance(toast_sfc, props)
   instance.message = props.message
+  instance.icon = props.icon
   instance.close = props.destroy
   console.log(instance)
   return instance
