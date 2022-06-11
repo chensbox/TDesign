@@ -1,6 +1,6 @@
 <template>
   <demo-block title="基础图标">
-    <h1 @click="reset">css module test</h1>
+    <!-- <h1 @click="reset">css module test</h1> -->
     <icon name="loading" size="50px"></icon>
 
     <icon name="close" size="50px"></icon>
