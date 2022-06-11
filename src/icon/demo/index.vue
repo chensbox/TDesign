@@ -47,10 +47,6 @@
     <icon name="setting" size="50px"></icon>
 
     <icon name="setting" size="50px"></icon>
-
-    <t-button type="danger" size="mini">按钮</t-button>
-    <t-button type="danger" size="mini">按钮</t-button>
-    <t-button type="info" icon="setting" round>按钮</t-button>
   </demo-block>
 </template>
 
