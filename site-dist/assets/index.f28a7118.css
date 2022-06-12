@@ -1,1 +1,0 @@
-.dialog-warp[data-v-602de3b6]{z-index:100;position:fixed;top:50%;left:50%;transform:translate(-50%,-50%);padding:10px;border:1px solid #000;background:#ffff;transition:opacity .1s linear;animation:scaleIn-602de3b6 .1s linear}@keyframes scaleIn-602de3b6{0%{transform:translate(-50%,-50%) scale(0)}to{transform:translate(-50%,-50%) scale(1)}}
