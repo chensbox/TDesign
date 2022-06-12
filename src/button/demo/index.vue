@@ -36,7 +36,7 @@
       class="show-btn"
       loading-type="loading"
       loading-text="加载中..."
-      loading
+      :loading="loading"
       type="info"
       @click="onclick"
     >
@@ -64,7 +64,6 @@
     <t-button type="info" size="large"> 大号按钮</t-button>
     <t-button class="show-btn" type="info"> 普通按钮</t-button>
     <t-button class="show-btn" type="info" size="small"> 小型按钮</t-button>
-
     <t-button class="show-btn" type="info" size="mini"> 迷你按钮</t-button>
   </demo-block>
 </template>

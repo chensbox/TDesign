@@ -1,25 +1,38 @@
 <template>
-  <demo-block title="组件用法">
-    <t-dialog title="组件调用" v-model="show">
-      如果解决方法是丑陋的，那就肯定还有更好的解决方法，只是还没有发现而已。
-    </t-dialog>
-    <t-button @click="show = !show" type="info">组件调用</t-button>
+  <demo-block title="基础用法">
+    <cell-group>
+      <cell title="提示弹窗" @click="onClick2" />
+      <cell title="提示弹窗(无标题)" @click="notTitle" />
+      <cell title="确认弹窗" @click="onClick" />
+    </cell-group>
   </demo-block>
 
-  <demo-block title="函数调用">
-    <t-button @click="onClick" type="info">确认弹框</t-button>
-    <t-button @click="onClick2" type="info">普通弹框</t-button>
-    <t-button @click="asyncClose" type="info">异步关闭</t-button>
+  <demo-block title="异步关闭">
+    <cell-group>
+      <cell title="提示弹窗" @click="asyncClose" />
+    </cell-group>
+  </demo-block>
+
+  <demo-block title="组件调用">
+    <t-dialog v-model="show" title="标题">
+      <div class="insert">
+        组件用法可以通过默认插槽嵌入任意内容<br />(文字、html节点或者组件)
+      </div>
+    </t-dialog>
+    <cell-group>
+      <cell title="提示弹窗" @click="show = true" />
+    </cell-group>
   </demo-block>
 </template>
 <script>
 import { Dialog } from '../index'
 import { Toast } from '../../toast/index'
-import TButton from '../../button/index.vue'
+import cell from '../../cell/index.vue'
+import cellGroup from '../../cell-group/index.vue'
 import { sleep } from '../../utils'
 
 export default {
-  components: { TDialog: Dialog.Component, TButton },
+  components: { TDialog: Dialog.Component, cellGroup, cell },
   data() {
     return {
       show: false
@@ -63,6 +76,14 @@ export default {
     onClick2() {
       Dialog.alert({
         title: '标题',
+        message:
+          '如果解决方法是丑陋的，那就肯定还有更好的解决方法，只是还没有发现而已。'
+      }).then(() => {
+        Toast('确定')
+      })
+    },
+    notTitle() {
+      Dialog.alert({
         message:
           '如果解决方法是丑陋的，那就肯定还有更好的解决方法，只是还没有发现而已。'
       }).then(() => {
