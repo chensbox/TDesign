@@ -1,16 +1,17 @@
-# Button 按钮
+# Overlay 遮罩层
 
 ### 介绍
 
-Button 是一个示例按钮组件
+创建一个遮罩层，用于强调特定的页面元素，并阻止用户进行其他操作。
 
 ### 引入
 
 ```js
-import Vue from 'vue'
-import { TButton } from 'TDesign'
+import { createApp } from 'vue'
+import { Overlay } from 'TDesign'
 
-Vue.use(TButton)
+const app = createApp()
+app.use(Overlay)
 ```
 
 ## 代码演示
@@ -18,17 +19,31 @@ Vue.use(TButton)
 ### 基础用法
 
 ```html
-<t-button type="primary" />
+<TButton @click="onclick">显示遮罩层</TButton>
+<overlay :show="show" @click="show = false" />
+```
+
+### 嵌入内容
+
+```html
+<div class="block-item">
+  <TButton @click="slot = true">嵌入内容</TButton>
+  <overlay :show="slot" @click="slot = false">
+    <div class="block"></div>
+  </overlay>
+</div>
 ```
 
 ## API
 
 ### Props
 
-| 参数          | 说明     | 类型     | 默认值    |
-| ------------- | -------- | -------- | --------- |
-| type          | 按钮类型 | _string_ | `primary` |
-| color `1.0.0` | 按钮颜色 | _string_ | -         |
+| 参数        | 说明                                    | 类型               | 默认值  |
+| ----------- | --------------------------------------- | ------------------ | ------- |
+| show        | 是否展示遮罩层                          | _boolean_          | `false` |
+| z-index     | z-index 层级                            | _number \| string_ | `1`     |
+| duration    | 动画时长，单位秒，设置为 0 可以禁用动画 | _number \| string_ | `0.3`   |
+| lock-scroll | 是否锁定背景滚                          | _boolean_          | `true`  |
 
 ### Events
 
@@ -38,6 +53,6 @@ Vue.use(TButton)
 
 ### Slots
 
-| 名称    | 说明     |
-| ------- | -------- |
-| default | 默认插槽 |
+| 名称    | 说明                               |
+| ------- | ---------------------------------- |
+| default | 默认插槽，用于在遮罩层上方嵌入内容 |
