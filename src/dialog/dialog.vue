@@ -3,11 +3,14 @@
     <div class="dialog-content">
       <h3 class="dialog-content-title">{{ title }}</h3>
       <div class="dialog-content-text">
-        {{ message }}
+        <slot>
+          {{ message }}
+        </slot>
       </div>
     </div>
     <div class="dialog-button" :class="{ 'button-border': type == 'confirm' }">
       <t-button
+        v-if="type == 'confirm'"
         class="dialog-button-cancel"
         square
         loading-type="loading"
@@ -40,7 +43,8 @@ const props = {
   modelValue: Boolean,
   title: String,
   message: String,
-  type: { type: String, default: 'confirm' }
+  beforClose: Function,
+  type: { type: String, default: 'alert' }
 }
 const emits = ['confirm', 'cancel', 'update:modelValue']
 const components = { overlay, TButton }
@@ -51,27 +55,33 @@ const setup = (props, { attrs, slots, emit }) => {
   const cancelLoading = ref(false)
   function handleClick(action) {
     // dialogRef.value.style.opacity = 0
+
     if (confirmLoading.value || cancelLoading.value) {
       return
     }
-    if (action == 'confirm') {
-      confirmLoading.value = true
-    } else {
-      cancelLoading.value = true
-    }
-    setTimeout(() => {
-      confirmLoading.value = false
-      cancelLoading.value = false
-      if (props.callback) {
-        maskShow.value = false
-        props.callback(action)
+    if (props.beforClose) {
+      if (action == 'confirm') {
+        confirmLoading.value = true
       } else {
-        emit(action)
+        cancelLoading.value = true
       }
-      sleep().then(() => {
-        emit('update:modelValue', false)
-      })
-    }, 2000)
+      return props.beforClose(close.bind(null, action))
+    }
+    close(action)
+  }
+
+  function close(action) {
+    confirmLoading.value = false
+    cancelLoading.value = false
+    if (props.callback) {
+      maskShow.value = false
+      props.callback(action)
+    } else {
+      emit(action)
+    }
+    sleep().then(() => {
+      emit('update:modelValue', false)
+    })
   }
 
   return {
@@ -117,7 +127,7 @@ export default {
     }
     &-title {
       font-weight: 400;
-      margin-bottom: 15px;
+      margin-bottom: 10px;
       text-align: center;
     }
   }

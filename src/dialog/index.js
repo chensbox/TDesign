@@ -4,7 +4,6 @@ import { render, h } from 'vue'
 
 function Dialog(props = {}) {
   props.modelValue = true
-  props.type = 'confirm'
   const mountNode = document.createElement('div')
   document.body.appendChild(mountNode)
 
@@ -20,6 +19,13 @@ function Dialog(props = {}) {
     const Vnode = h(dialog_sfc, props)
     render(Vnode, mountNode)
   })
+}
+
+Dialog.alert = function (option) {
+  return Dialog({ ...option, type: 'alert' })
+}
+Dialog.confirm = function (option) {
+  return Dialog({ ...option, type: 'confirm' })
 }
 
 dialog_sfc.install = function (app) {
