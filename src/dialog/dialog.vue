@@ -1,9 +1,9 @@
 <template>
   <div class="dialog-warp" ref="dialogRef" v-show="modelValue">
     <div class="dialog-content">
-      <h3 class="dialog-content-title">标题</h3>
+      <h3 class="dialog-content-title">{{ title }}</h3>
       <div class="dialog-content-text">
-        如果解决方法是丑陋的，那就肯定还有更好的解决方法，只是还没有发现而已。
+        {{ message }}
       </div>
     </div>
     <div class="dialog-button" :class="{ 'button-border': type == 'confirm' }">
@@ -24,7 +24,7 @@
         >确定</t-button
       >
     </div>
-    <overlay :show="modelValue && maskShow">{{ modelValue }}</overlay>
+    <overlay :show="modelValue && maskShow"></overlay>
   </div>
 </template>
 
