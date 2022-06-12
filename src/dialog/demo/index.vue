@@ -16,6 +16,7 @@
 import { Dialog } from '../index'
 import { Toast } from '../../toast/index'
 import TButton from '../../button/index.vue'
+import { sleep } from '../../utils'
 
 export default {
   components: { TDialog: Dialog.Component, TButton },
@@ -25,8 +26,12 @@ export default {
     }
   },
   methods: {
-    beforClose(done) {
-      setTimeout(done, 2000)
+    beforClose(action, done) {
+      if (action == 'confirm') {
+        sleep(2000).then(done)
+      } else {
+        done()
+      }
     },
     asyncClose() {
       Dialog.confirm({

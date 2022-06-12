@@ -55,7 +55,6 @@ const setup = (props, { attrs, slots, emit }) => {
   const cancelLoading = ref(false)
   function handleClick(action) {
     // dialogRef.value.style.opacity = 0
-
     if (confirmLoading.value || cancelLoading.value) {
       return
     }
@@ -65,7 +64,7 @@ const setup = (props, { attrs, slots, emit }) => {
       } else {
         cancelLoading.value = true
       }
-      return props.beforClose(close.bind(null, action))
+      return props.beforClose(action, close.bind(null, action))
     }
     close(action)
   }
