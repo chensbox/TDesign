@@ -16,15 +16,21 @@
   </demo-block>
 
   <demo-block title="切换动画">
-    <tabs v-model="active3" line-animation tab-animation>
+    <tabs v-model="active3" line-animation>
       <tab :title="'标签' + i" v-for="i in 4" :key="i">
         {{ `标签${i}内容区` }}
       </tab>
     </tabs>
   </demo-block>
-
+  <demo-block title="视图联动">
+    <tabs v-model="active9" line-animation tab-animation>
+      <tab :title="'标签' + i" v-for="i in 4" :key="i">
+        {{ `标签${i}内容区` }}
+      </tab>
+    </tabs>
+  </demo-block>
   <demo-block title="样式风格">
-    <tabs v-model="active3" line-animation tab-animation cover>
+    <tabs v-model="active8" line-animation tab-animation cover>
       <tab :title="'标签' + i" v-for="i in 4" :key="i">
         {{ `标签${i}内容区` }}
       </tab>
@@ -75,4 +81,6 @@ const active4 = ref(0)
 const active5 = ref(0)
 const active6 = ref(0)
 const active7 = ref(0)
+const active8 = ref(0)
+const active9 = ref(0)
 </script>
