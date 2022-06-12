@@ -1,16 +1,17 @@
-# Button 按钮
+# cell 单元格
 
 ### 介绍
 
-Button 是一个示例按钮组件
+单元格为列表中的单个展示项,需配合单元格组(cellGroup)组件使用
 
 ### 引入
 
 ```js
 import Vue from 'vue'
-import { TButton } from 'TDesign'
+import { cell, cellGroup } from 'TDesign'
 
-Vue.use(TButton)
+Vue.use(cellGroup)
+Vue.use(cell)
 ```
 
 ## 代码演示
