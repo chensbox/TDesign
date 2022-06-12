@@ -156,14 +156,12 @@ export default {
 }
 button:active {
   filter: brightness(90%);
-  transform: scale(0.99);
 }
 .disabled {
   cursor: not-allowed;
   opacity: 0.6;
   &:active {
     filter: brightness(100%);
-    transform: scale(1);
   }
 }
 * {

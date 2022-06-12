@@ -4,6 +4,7 @@ import { render, h } from 'vue'
 
 function Dialog(props = {}) {
   props.modelValue = true
+  props.type = 'confirm'
   const mountNode = document.createElement('div')
   document.body.appendChild(mountNode)
 
