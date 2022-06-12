@@ -18,26 +18,24 @@ Vue.use(icon)
 ### 基础用法
 
 ```html
-<demo-button type="primary" />
+<icon name="loading" size="50px"></icon>
+
+<icon name="close" size="50px"></icon>
+
+<icon name="attachment" size="50px"></icon>
+
+<icon name="camera" size="50px"></icon>
+
+<icon name="arrow-right" size="50px"></icon>
+
+<icon name="bottom" size="50px"></icon>
 ```
 
 ## API
 
 ### Props
 
-| 参数          | 说明     | 类型     | 默认值    |
-| ------------- | -------- | -------- | --------- |
-| type          | 按钮类型 | _string_ | `primary` |
-| color `1.0.0` | 按钮颜色 | _string_ | -         |
-
-### Events
-
-| 事件名 | 说明       | 回调参数            |
-| ------ | ---------- | ------------------- |
-| click  | 点击时触发 | _event: MouseEvent_ |
-
-### Slots
-
-| 名称    | 说明     |
-| ------- | -------- |
-| default | 默认插槽 |
+| 参数         | 说明     | 类型     | 默认值       |
+| ------------ | -------- | -------- | ------------ |
+| name         | 图标名称 | _string_ | -            |
+| size `1.0.0` | 图标尺寸 | _string_ | `继承父元素` |

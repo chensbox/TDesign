@@ -9,7 +9,7 @@
 
   <demo-block title="异步关闭">
     <cell-group>
-      <cell title="提示弹窗" @click="asyncClose" />
+      <cell title="异步关闭" @click="asyncClose" />
     </cell-group>
   </demo-block>
 
