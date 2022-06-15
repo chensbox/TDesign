@@ -111,7 +111,7 @@ export default {
   width: 320px;
   border-radius: 16px;
   transform: translate(-50%, -50%);
-  background: #ffff;
+  background: #fff;
   transition: opacity 0.2s ease-out;
   animation: scaleIn 0.2s ease-out;
   .dialog-content {
