@@ -78,6 +78,10 @@ export default {
             path: 'cascader',
             title: 'cascader 级联选择',
           },
+          {
+            path: 'swipe',
+            title: 'swipe 轮播',
+          },
         ],
       },
     ],
