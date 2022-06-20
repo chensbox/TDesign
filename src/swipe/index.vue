@@ -1,25 +1,26 @@
-<template></template>
+<template>
+  <div class="swipe">
+    <slot />
+  </div>
+</template>
 
 <script>
-const name = 'icon'
-const props = {
-  name: {
-    type: String,
-    required: true
-  },
-  size: {
-    type: String,
-    default: 'inherit'
-  }
-}
+const name = 'swipe'
+const props = {}
+
+function setup(props, ctx) {}
 
 export default {
   name,
   props,
-  setup() {
-    return {}
-  }
+  setup
 }
 </script>
 
-<style lang="less" scoped></style>
+<style lang="less">
+.swipe {
+  height: 30vh;
+  width: 100%;
+  background: pink;
+}
+</style>
