@@ -67,12 +67,13 @@ function setup(props, { slots }) {
     moveX = 0
   }
   onMounted(() => {
+    console.log(trackRef.value.children)
     clientWidth = document.body.clientWidth
     // console.dir(slots.default()[0]) //null
-    firstSlot = slots.default()[0].children.default()[0].el.parentNode
-    lastSlot = slots.default().at(-1).children.default()[0].el.parentNode
-    console.dir(firstSlot.style)
-    console.dir(lastSlot.style)
+    // firstSlot = slots.default()[0].children.default()[0].el.parentNode
+    // lastSlot = slots.default().at(-1).children.default()[0].el.parentNode
+    // console.dir(firstSlot.style)
+    // console.dir(lastSlot.style)
   })
   return { touchstart, touchmove, touchend, trackRef, trackStyle }
 }
