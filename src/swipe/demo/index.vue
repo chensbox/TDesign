@@ -1,7 +1,7 @@
 <template>
   <demo-block title="基础用法">
     <swipe>
-      <swipe-item>1</swipe-item>
+      <swipe-item> 1 </swipe-item>
       <swipe-item>2</swipe-item>
       <swipe-item>3</swipe-item>
       <swipe-item>4</swipe-item>
@@ -18,4 +18,7 @@ export default {
 }
 </script>
 
-<style lange="less" scoped></style>
+<style lange="less" scoped>
+.demo {
+}
+</style>
