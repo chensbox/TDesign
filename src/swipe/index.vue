@@ -19,7 +19,7 @@ import { computed, nextTick, onMounted } from '@vue/runtime-core'
 const name = 'swipe'
 const props = {}
 
-function setup(props, ctx) {
+function setup(props, { slots }) {
   const trackRef = ref()
   const offsetX = ref(0)
   const duration = ref(0.4)
@@ -30,11 +30,12 @@ function setup(props, ctx) {
     }
   })
 
-  console.log(ctx)
   let clientWidth,
     startX,
     moveX,
     distance,
+    firstSlot,
+    lastSlot,
     startTimeStamp,
     curX = 0,
     index = 0
@@ -66,10 +67,12 @@ function setup(props, ctx) {
     moveX = 0
   }
   onMounted(() => {
-    nextTick(() => {
-      console.log(ctx.slots.default()[0].el)
-    })
     clientWidth = document.body.clientWidth
+    // console.dir(slots.default()[0]) //null
+    firstSlot = slots.default()[0].children.default()[0].el.parentNode
+    lastSlot = slots.default().at(-1).children.default()[0].el.parentNode
+    console.dir(firstSlot.style)
+    console.dir(lastSlot.style)
   })
   return { touchstart, touchmove, touchend, trackRef, trackStyle }
 }
