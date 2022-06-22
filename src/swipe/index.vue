@@ -15,7 +15,7 @@
 
 <script>
 import { reactive, ref } from '@vue/reactivity'
-import { computed, onMounted } from '@vue/runtime-core'
+import { computed, nextTick, onMounted } from '@vue/runtime-core'
 const name = 'swipe'
 const props = {}
 
@@ -30,6 +30,7 @@ function setup(props, ctx) {
     }
   })
 
+  console.log(ctx)
   let clientWidth,
     startX,
     moveX,
@@ -39,13 +40,11 @@ function setup(props, ctx) {
     index = 0
 
   const touchstart = e => {
-    console.log('start')
     startTimeStamp = e.timeStamp
     startX = e.touches[0].pageX
   }
 
   const touchmove = e => {
-    console.log('move')
     duration.value = 0
     moveX = e.touches[0].pageX
     offsetX.value = curX + (moveX - startX)
@@ -67,6 +66,9 @@ function setup(props, ctx) {
     moveX = 0
   }
   onMounted(() => {
+    nextTick(() => {
+      console.log(ctx.slots.default()[0].el)
+    })
     clientWidth = document.body.clientWidth
   })
   return { touchstart, touchmove, touchend, trackRef, trackStyle }
@@ -88,6 +90,11 @@ export default {
     display: flex;
     height: 100%;
     width: 100%;
+  }
+  &-item.first {
+    &:first-child {
+      color: red;
+    }
   }
 }
 </style>
