@@ -44,7 +44,7 @@ function setup(props, { slots }) {
     curX = 0,
     index = 0
   const loop = () => {
-    if (isTouching || Date.now() - endTimeStamp < 2400) {
+    if (isTouching || Date.now() - endTimeStamp < 2000) {
       return
     }
     startX = clientWidth + 1
@@ -117,7 +117,7 @@ function setup(props, { slots }) {
     lastSlot = trackRef.value.children[slotCount - 1]
     clientWidth = document.body.clientWidth
 
-    task = setInterval(loop, 2400)
+    task = setInterval(loop, 2000)
   })
 
   onUnmounted(() => {
@@ -142,6 +142,7 @@ export default {
     display: flex;
     height: 100%;
     width: 100%;
+    cursor: grab;
   }
   &-item.first {
     &:first-child {
