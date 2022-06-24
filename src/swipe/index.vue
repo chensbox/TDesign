@@ -10,6 +10,14 @@
     >
       <slot />
     </div>
+    <div class="dot">
+      <div
+        class="dot-item"
+        v-for="i in dotCount"
+        :key="i"
+        :class="{ active: (active % 4) + 1 == i }"
+      ></div>
+    </div>
   </div>
 </template>
 
@@ -23,6 +31,8 @@ function setup(props, { slots }) {
   const trackRef = ref()
   const offsetX = ref(0)
   const duration = ref(0.4)
+  const active = ref()
+  const dotCount = ref()
   const trackStyle = computed(() => {
     return {
       transform: `translateX(${offsetX.value}px)`,
@@ -106,13 +116,13 @@ function setup(props, { slots }) {
       index += distance > 0 ? -1 : 1
       offsetX.value = -index * clientWidth
     }
-
+    active.value = index
     curX = offsetX.value
     moveX = 0
     endTimeStamp = Date.now()
   }
   onMounted(() => {
-    slotCount = trackRef.value.children.length
+    dotCount.value = slotCount = trackRef.value.children.length
     firstSlot = trackRef.value.children[0]
     lastSlot = trackRef.value.children[slotCount - 1]
     clientWidth = document.body.clientWidth
@@ -123,7 +133,15 @@ function setup(props, { slots }) {
   onUnmounted(() => {
     clearInterval(task)
   })
-  return { touchstart, touchmove, touchend, trackRef, trackStyle }
+  return {
+    touchstart,
+    touchmove,
+    touchend,
+    trackRef,
+    trackStyle,
+    dotCount,
+    active
+  }
 }
 
 export default {
@@ -135,6 +153,7 @@ export default {
 
 <style lang="less">
 .swipe {
+  position: relative;
   overflow: hidden;
   height: 30vh;
   width: 100%;
@@ -144,9 +163,23 @@ export default {
     width: 100%;
     cursor: grab;
   }
-  &-item.first {
-    &:first-child {
-      color: red;
+  .dot {
+    position: absolute;
+    left: 50%;
+    bottom: 5%;
+    transform: translateX(-50%);
+    display: flex;
+    justify-content: space-between;
+    &-item {
+      margin: 0 2px;
+      width: 7px;
+      height: 7px;
+      border-radius: 50%;
+      transition: all 0.4s;
+      background: rgba(235, 237, 240, 0.5);
+      &.active {
+        background: white;
+      }
     }
   }
 }
