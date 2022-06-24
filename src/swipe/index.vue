@@ -47,25 +47,11 @@ function setup(props, { slots }) {
     if (isTouching || Date.now() - endTimeStamp < 3000) {
       return
     }
-    // join()
-    // fixed()
-    // if (index == 0) {
-    //   lastSlot.style.transform = `translateX(${clientWidth * -slotCount}px)`
-    // } else if (index == slotCount - 1) {
-    //   firstSlot.style.transform = `translateX(${clientWidth * slotCount}px)`
-    // } else {
-    //   firstSlot.style.transform = `translateX(0px)`
-    //   lastSlot.style.transform = `translateX(0px)`
-    // }
-    // index++
-
-    // duration.value = 0.4
-    // curX = offsetX.value = -index * clientWidth
-
-    // loopTimeOut = setTimeout(fixed, 400)
+    startX = clientWidth + 1
     moveX = clientWidth
+
     touchstart()
-    nextTick(touchend)
+    setTimeout(touchend) //必须在在下一轮事件循环触发
   }
   const join = () => {
     if (index == 0) {
