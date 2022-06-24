@@ -65,6 +65,7 @@ function setup(props, { slots }) {
     }
   }
   const touchstart = e => {
+    isTouching = true
     if (e) {
       startTimeStamp = e.timeStamp
       startX = e.touches[0].pageX
@@ -91,7 +92,6 @@ function setup(props, { slots }) {
     duration.value = 0
     moveX = e.touches[0].pageX
     offsetX.value = curX + (moveX - startX)
-    isTouching = true
     // clearInterval(task)
     // clearTimeout(loopTimeOut)
   }
