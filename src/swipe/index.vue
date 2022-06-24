@@ -33,7 +33,6 @@ function setup(props, { slots }) {
   let clientWidth,
     startX,
     moveX,
-    distance,
     slotCount,
     firstSlot,
     lastSlot,
@@ -49,26 +48,26 @@ function setup(props, { slots }) {
       return
     }
     // join()
+    // fixed()
+    // if (index == 0) {
+    //   lastSlot.style.transform = `translateX(${clientWidth * -slotCount}px)`
+    // } else if (index == slotCount - 1) {
+    //   firstSlot.style.transform = `translateX(${clientWidth * slotCount}px)`
+    // } else {
+    //   firstSlot.style.transform = `translateX(0px)`
+    //   lastSlot.style.transform = `translateX(0px)`
+    // }
+    // index++
 
-    index++
-    if (index == 0) {
-      lastSlot.style.transform = `translateX(${clientWidth * -slotCount}px)`
-    } else if (index == slotCount - 1) {
-      firstSlot.style.transform = `translateX(${clientWidth * slotCount}px)`
-    } else {
-      // firstSlot.style.transform = `translateX(0px)`
-      // lastSlot.style.transform = `translateX(0px)`
-    }
+    // duration.value = 0.4
+    // curX = offsetX.value = -index * clientWidth
 
-    duration.value = 0.4
-    curX = offsetX.value = -index * clientWidth
-
-    loopTimeOut = setTimeout(fixed, 400)
+    // loopTimeOut = setTimeout(fixed, 400)
+    moveX = clientWidth
+    touchstart()
+    nextTick(touchend)
   }
   const join = () => {
-    if (isTouching) {
-      return
-    }
     if (index == 0) {
       lastSlot.style.transform = `translateX(${clientWidth * -slotCount}px)`
     } else if (index == slotCount - 1) {
@@ -79,9 +78,12 @@ function setup(props, { slots }) {
     }
   }
   const touchstart = e => {
-    startTimeStamp = e.timeStamp
-    startX = e.touches[0].pageX
+    if (e) {
+      startTimeStamp = e.timeStamp
+      startX = e.touches[0].pageX
+    }
     fixed()
+    join()
   }
   const fixed = () => {
     if (curX == clientWidth || curX == clientWidth * -slotCount) {
@@ -102,16 +104,15 @@ function setup(props, { slots }) {
     duration.value = 0
     moveX = e.touches[0].pageX
     offsetX.value = curX + (moveX - startX)
-    join()
     isTouching = true
-    clearInterval(task)
-    clearTimeout(loopTimeOut)
+    // clearInterval(task)
+    // clearTimeout(loopTimeOut)
   }
 
   const touchend = e => {
     isTouching = false
     duration.value = 0.5
-    endTimeStamp = e.timeStamp
+    endTimeStamp = e && e.timeStamp
 
     const distance = moveX - startX
     const mod = Math.abs(offsetX.value % clientWidth)
@@ -126,7 +127,9 @@ function setup(props, { slots }) {
     curX = offsetX.value
     moveX = 0
     endTimeStamp = Date.now()
-    task = setInterval(loop, 1000)
+    // task = setInterval(loop, 1400)
+    // setTimeout(fixed, 400)
+    // fixed()
   }
   onMounted(() => {
     slotCount = trackRef.value.children.length
@@ -135,7 +138,7 @@ function setup(props, { slots }) {
     clientWidth = document.body.clientWidth
     // console.log(firstSlot, lastSlot)
 
-    task = setInterval(loop, 1000)
+    task = setInterval(loop, 1400)
   })
 
   onUnmounted(() => {
