@@ -50,6 +50,7 @@ function setup(props, { slots }) {
     startX = clientWidth + 1
     moveX = clientWidth
 
+    //人为调用touch事件函数模拟向右滑动
     touchstart()
     setTimeout(touchend) //必须在在下一轮事件循环触发
   }
