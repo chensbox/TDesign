@@ -31,7 +31,7 @@ function setup(props, { slots }) {
   const trackRef = ref()
   const offsetX = ref(0)
   const duration = ref(0.4)
-  const active = ref()
+  const active = ref(0)
   const dotCount = ref()
   const trackStyle = computed(() => {
     return {
@@ -116,7 +116,7 @@ function setup(props, { slots }) {
       index += distance > 0 ? -1 : 1
       offsetX.value = -index * clientWidth
     }
-    active.value = index
+    active.value = index == -1 ? 3 : index
     curX = offsetX.value
     moveX = 0
     endTimeStamp = Date.now()
@@ -171,6 +171,7 @@ export default {
     display: flex;
     justify-content: space-between;
     &-item {
+      user-select: none;
       margin: 0 2px;
       width: 7px;
       height: 7px;
