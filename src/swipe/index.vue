@@ -44,7 +44,7 @@ function setup(props, { slots }) {
     curX = 0,
     index = 0
   const loop = () => {
-    if (isTouching || Date.now() - endTimeStamp < 3000) {
+    if (isTouching || Date.now() - endTimeStamp < 2400) {
       return
     }
     startX = clientWidth + 1
@@ -60,8 +60,7 @@ function setup(props, { slots }) {
     } else if (index == slotCount - 1) {
       firstSlot.style.transform = `translateX(${clientWidth * slotCount}px)`
     } else {
-      firstSlot.style.transform = `translateX(0px)`
-      lastSlot.style.transform = `translateX(0px)`
+      lastSlot.style.transform = firstSlot.style.transform = ''
     }
   }
   const touchstart = e => {
@@ -97,13 +96,13 @@ function setup(props, { slots }) {
   }
 
   const touchend = e => {
+    const distance = moveX - startX
+    const mod = Math.abs(offsetX.value % clientWidth)
     isTouching = false
     duration.value = 0.5
     endTimeStamp = e && e.timeStamp
 
-    const distance = moveX - startX
-    const mod = Math.abs(offsetX.value % clientWidth)
-
+    //滑动距离太小回弹
     if (mod < clientWidth / 4 && endTimeStamp - startTimeStamp > 100) {
       offsetX.value -= mod * (offsetX.value > 0 ? 1 : -1)
     } else if (moveX) {
@@ -125,7 +124,7 @@ function setup(props, { slots }) {
     clientWidth = document.body.clientWidth
     // console.log(firstSlot, lastSlot)
 
-    task = setInterval(loop, 1400)
+    task = setInterval(loop, 2400)
   })
 
   onUnmounted(() => {
