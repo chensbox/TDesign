@@ -75,8 +75,7 @@ function setup(props, { slots }) {
   const fixed = () => {
     if (curX == clientWidth || curX == clientWidth * -slotCount) {
       duration.value = 0
-      firstSlot.style.transform = `translateX(0px)`
-      lastSlot.style.transform = `translateX(0px)`
+      lastSlot.style.transform = firstSlot.style.transform = ''
     }
     if (curX == clientWidth) {
       curX = offsetX.value = (slotCount - 1) * -clientWidth
@@ -91,8 +90,6 @@ function setup(props, { slots }) {
     duration.value = 0
     moveX = e.touches[0].pageX
     offsetX.value = curX + (moveX - startX)
-    // clearInterval(task)
-    // clearTimeout(loopTimeOut)
   }
 
   const touchend = e => {
@@ -113,16 +110,12 @@ function setup(props, { slots }) {
     curX = offsetX.value
     moveX = 0
     endTimeStamp = Date.now()
-    // task = setInterval(loop, 1400)
-    // setTimeout(fixed, 400)
-    // fixed()
   }
   onMounted(() => {
     slotCount = trackRef.value.children.length
     firstSlot = trackRef.value.children[0]
     lastSlot = trackRef.value.children[slotCount - 1]
     clientWidth = document.body.clientWidth
-    // console.log(firstSlot, lastSlot)
 
     task = setInterval(loop, 2400)
   })
