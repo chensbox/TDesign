@@ -12,6 +12,16 @@
   text-align: center;
   line-height: 30vh;
   color: #fff;
+  img {
+    width: 100%;
+    height: 100%;
+    object-fit: fill;
+    display: block;
+    box-sizing: border-box;
+    padding: 30px 60px;
+    background-color: white;
+    pointer-events: none;
+  }
   &:nth-child(2n) {
     background: #39a9ed;
   }
