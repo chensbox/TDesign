@@ -1,6 +1,6 @@
 <template>
   <demo-block title="基础用法">
-    <swipe>
+    <swipe autoplay="2000">
       <swipe-item> 1 </swipe-item>
       <swipe-item>2</swipe-item>
       <swipe-item>3</swipe-item>

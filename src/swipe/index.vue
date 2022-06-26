@@ -10,7 +10,7 @@
     >
       <slot />
     </div>
-    <div class="dot">
+    <div class="dot" v-if="showIndicators">
       <div
         class="dot-item"
         v-for="i in dotCount"
@@ -25,12 +25,18 @@
 import { reactive, ref } from '@vue/reactivity'
 import { computed, nextTick, onMounted, onUnmounted } from '@vue/runtime-core'
 const name = 'swipe'
-const props = {}
+const props = {
+  autoplay: { type: [String, Number], default: 2000 },
+  duration: { type: [String, Number], default: 0.5 },
+  loop: { type: Boolean, default: true },
+  showIndicators: { type: Boolean, default: true }
+}
 
 function setup(props, { slots }) {
   const trackRef = ref()
   const offsetX = ref(0)
-  const duration = ref(0.4)
+  console.log(props.duration)
+  const duration = ref(props.duration)
   const active = ref(0)
   const dotCount = ref()
   const trackStyle = computed(() => {
@@ -54,7 +60,7 @@ function setup(props, { slots }) {
     curX = 0,
     index = 0
   const loop = () => {
-    if (isTouching || Date.now() - endTimeStamp < 2000) {
+    if (isTouching || Date.now() - endTimeStamp < props.autoplay) {
       return
     }
     startX = clientWidth + 1
@@ -106,7 +112,7 @@ function setup(props, { slots }) {
     const distance = moveX - startX
     const mod = Math.abs(offsetX.value % clientWidth)
     isTouching = false
-    duration.value = 0.5
+    duration.value = props.duration
     endTimeStamp = e && e.timeStamp
 
     //滑动距离太小回弹
@@ -127,7 +133,7 @@ function setup(props, { slots }) {
     lastSlot = trackRef.value.children[slotCount - 1]
     clientWidth = document.body.clientWidth
 
-    task = setInterval(loop, 2000)
+    task = setInterval(loop, props.autoplay)
   })
 
   onUnmounted(() => {
