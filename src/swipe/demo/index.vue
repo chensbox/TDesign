@@ -18,7 +18,4 @@ export default {
 }
 </script>
 
-<style lange="less" scoped>
-.demo {
-}
-</style>
+<style lange="less" scoped></style>
