@@ -122,7 +122,7 @@ function setup(props, { slots }) {
       index += distance > 0 ? -1 : 1
       offsetX.value = -index * clientWidth
     }
-    active.value = index == -1 ? 3 : index
+    active.value = index == -1 ? slotCount - 1 : index
     curX = offsetX.value
     moveX = 0
     endTimeStamp = Date.now()
