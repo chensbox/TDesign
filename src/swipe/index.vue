@@ -35,7 +35,6 @@ const props = {
 function setup(props, { slots }) {
   const trackRef = ref()
   const offsetX = ref(0)
-  console.log(props.duration)
   const duration = ref(props.duration)
   const active = ref(0)
   const dotCount = ref()
