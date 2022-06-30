@@ -82,6 +82,10 @@ export default {
             path: 'swipe',
             title: 'swipe 轮播',
           },
+          {
+            path: 'signature',
+            title: 'signature 电子签名',
+          },
         ],
       },
     ],
