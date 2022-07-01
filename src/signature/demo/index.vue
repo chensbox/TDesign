@@ -11,7 +11,7 @@
       <cell title="弹出signatrue" @click="signatruePopupShow"></cell>
     </cell-group>
     <popup v-model="signShow" position="left">
-      <signature :height="height" @save="signatruePopupShow"
+      <signature :height="height" @save="signatruePopupShow" fullscreen
     /></popup>
   </demo-block>
 
@@ -86,6 +86,7 @@ function reset() {
 function signatruePopupShow() {
   signShow.value = !signShow.value
   if (signShow.value) {
+    document.documentElement.scrollTop = 0
     document.body.classList.add('dis-scroll')
   } else {
     document.body.classList.remove('dis-scroll')

@@ -45,6 +45,9 @@ const props = {
   filename: {
     type: String,
     default: 'signatrue'
+  },
+  fullscreen: {
+    type: Boolean
   }
 }
 
@@ -94,7 +97,9 @@ function setup(props, { emit }) {
   }
   const touchend = e => {
     isMouseMove = false
-    document.body.classList.remove('dis-scroll')
+    if (!props.fullscreen) {
+      document.body.classList.remove('dis-scroll')
+    }
   }
   //清空画图
   function reset() {
@@ -119,6 +124,9 @@ function setup(props, { emit }) {
       u8arr = new Uint8Array(n)
     while (n--) {
       u8arr[n] = bstr.charCodeAt(n)
+    }
+    if (props.fullscreen) {
+      document.body.classList.remove('dis-scroll')
     }
     emit('save', images, new File([u8arr], 'filename', { type: mime }))
   }
