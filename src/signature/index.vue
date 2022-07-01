@@ -14,7 +14,7 @@
       <t-button class="signature-button" type="wanner" round @click="reset"
         >重置</t-button
       >
-      <t-button class="signature-button" round>确定</t-button>
+      <t-button class="signature-button" round @click="saveImg">确定</t-button>
     </div>
   </div>
 </template>
@@ -23,6 +23,7 @@
 import { onMounted } from '@vue/runtime-core'
 import TButton from '../button/index.vue'
 const name = 'signature'
+const emits = ['save']
 const components = { TButton }
 const props = {
   width: {
@@ -43,7 +44,7 @@ const props = {
   }
 }
 
-function setup(props) {
+function setup(props, { emit }) {
   let isMouseMove = false,
     canvas,
     widthVal = 2,
@@ -102,10 +103,26 @@ function setup(props) {
     canvas = document.querySelector('#myCanvas')
     ctx = canvas.getContext('2d')
   })
-  return { touchstart, touchmove, touchend, reset }
+
+  //保存图片
+  function saveImg() {
+    const images = myCanvas.toDataURL('image/png')
+    // imgs.innerHTML = `<img src='${images}'>`
+    let arr = images.split(','),
+      mime = arr[0].match(/:(.*?);/)[1],
+      bstr = window.atob(arr[1]),
+      n = bstr.length,
+      u8arr = new Uint8Array(n)
+    while (n--) {
+      u8arr[n] = bstr.charCodeAt(n)
+    }
+    emit('save', images, new File([u8arr], 'filename', { type: mime }))
+  }
+  return { touchstart, touchmove, touchend, reset, saveImg }
 }
 export default {
   name,
+  emits,
   components,
   props,
   setup

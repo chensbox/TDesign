@@ -3,7 +3,7 @@
     <cell-group>
       <cell title="自定义画笔" @click="show = true"></cell>
     </cell-group>
-    <signature :line-width="width" :color="color"></signature>
+    <signature :line-width="width" :color="color" @save="save"></signature>
 
     <popup v-model="show" position="bottom">
       <picker
@@ -44,5 +44,8 @@ const onChange = e => {
   console.log(e)
   width.value = e[0]
   color.value = e[1]
+}
+function save(url, file) {
+  console.log(url, file)
 }
 </script>
