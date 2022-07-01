@@ -14,6 +14,7 @@
         @confirm="show = false"
       ></picker
     ></popup>
+    <img src="e" id="ii" />
   </demo-block>
 </template>
 
@@ -47,5 +48,7 @@ const onChange = e => {
 }
 function save(url, file) {
   console.log(url, file)
+  const img = document.querySelector('#ii')
+  img.setAttribute('src', url)
 }
 </script>
