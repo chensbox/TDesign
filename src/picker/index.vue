@@ -28,7 +28,7 @@
 </template>
 
 <script>
-import { onMounted, ref, watch } from '@vue/runtime-core'
+import { nextTick, onMounted, ref, watch } from '@vue/runtime-core'
 
 import colum from './colum.vue'
 
@@ -132,9 +132,13 @@ const setup = function (props, { emit }) {
 
   onMounted(() => {
     const { value: hairlineEl } = hairlineRef
-    curY.value = initY.value =
-      hairlineEl.offsetTop - hairlineEl.clientHeight / 2
-    itemHeight.value = hairlineEl.clientHeight
+
+    nextTick(() => {
+      //解决 picker组件懒渲染的情况下，获取不到hairlineEl.offsetTop的问题
+      curY.value = initY.value =
+        hairlineEl.offsetTop - hairlineEl.clientHeight / 2
+      itemHeight.value = hairlineEl.clientHeight
+    })
   })
   formatData()
 
