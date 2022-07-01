@@ -1,11 +1,11 @@
 <template>
   <div class="picker">
     <div class="picker-toolbar">
-      <button class="picker-toolbar-cancel" @click="onClick('confirm')">
+      <button class="picker-toolbar-cancel" @click="onClick('cancel')">
         取消
       </button>
       <span class="picker-toolbar-title">{{ title }}</span>
-      <button class="picker-toolbar-confirm" @click="onClick('cancel')">
+      <button class="picker-toolbar-confirm" @click="onClick('confirm')">
         确定
       </button>
     </div>

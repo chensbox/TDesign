@@ -1,16 +1,19 @@
 <template>
   <demo-block title="基础用法">
-    <signature :line-width="width" :color="color"></signature>
     <cell-group>
       <cell title="自定义画笔" @click="show = true"></cell>
     </cell-group>
+    <signature :line-width="width" :color="color"></signature>
+
     <popup v-model="show" position="bottom">
       <picker
         :colums="colum"
         title="设置线宽和颜色"
         @change="onChange"
-      ></picker>
-    </popup>
+        @cancel="show = false"
+        @confirm="show = false"
+      ></picker
+    ></popup>
   </demo-block>
 </template>
 
