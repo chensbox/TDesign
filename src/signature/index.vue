@@ -2,7 +2,7 @@
   <div class="signature">
     <div class="signature-canvas">
       <canvas
-        id="myCanvas"
+        ref="canvasRef"
         :width="width"
         :height="height"
         @touchstart="touchstart"
@@ -20,10 +20,10 @@
 </template>
 
 <script>
-import { onMounted } from '@vue/runtime-core'
+import { onMounted, ref } from '@vue/runtime-core'
 import TButton from '../button/index.vue'
 const name = 'signature'
-const emits = ['save']
+const emits = ['save', 'reset']
 const components = { TButton }
 const props = {
   width: {
@@ -41,14 +41,17 @@ const props = {
   color: {
     type: String,
     default: 'black'
+  },
+  filename: {
+    type: String,
+    default: 'signatrue'
   }
 }
 
 function setup(props, { emit }) {
   let isMouseMove = false,
+    canvasRef = ref(),
     canvas,
-    widthVal = 2,
-    colorVal = 'pink',
     ctx,
     lastX,
     lastY
@@ -98,15 +101,16 @@ function setup(props, { emit }) {
     ctx.beginPath()
     ctx.clearRect(0, 0, canvas.width, canvas.height)
     ctx.closePath() //可加入，可不加入
+    emit('reset')
   }
   onMounted(() => {
-    canvas = document.querySelector('#myCanvas')
-    ctx = canvas.getContext('2d')
+    canvas = canvasRef.value
+    ctx = canvasRef.value.getContext('2d')
   })
 
   //保存图片
   function saveImg() {
-    const images = myCanvas.toDataURL('image/png')
+    const images = canvas.toDataURL('image/png')
     // imgs.innerHTML = `<img src='${images}'>`
     let arr = images.split(','),
       mime = arr[0].match(/:(.*?);/)[1],
@@ -118,7 +122,7 @@ function setup(props, { emit }) {
     }
     emit('save', images, new File([u8arr], 'filename', { type: mime }))
   }
-  return { touchstart, touchmove, touchend, reset, saveImg }
+  return { touchstart, touchmove, touchend, reset, saveImg, canvasRef }
 }
 export default {
   name,
