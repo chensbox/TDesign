@@ -151,7 +151,7 @@ export default {
   }
   &-control-bar {
     display: flex;
-    justify-content: end;
+    justify-content: flex-end;
   }
   &-button {
     margin: 10px 5px;
