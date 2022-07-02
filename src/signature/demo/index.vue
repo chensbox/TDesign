@@ -15,7 +15,7 @@
     /></popup>
   </demo-block>
 
-  <demo-block title="自定义">
+  <demo-block title="自定义线宽和颜色">
     <cell-group>
       <cell title="自定义笔迹" @click="show = true"></cell>
     </cell-group>
