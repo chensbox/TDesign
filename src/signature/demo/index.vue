@@ -53,6 +53,7 @@ const color = ref('black')
 const show = ref(false)
 const signShow = ref(false)
 const height = ref(document.body.clientHeight - 62)
+let lastY
 const colum = [
   // 第一列
   {
@@ -70,11 +71,11 @@ const onChange = e => {
   width.value = e[0]
   color.value = e[1]
 }
-function save(url, file) {
-  console.log(file)
+function save(event) {
+  console.log(event)
   const imgWrap = document.querySelector('.img-wrap')
   const img = document.createElement('img')
-  img.setAttribute('src', url)
+  img.setAttribute('src', event.url)
   imgWrap.appendChild(img)
 }
 
@@ -86,9 +87,22 @@ function reset() {
 function signatruePopupShow() {
   signShow.value = !signShow.value
   if (signShow.value) {
-    document.documentElement.scrollTop = 0
+    lastY =
+      document.body.scrollTop ||
+      document.documentElement.scrollTop ||
+      window.pageYOffset
+
+    window.pageYOffset =
+      document.body.scrollTop =
+      document.documentElement.scrollTop =
+        0
+
     document.body.classList.add('dis-scroll')
   } else {
+    window.pageYOffset =
+      document.body.scrollTop =
+      document.documentElement.scrollTop =
+        lastY
     document.body.classList.remove('dis-scroll')
   }
 }

@@ -4,13 +4,13 @@
       <canvas
         ref="canvasRef"
         :width="width"
-        :height="height"
+        :height="fullscreenHeight || height"
         @touchstart="touchstart"
         @touchmove="touchmove"
         @touchend="touchend"
       ></canvas>
     </div>
-    <div class="signature-control-bar">
+    <div class="signature-control-bar" ref="controlBarRef">
       <t-button class="signature-button" type="wanner" round @click="reset"
         >重置</t-button
       >
@@ -20,7 +20,7 @@
 </template>
 
 <script>
-import { onMounted, ref } from '@vue/runtime-core'
+import { nextTick, onMounted, ref } from '@vue/runtime-core'
 import TButton from '../button/index.vue'
 const name = 'signature'
 const emits = ['save', 'reset']
@@ -48,20 +48,26 @@ const props = {
   },
   fullscreen: {
     type: Boolean
+  },
+  imgType: {
+    type: String,
+    default: 'png'
   }
 }
 
 function setup(props, { emit }) {
-  let isMouseMove = false,
+  let isTouchMove = false,
     canvasRef = ref(),
+    controlBarRef = ref(),
+    fullscreenHeight = ref(),
     canvas,
     ctx,
     lastX,
     lastY
 
   //画线
-  const drawLine = (x, y, isT) => {
-    if (isT) {
+  const drawLine = (x, y) => {
+    if (isTouchMove) {
       ctx.beginPath()
       ctx.lineWidth = props.lineWidth //设置线宽状态
       ctx.strokeStyle = props.color //设置线的颜色状态
@@ -79,24 +85,22 @@ function setup(props, { emit }) {
 
   const touchstart = e => {
     document.body.classList.add('dis-scroll')
-    isMouseMove = true
     drawLine(
       e.touches[0].pageX - canvas.offsetLeft,
-      e.touches[0].pageY - canvas.offsetTop,
-      false
+      e.touches[0].pageY - canvas.offsetTop
     )
+    isTouchMove = true
   }
   const touchmove = e => {
-    if (isMouseMove || 'ontouchstart' in document.body) {
+    if (isTouchMove) {
       drawLine(
         e.touches[0].pageX - canvas.offsetLeft,
-        e.touches[0].pageY - canvas.offsetTop,
-        true
+        e.touches[0].pageY - canvas.offsetTop
       )
     }
   }
   const touchend = e => {
-    isMouseMove = false
+    isTouchMove = false
     if (!props.fullscreen) {
       document.body.classList.remove('dis-scroll')
     }
@@ -108,15 +112,10 @@ function setup(props, { emit }) {
     ctx.closePath() //可加入，可不加入
     emit('reset')
   }
-  onMounted(() => {
-    canvas = canvasRef.value
-    ctx = canvasRef.value.getContext('2d')
-  })
 
   //保存图片
   function saveImg() {
-    const images = canvas.toDataURL('image/png')
-    // imgs.innerHTML = `<img src='${images}'>`
+    const images = canvas.toDataURL(`image/${props.imgType}`)
     let arr = images.split(','),
       mime = arr[0].match(/:(.*?);/)[1],
       bstr = window.atob(arr[1]),
@@ -128,9 +127,32 @@ function setup(props, { emit }) {
     if (props.fullscreen) {
       document.body.classList.remove('dis-scroll')
     }
-    emit('save', images, new File([u8arr], 'filename', { type: mime }))
+    emit('save', {
+      url: images,
+      file: new File([u8arr], props.filename, { type: mime })
+    })
   }
-  return { touchstart, touchmove, touchend, reset, saveImg, canvasRef }
+
+  onMounted(() => {
+    canvas = canvasRef.value
+    ctx = canvasRef.value.getContext('2d')
+    if (props.fullscreen) {
+      nextTick(() => {
+        fullscreenHeight.value =
+          document.body.clientHeight - controlBarRef.value.clientHeight - 2
+      })
+    }
+  })
+  return {
+    touchstart,
+    touchmove,
+    touchend,
+    reset,
+    saveImg,
+    canvasRef,
+    controlBarRef,
+    fullscreenHeight
+  }
 }
 export default {
   name,
@@ -143,8 +165,6 @@ export default {
 
 <style lang="less">
 .signature {
-  // border: 1px dashed gray;
-  // border: 1px solid gray;
   &-canvas {
     background: rgb(255, 255, 255);
     border: 1px dashed gray;
