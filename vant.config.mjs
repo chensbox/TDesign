@@ -86,6 +86,10 @@ export default {
             path: 'signature',
             title: 'signature 电子签名',
           },
+          {
+            path: 'virtuallist',
+            title: 'VirtualList 虚拟列表',
+          },
         ],
       },
     ],
