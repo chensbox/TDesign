@@ -13,7 +13,7 @@
 <script setup>
 import VirtualList from '../index.vue'
 import cell from '../../cell/index.vue'
-const list = new Array(1000).fill(0).map((item, index) => index + 1)
+const list = new Array(10000).fill(0).map((item, index) => index + 1)
 </script>
 
 <style>
