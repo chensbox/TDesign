@@ -21,12 +21,10 @@ const list = new Array(1000).fill(0).map((item, index) => index + 1)
   overflow: hidden !important;
 }
 .list-item {
-  height: 30px;
-  line-height: 30px;
+  height: 40px;
+  line-height: 40px;
   text-align: center;
-  /* padding: 5px 0; */
-  border-top: 1px solid rgb(217, 217, 217);
-  /* border-bottom: 1px solid gray; */
+  border-top: 1px solid rgb(245, 243, 243);
   background: #fff;
 }
 </style>

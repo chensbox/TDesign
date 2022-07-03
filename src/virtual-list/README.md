@@ -2,72 +2,40 @@
 
 
 ### 介绍
+虚拟列表会按需渲染可视区内的列表项。组件会监听scroll事件，有一定的最低性能开销，适用于超长列表的场景，否则不建议使用。
 
-手动阀手动阀
-
+### 实现原理
+  组件内部没有直接渲染传入的`list`，而是通过计算去截取list的数据到`可视区列表`，在监听scroll的过程中不断替换这个`可视区列表`。
+  你可能认为这将导致组件丢弃现有 DOM 并重新渲染整个列表。幸运的是，事实并非如此。Vue 为了使得 DOM 元素得到最大范围的重用而实现了一些智能的启发式方法，所以用一个含有相同元素的数组去替换原来的数组是非常高效的操作。
 
 ### 引入
 
 ```js
 import { createApp } from 'vue'
-import { signature  } from 'TDesign'
+import { VirtualList  } from 'TDesign'
 const app = createApp()
-app.use(signature)
+app.use(VirtualList)
 ```
 
 ## 代码演示
 
 ### 基础用法
-监听sava事件，可以在事件对象接收到保存的img的file格式和dataUrl格式，支持自定义filename和图片格式。
+默认作用域插槽会将列表项和索引传递过来，通过作用域插槽，你可以给列表项写任何你喜欢的样式，
 ```html
-  <signature @save="save" @reset="reset"></signature>
-```
-```js
-function save(event) {
-  console.log(event)
-  const imgWrap = document.querySelector('.img-wrap')
-  const img = document.createElement('img')
-  img.setAttribute('src', event.url)
-  imgWrap.appendChild(img)
-}
-function reset() {
-  const imgWrap = document.querySelector('.img-wrap')
-  imgWrap.innerHTML = ''
-}
+  <virtual-list :list="list">
+    <template v-slot="slotProps">
+      <div class="list-item" :key="slotProps.index">
+        {{ slotProps.item}}
+      </div>
+    </template>
+  </virtual-list>
 ```
 
-### 配合popup使用
- 配合popup使用时可以指定fullscreen字段，让画板铺满全屏
-```html
-<cell title="弹出signatrue" @click="signShow = true"></cell>
-<popup v-model="signShow" position="left">
-  <signature :height="height" @save="signShow = false" fullscreen/>
-</popup>
-```
-### 自定义线宽和颜色
-
-```html
-<signature :line-width="width" :color="color"/>
-<popup v-model="show" position="bottom">
-  <picker :colums="colums" title="设置线宽和颜色" @change="onChange" />
-</popup>
-```
 ```js
-const colums = [
-  {
-    values: ['2', '4', '6', '8', '10'],
-  },
-  {
-    values: ['red', 'blue', 'black'],
-  }
-]
-const width = ref(5)
-const color = ref('black')
-const onChange = e => {
-  width.value = e[0]
-  color.value = e[1]
-}
+const list = new Array(1000).fill(0).map((item, index) => index + 1)
 ```
+
+
 
 
 ## API
@@ -76,10 +44,11 @@ const onChange = e => {
 
 | 参数         | 说明     | 类型     | 默认值       |
 | ------------ | -------- | -------- | ------------ |
-| width       | 画布宽度	 | _string_  _number_ | `设备最大宽度`    |
-| height      | 画布高度 | _string_  _number_ | `500`            |
-| lineWidth   |线宽	 | _string_  _number_  | `2`             |
-| color        | 画线颜色		 | _string_  | `black`  |
-|filename      | 保存的文件名     | _string_| `signature`|
-|fullscreen | 是否开启全屏画布| _Boolean_| `false`|
-|imgType|   保存的图片格式| _string_| `png`(可选png、jpeg、webp)|
+| list       | 数据列表	 | _Array_ |  -    |
+
+
+### Slot
+
+| 名称         | 说明     | 
+| ------------ | -------- | 
+| default       | 组件内部通过作用域插槽将列表项`item`和索引`index`传递给父组件	 |

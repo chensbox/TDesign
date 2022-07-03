@@ -28,7 +28,27 @@ app.use(SwipeItem)
       <swipe-item>4</swipe-item>
     </swipe>
 ```
-
+### 监听切换事件
+```html
+<swipe @change="change" :loop="false">
+      <swipe-item>1</swipe-item>
+      <swipe-item>2</swipe-item>
+      <swipe-item>3</swipe-item>
+      <swipe-item>4</swipe-item>
+</swipe>
+```
+```js
+import { Toast , swipe, swipeItem } from 'TDesign'
+export default {
+  components: { swipe, swipeItem },
+  setup() {
+    const change = e => {
+      Toast(`当前索引是 ${e} `)
+    }
+    return { change }
+  }
+}
+```
 ## API
 
 ### Props

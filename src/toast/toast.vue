@@ -29,9 +29,9 @@ const props = {
   destroy: Function,
   position: String,
   showLoading: Boolean,
-  icon: String,
+  icon: [String, Object],
   duration: { type: Number, default: 2000 },
-  message: { type: String, require: true },
+  message: { type: [String, Object], require: true },
   forbidClick: { type: Boolean, default: false },
   loadingType: { type: String, default: 'circle' }
 }

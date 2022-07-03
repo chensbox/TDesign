@@ -13,10 +13,8 @@
 </template>
 
 <script>
-import { computed, nextTick, onMounted, ref } from '@vue/runtime-core'
+import { computed, onMounted, ref } from '@vue/runtime-core'
 const name = 'VirtualList'
-const emits = ['save', 'reset']
-const components = {}
 const props = {
   list: { type: Array, default: () => [] }
 }
@@ -35,16 +33,13 @@ function setup(props, { emit }) {
     const start = Math.floor(scrollTop / itemHeight.value)
     const end = start + visibleCount
     visibleList.value = props.list.slice(start, end)
-    console.log(visibleList.value.length)
     scrollerRef.value.style.webkitTransform = `translate3d(0, ${
       start * itemHeight.value
     }px, 0)`
   }
   const handleScroll = () => {
-    // console.log(1)
     const scrollTop = listBoxRef.value.scrollTop
     updateVisibleData(scrollTop)
-    console.log(scrollTop)
   }
   onMounted(() => {
     const offsetTop = listBoxRef.value.offsetTop
@@ -57,8 +52,6 @@ function setup(props, { emit }) {
 }
 export default {
   name,
-  emits,
-  components,
   props,
   setup
 }
@@ -68,8 +61,7 @@ export default {
 .virtual-list {
   position: relative;
   overflow: scroll;
-  .scroller {
-  }
+  -webkit-overflow-scrolling: touch;
 }
 .placeholder {
   position: absolute;
@@ -77,5 +69,31 @@ export default {
   top: 0;
   right: 0;
   z-index: -999;
+}
+
+.virtual-list::-webkit-scrollbar-track-piece {
+  background-color: rgba(0, 0, 0, 0);
+  border-left: 1px solid rgba(0, 0, 0, 0);
+}
+.virtual-list::-webkit-scrollbar {
+  width: 5px;
+  height: 5px;
+  -webkit-border-radius: 5px;
+  -moz-border-radius: 5px;
+  border-radius: 5px;
+}
+.virtual-list::-webkit-scrollbar-thumb {
+  background-color: rgba(191, 191, 191, 191);
+  background-clip: padding-box;
+  -webkit-border-radius: 5px;
+  -moz-border-radius: 5px;
+  border-radius: 5px;
+  min-height: 28px;
+}
+.virtual-list::-webkit-scrollbar-thumb:hover {
+  background-color: rgba(0, 0, 0, 0.5);
+  -webkit-border-radius: 5px;
+  -moz-border-radius: 5px;
+  border-radius: 5px;
 }
 </style>

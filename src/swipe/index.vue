@@ -22,9 +22,10 @@
 </template>
 
 <script>
-import { reactive, ref } from '@vue/reactivity'
-import { computed, nextTick, onMounted, onUnmounted } from '@vue/runtime-core'
+import { ref } from '@vue/reactivity'
+import { computed, onMounted, onUnmounted } from '@vue/runtime-core'
 const name = 'swipe'
+const emits = ['change']
 const props = {
   autoplay: { type: [String, Number], default: 2000 },
   duration: { type: [String, Number], default: 0.5 },
@@ -32,7 +33,7 @@ const props = {
   showIndicators: { type: Boolean, default: true }
 }
 
-function setup(props, { slots }) {
+function setup(props, { emit }) {
   const trackRef = ref()
   const offsetX = ref(0)
   const duration = ref(props.duration)
@@ -54,7 +55,6 @@ function setup(props, { slots }) {
     startTimeStamp,
     endTimeStamp,
     task,
-    loopTimeOut,
     isTouching = false,
     curX = 0,
     index = 0
@@ -125,14 +125,16 @@ function setup(props, { slots }) {
     curX = offsetX.value
     moveX = 0
     endTimeStamp = Date.now()
+    emit('change', (active.value % 4) + 1)
   }
   onMounted(() => {
     dotCount.value = slotCount = trackRef.value.children.length
     firstSlot = trackRef.value.children[0]
     lastSlot = trackRef.value.children[slotCount - 1]
     clientWidth = document.body.clientWidth
-
-    task = setInterval(loop, props.autoplay)
+    if (props.loop) {
+      task = setInterval(loop, props.autoplay)
+    }
   })
 
   onUnmounted(() => {
@@ -152,6 +154,7 @@ function setup(props, { slots }) {
 export default {
   name,
   props,
+  emits,
   setup
 }
 </script>
