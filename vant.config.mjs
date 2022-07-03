@@ -82,16 +82,21 @@ export default {
             path: 'swipe',
             title: 'swipe 轮播',
           },
+        ],
+      },
+      {
+        title:"Beta",
+        items:[
           {
             path: 'signature',
             title: 'signature 电子签名',
           },
           {
-            path: 'virtuallist',
+            path: 'virtual-list',
             title: 'VirtualList 虚拟列表',
           },
-        ],
-      },
+        ]
+      }
     ],
   },
 };
