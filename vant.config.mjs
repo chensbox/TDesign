@@ -44,43 +44,39 @@ export default {
           },
           {
             path: 'cell',
-            title: 'cell 单元格',
+            title: 'Cell 单元格',
           },
           {
             path: 'tabs',
-            title: 'tabs 标签页',
-          },
-          {
-            path: 'icon',
-            title: 'icon 图标',
+            title: 'Tabs 标签页',
           },
           {
             path: 'toast',
-            title: 'toast 弹窗',
+            title: 'Toast 弹窗',
           },
           {
             path: 'dialog',
-            title: 'dialog 对话框',
+            title: 'Dialog 对话框',
           },
           {
             path: 'popup',
-            title: 'popup 弹出层',
+            title: 'Popup 弹出层',
           },
           {
             path: 'overlay',
-            title: 'overlay 遮罩层',
+            title: 'Overlay 遮罩层',
           },
           {
             path: 'picker',
-            title: 'picker 选择器',
+            title: 'Picker 选择器',
           },
           {
             path: 'cascader',
-            title: 'cascader 级联选择',
+            title: 'Cascader 级联选择',
           },
           {
             path: 'swipe',
-            title: 'swipe 轮播',
+            title: 'Swipe 轮播',
           },
         ],
       },
@@ -89,11 +85,15 @@ export default {
         items:[
           {
             path: 'signature',
-            title: 'signature 电子签名',
+            title: 'Signature 电子签名',
           },
           {
             path: 'virtual-list',
             title: 'VirtualList 虚拟列表',
+          },
+          {
+            path: 'icon',
+            title: 'Icon 图标',
           },
         ]
       }
