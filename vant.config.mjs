@@ -78,6 +78,10 @@ export default {
             path: 'swipe',
             title: 'Swipe 轮播',
           },
+          {
+            path:'pull-refresh',
+            title:'PullRefresh 下拉刷新'
+          }
         ],
       },
       {
