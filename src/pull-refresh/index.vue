@@ -48,14 +48,23 @@ function setup(props, { emit }) {
   const touchmove = e => {
     duration.value = 0
     moveY = e.touches[0].pageY
-    if (moveY - startY < 0 || props.modelValue) {
+    let distance = moveY - startY
+
+    if ((distance < 0 && offsetY.value <= 0) || props.modelValue) {
       return
     }
-    const distance = moveY - startY
-    offsetY.value = distance
-    console.log(moveY)
+
+    if (distance > 70) {
+      if (distance < 70 * 2) {
+        distance = 70 + (distance - 70) / 2
+      } else {
+        distance = 70 * 1.5 + (distance - 70 * 2) / 4
+      }
+    }
+
+    offsetY.value = Math.round(distance)
   }
-  const touchend = async e => {
+  const touchend = e => {
     if (props.modelValue) {
       return
     }
