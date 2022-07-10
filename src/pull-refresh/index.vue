@@ -23,7 +23,6 @@ import Icon from '../icon/index.vue'
 
 import { ref } from '@vue/reactivity'
 import { computed } from '@vue/runtime-core'
-import { sleep } from '../utils'
 const name = 'pull-refresh'
 const emits = ['update:modelValue', 'refresh']
 
