@@ -1,13 +1,13 @@
 <template>
   <div
-    class="pull-refresh"
+    :class="['pull-refresh', isLoading ? 'disable-touch' : '']"
     @touchstart="touchstart"
     @touchmove="touchmove"
     @touchend="touchend"
   >
     <div class="pull-refresh-track" :style="trackStyle">
       <div class="pull-refresh-track-header">
-        <span v-if="!modelValue">{{
+        <span v-if="!isLoading">{{
           offsetY > 50 ? '释放即可刷新...' : '下拉即可刷新...'
         }}</span>
         <span v-else><icon name="loading" /> 加载中...</span>
@@ -24,15 +24,14 @@ import Icon from '../icon/index.vue'
 import { ref } from '@vue/reactivity'
 import { computed } from '@vue/runtime-core'
 const name = 'pull-refresh'
-const emits = ['update:modelValue', 'refresh']
+const emits = ['refresh']
 
-const props = {
-  modelValue: Boolean
-}
+const props = {}
 const components = { Icon }
 function setup(props, { emit }) {
   const offsetY = ref(0)
   const duration = ref(0)
+  const isLoading = ref(false)
   const trackStyle = computed(() => {
     return {
       transform: `translateY(${offsetY.value}px)`,
@@ -43,13 +42,16 @@ function setup(props, { emit }) {
     startY,
     moveY
   const touchstart = e => (startY = e.touches[0].pageY)
-  const done = () => (offsetY.value = 0)
+  const done = () => {
+    offsetY.value = 0
+    isLoading.value = false
+  }
   const touchmove = e => {
     duration.value = 0
     moveY = e.touches[0].pageY
     let distance = moveY - startY
 
-    if ((distance < 0 && offsetY.value <= 0) || props.modelValue) {
+    if (distance < 0 && offsetY.value <= 0) {
       return
     }
 
@@ -64,20 +66,16 @@ function setup(props, { emit }) {
     offsetY.value = Math.round(distance)
   }
   const touchend = e => {
-    if (props.modelValue) {
-      return
-    }
-
+    isLoading.value = true
     if (offsetY.value < 50) {
       duration.value = 0.2
       return done()
     }
     duration.value = 0.2
     offsetY.value = 50
-    emit('update:modelValue', true)
     emit('refresh', done)
   }
-  return { touchstart, touchmove, touchend, trackStyle, offsetY }
+  return { touchstart, touchmove, touchend, trackStyle, offsetY, isLoading }
 }
 export default {
   name,
@@ -111,6 +109,9 @@ export default {
     .icon-loading {
       margin-bottom: 3px;
     }
+  }
+  &.disable-touch {
+    pointer-events: none;
   }
 }
 </style>

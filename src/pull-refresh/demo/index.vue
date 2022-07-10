@@ -1,12 +1,12 @@
 <template>
   <tabs v-model="active" line-animation>
     <tab title="基础用法">
-      <pull-refresh v-model="isLoading" class="demo-pull" @refresh="refresh">
+      <pull-refresh class="demo-pull" @refresh="refresh">
         <p>下拉刷新次数:{{ count }}</p>
       </pull-refresh>
     </tab>
     <tab title="成功提示">
-      <pull-refresh class="demo-pull" v-model="isLoading" @refresh="onRefresh">
+      <pull-refresh class="demo-pull" @refresh="onRefresh">
         <p>下拉刷新次数:{{ count2 }}</p>
       </pull-refresh>
     </tab>
@@ -28,20 +28,16 @@ import { sleep } from '../../utils'
 const active = ref(0)
 const count = ref(0)
 const count2 = ref(0)
-const isLoading = ref(false)
 const refresh = done => {
   sleep(2000).then(() => {
     console.log('done')
     done()
     count.value++
-
-    isLoading.value = false
   })
 }
 const onRefresh = function (done) {
   sleep(2000).then(() => {
     done()
-    isLoading.value = false
     count2.value++
     Toast('刷新成功')
   })
