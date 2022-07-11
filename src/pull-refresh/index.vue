@@ -26,7 +26,16 @@ import { computed } from '@vue/runtime-core'
 const name = 'pull-refresh'
 const emits = ['refresh']
 
-const props = {}
+const props = {
+  pullingText: { type: String, default: '下拉即可刷新...' },
+  loosingText: { type: String, default: '释放即可刷新...' },
+  loadingText: { type: String, default: '加载中...' },
+  successText: String,
+  successDuration: [String, Number],
+  animationDuration: [String, Number],
+  headHeight: { type: [String, Number], default: 50 },
+  pullDistance: [String, Number]
+}
 const components = { Icon }
 function setup(props, { emit }) {
   const offsetY = ref(0)
