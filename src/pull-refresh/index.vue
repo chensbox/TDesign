@@ -8,7 +8,7 @@
     <div class="pull-refresh-track" :style="trackStyle">
       <div class="pull-refresh-track-header">
         <slot
-          v-if="!isLoading"
+          v-if="!isLoading && !isDone"
           name="pulling"
           :distance="
             offsetY > (pullDistance ?? headHeight)
@@ -22,7 +22,9 @@
             }}
           </span>
         </slot>
-
+        <slot name="success">
+          <span v-if="successText && isDone"> {{ successText }}</span>
+        </slot>
         <slot name="loading" v-if="isLoading">
           <span> <icon name="loading" /> {{ loadingText }} </span>
         </slot>
@@ -37,6 +39,7 @@
 import Icon from '../icon/index.vue'
 import { ref } from '@vue/reactivity'
 import { computed } from '@vue/runtime-core'
+import { sleep } from '../utils'
 
 const name = 'pull-refresh'
 
@@ -46,11 +49,11 @@ const props = {
   pullingText: { type: String, default: '下拉即可刷新...' },
   loosingText: { type: String, default: '释放即可刷新...' },
   loadingText: { type: String, default: '加载中...' },
-  successText: { type: String, default: '刷新成功' },
-  successDuration: { type: [String, Number], default: 0.2 },
+  successDuration: { type: [String, Number], default: 0.5 },
   animationDuration: { type: [String, Number], default: 0.2 },
   headHeight: { type: [String, Number], default: 50 },
-  pullDistance: [String, Number]
+  pullDistance: [String, Number],
+  successText: { type: String }
 }
 
 const components = { Icon }
@@ -69,8 +72,14 @@ function setup(props, { emit }) {
   })
   let startY, moveY
   const touchstart = e => (startY = e.touches[0].pageY)
-  const done = () => {
+  const done = async () => {
+    if (props.successText && offsetY.value >= pullDistance) {
+      isDone.value = true
+      isLoading.value = false
+      await sleep(props.successDuration * 10 ** 3)
+    }
     offsetY.value = 0
+    isDone.value = false
     isLoading.value = false
   }
   const touchmove = e => {

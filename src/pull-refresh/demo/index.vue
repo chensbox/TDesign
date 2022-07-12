@@ -6,12 +6,16 @@
       </pull-refresh>
     </tab>
     <tab title="成功提示">
-      <pull-refresh class="demo-pull" @refresh="onRefresh">
+      <pull-refresh
+        class="demo-pull"
+        @refresh="onRefresh"
+        success-text="刷新成功"
+      >
         <p>下拉刷新次数:{{ count2 }}</p>
       </pull-refresh>
     </tab>
     <tab title="自定义提示">
-      <pull-refresh class="demo-pull" :head-height="80">
+      <pull-refresh class="demo-pull" :head-height="80" @refresh="onRefresh2">
         <template #pulling="props">
           <img
             class="doge"
@@ -41,15 +45,22 @@ const count = ref(0)
 const count2 = ref(0)
 const refresh = done => {
   sleep(2000).then(() => {
-    console.log('done')
+    console.log(done)
     done()
     count.value++
+    Toast('刷新成功')
   })
 }
 const onRefresh = function (done) {
   sleep(2000).then(() => {
     done()
     count2.value++
+    Toast('刷新成功')
+  })
+}
+const onRefresh2 = function (done) {
+  sleep(2000).then(() => {
+    done()
     Toast('刷新成功')
   })
 }
