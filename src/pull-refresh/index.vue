@@ -7,10 +7,25 @@
   >
     <div class="pull-refresh-track" :style="trackStyle">
       <div class="pull-refresh-track-header">
-        <span v-if="!isLoading">{{
-          offsetY > 50 ? loosingText : pullingText
-        }}</span>
-        <span v-else><icon name="loading" /> {{ loadingText }}</span>
+        <slot
+          v-if="!isLoading"
+          name="pulling"
+          :distance="
+            offsetY > (pullDistance ?? headHeight)
+              ? pullDistance ?? headHeight
+              : offsetY
+          "
+        >
+          <span>
+            {{
+              offsetY < (pullDistance ?? headHeight) ? pullingText : loosingText
+            }}
+          </span>
+        </slot>
+
+        <slot name="loading" v-if="isLoading">
+          <span> <icon name="loading" /> {{ loadingText }} </span>
+        </slot>
       </div>
 
       <slot></slot>
@@ -44,6 +59,7 @@ function setup(props, { emit }) {
   const offsetY = ref(0)
   const duration = ref(+props.animationDuration)
   const isLoading = ref(false)
+  const isDone = ref(false)
   const pullDistance = props.pullDistance ?? props.headHeight
   const trackStyle = computed(() => {
     return {
@@ -83,10 +99,20 @@ function setup(props, { emit }) {
       return done()
     }
     duration.value = props.animationDuration
+    console.log(pullDistance)
     offsetY.value = pullDistance
     emit('refresh', done)
   }
-  return { touchstart, touchmove, touchend, trackStyle, offsetY, isLoading }
+
+  return {
+    touchstart,
+    touchmove,
+    touchend,
+    isDone,
+    trackStyle,
+    offsetY,
+    isLoading
+  }
 }
 export default {
   name,
@@ -107,8 +133,8 @@ export default {
       position: absolute;
       left: 0;
       top: 0;
+      min-height: 50px;
       width: 100%;
-      height: 50px;
       overflow: hidden;
       color: #969799;
       font-size: 14px;

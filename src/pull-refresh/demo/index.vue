@@ -11,7 +11,18 @@
       </pull-refresh>
     </tab>
     <tab title="自定义提示">
-      <pull-refresh class="demo-pull">
+      <pull-refresh class="demo-pull" :head-height="80">
+        <template #pulling="props">
+          <img
+            class="doge"
+            src="https://img01.yzcdn.cn/vant/doge.png"
+            :style="{ transform: `scale(${props.distance / 80})` }"
+          />
+        </template>
+
+        <template #loading>
+          <img class="doge" src="https://img01.yzcdn.cn/vant/doge-fire.jpg" />
+        </template>
         <p>下拉试试</p>
       </pull-refresh>
     </tab>
@@ -60,5 +71,12 @@ const onRefresh = function (done) {
     line-height: 50px;
     margin-left: 20px;
   }
+}
+.doge {
+  line-height: 0;
+  display: block;
+  margin: 0 auto;
+  border-radius: 10px;
+  height: 80px;
 }
 </style>
