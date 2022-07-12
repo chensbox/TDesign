@@ -8,9 +8,9 @@
     <div class="pull-refresh-track" :style="trackStyle">
       <div class="pull-refresh-track-header">
         <span v-if="!isLoading">{{
-          offsetY > 50 ? '释放即可刷新...' : '下拉即可刷新...'
+          offsetY > 50 ? loosingText : pullingText
         }}</span>
-        <span v-else><icon name="loading" /> 加载中...</span>
+        <span v-else><icon name="loading" /> {{ loadingText }}</span>
       </div>
 
       <slot></slot>
@@ -20,68 +20,70 @@
 
 <script>
 import Icon from '../icon/index.vue'
-
 import { ref } from '@vue/reactivity'
 import { computed } from '@vue/runtime-core'
+
 const name = 'pull-refresh'
+
 const emits = ['refresh']
 
 const props = {
   pullingText: { type: String, default: '下拉即可刷新...' },
   loosingText: { type: String, default: '释放即可刷新...' },
   loadingText: { type: String, default: '加载中...' },
-  successText: String,
-  successDuration: [String, Number],
-  animationDuration: [String, Number],
+  successText: { type: String, default: '刷新成功' },
+  successDuration: { type: [String, Number], default: 0.2 },
+  animationDuration: { type: [String, Number], default: 0.2 },
   headHeight: { type: [String, Number], default: 50 },
   pullDistance: [String, Number]
 }
+
 const components = { Icon }
+
 function setup(props, { emit }) {
   const offsetY = ref(0)
-  const duration = ref(0)
+  const duration = ref(+props.animationDuration)
   const isLoading = ref(false)
+  const pullDistance = props.pullDistance ?? props.headHeight
   const trackStyle = computed(() => {
     return {
       transform: `translateY(${offsetY.value}px)`,
       transition: `all ${duration.value}s`
     }
   })
-  let curY = 0,
-    startY,
-    moveY
+  let startY, moveY
   const touchstart = e => (startY = e.touches[0].pageY)
   const done = () => {
     offsetY.value = 0
     isLoading.value = false
   }
   const touchmove = e => {
-    duration.value = 0
     moveY = e.touches[0].pageY
     let distance = moveY - startY
-
     if (distance < 0 && offsetY.value <= 0) {
       return
     }
+    duration.value = 0
 
-    if (distance > 70) {
-      if (distance < 70 * 2) {
-        distance = 70 + (distance - 70) / 2
+    if (distance > pullDistance) {
+      if (distance < pullDistance * 2) {
+        distance = pullDistance + (distance - pullDistance) / 2
       } else {
-        distance = 70 * 1.5 + (distance - 70 * 2) / 4
+        distance = pullDistance * 1.5 + (distance - pullDistance * 2) / 4
       }
     }
 
     offsetY.value = Math.round(distance)
   }
-  const touchend = e => {
+
+  const touchend = () => {
     isLoading.value = true
-    if (offsetY.value < 50) {
-      duration.value = 0.2
+    if (offsetY.value < pullDistance) {
+      duration.value = props.animationDuration
       return done()
     }
-    duration.value = 0.2
-    offsetY.value = 50
+    duration.value = props.animationDuration
+    offsetY.value = pullDistance
     emit('refresh', done)
   }
   return { touchstart, touchmove, touchend, trackStyle, offsetY, isLoading }
