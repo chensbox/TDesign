@@ -10,17 +10,9 @@
         <slot
           v-if="!isLoading && !isDone"
           name="pulling"
-          :distance="
-            offsetY > (pullDistance ?? headHeight)
-              ? pullDistance ?? headHeight
-              : offsetY
-          "
+          :distance="slotDistance"
         >
-          <span>
-            {{
-              offsetY < (pullDistance ?? headHeight) ? pullingText : loosingText
-            }}
-          </span>
+          <span>{{ statusText }}</span>
         </slot>
         <slot name="success">
           <span v-if="successText && isDone"> {{ successText }}</span>
@@ -29,8 +21,7 @@
           <span> <icon name="loading" /> {{ loadingText }} </span>
         </slot>
       </div>
-
-      <slot></slot>
+      <slot />
     </div>
   </div>
 </template>
@@ -69,6 +60,12 @@ function setup(props, { emit }) {
       transform: `translateY(${offsetY.value}px)`,
       transition: `all ${duration.value}s`
     }
+  })
+  const statusText = computed(() => {
+    return offsetY.value < pullDistance ? props.pullingText : props.loosingText
+  })
+  const slotDistance = computed(() => {
+    return offsetY.value > pullDistance ? pullDistance : offsetY.value
   })
   let startY, moveY
   const touchstart = e => (startY = e.touches[0].pageY)
@@ -120,7 +117,9 @@ function setup(props, { emit }) {
     isDone,
     trackStyle,
     offsetY,
-    isLoading
+    isLoading,
+    statusText,
+    slotDistance
   }
 }
 export default {
