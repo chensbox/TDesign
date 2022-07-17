@@ -1,7 +1,7 @@
 <template>
   <tabs v-model="active" line-animation tab-animation>
     <tab title="基础用法">
-      <List></List>
+      <List v-model:loading="loading" v-model:error="error"></List>
     </tab>
     <tab title="错误提示">
       <List></List>
@@ -25,6 +25,8 @@ import PullRefresh from '../../pull-refresh/index.vue'
 import List from '../index.vue'
 const active = ref(0)
 
+const loading = ref(false)
+const error = ref(false)
 const refresh = done => {
   setTimeout(done, 2000)
 }
