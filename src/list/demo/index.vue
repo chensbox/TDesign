@@ -1,12 +1,18 @@
 <template>
-  <tabs v-model="active" line-animation tab-animation>
+  <tabs v-model="active" line-animation>
     <tab title="基础用法">
-      <list v-model:loading="loading" :finished="finished" @load="onLoad">
+      <list
+        v-show="active == 0"
+        v-model:loading="loading"
+        :finished="finished"
+        @load="onLoad"
+      >
         <div class="cell" v-for="item in listdata" :key="item">{{ item }}</div>
       </list>
     </tab>
     <tab title="错误提示">
       <list
+        v-show="active == 1"
         v-model:loading="err_loading"
         v-model:error="error"
         :finished="err_finished"
@@ -18,8 +24,13 @@
       </list>
     </tab>
     <tab title="下拉刷新">
-      <pull-refresh @refresh="refresh">
+      <pull-refresh
+        @refresh="refresh"
+        v-model="pull_loading"
+        success-text="刷新成功"
+      >
         <list
+          v-show="active == 2"
           v-model:loading="pull_loading"
           :finished="pull_finished"
           @load="pull_onLoad"
@@ -44,8 +55,8 @@ import { watch } from '@vue/runtime-core'
 const active = ref(0)
 
 const loading = ref(false)
-const err_loading = ref(true)
-const pull_loading = ref(true)
+const err_loading = ref(false)
+const pull_loading = ref(false)
 
 const error = ref(false)
 
@@ -73,11 +84,16 @@ const onLoad = () => {
       finished.value = true
       return
     }
-  }, 1500)
+  }, 1300)
 }
 
+let errorFlag = false
 const err_onLoad = () => {
   err_loading.value = true
+  if (err_listdata.value.length == 10 && !errorFlag) {
+    errorFlag = error.value = true
+    return
+  }
   setTimeout(() => {
     for (let i = 0; i < 10; i++) {
       err_listdata.value.push(err_listdata.value.length + 1)
@@ -88,7 +104,7 @@ const err_onLoad = () => {
       err_finished.value = true
       return
     }
-  }, 1500)
+  }, 1300)
 }
 
 const pull_onLoad = () => {
@@ -103,7 +119,7 @@ const pull_onLoad = () => {
       pull_finished.value = true
       return
     }
-  }, 1500)
+  }, 1300)
 }
 </script>
 

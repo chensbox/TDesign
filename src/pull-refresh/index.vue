@@ -6,7 +6,7 @@
     @touchend="touchend"
   >
     <div class="pull-refresh-track" :style="trackStyle">
-      <div class="pull-refresh-track-header">
+      <div class="pull-refresh-track-header" v-show="slotDistance">
         <slot
           v-if="!modelValue && !isDone"
           name="pulling"

@@ -2,7 +2,7 @@
   <div class="list" ref="listRef">
     <slot></slot>
     <div class="place_holder" ref="placeHolderRef"></div>
-    <div class="loading-text" v-if="loading">
+    <div class="loading-text" v-if="loading && !error">
       <icon name="loading" /> <span class="status-text">{{ loadingText }}</span>
     </div>
     <div class="status-text" v-if="finished">{{ finishedText }}</div>
@@ -20,7 +20,7 @@ const name = 'list'
 
 const components = { icon }
 
-const emits = ['load']
+const emits = ['load', 'update:error']
 
 const props = {
   loading: Boolean,
@@ -45,7 +45,10 @@ function setup(props, { emit }) {
     }
   }
 
-  const emitLoad = () => emit('load')
+  const emitLoad = () => {
+    emit('update:error', false)
+    emit('load')
+  }
   const stopReTry = watch(
     () => props.loading,
     isLoading => {
@@ -67,7 +70,7 @@ function setup(props, { emit }) {
     observer.observe(placeHolderRef.value)
   })
 
-  return { placeHolderRef, listRef }
+  return { placeHolderRef, listRef, emitLoad }
 }
 export default {
   name,
