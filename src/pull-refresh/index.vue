@@ -2,7 +2,7 @@
   <div
     :class="['pull-refresh', modelValue ? 'disable-touch' : '']"
     @touchstart="touchstart"
-    @touchmove="touchmove"
+    @touchmove.prevent="touchmove"
     @touchend="touchend"
   >
     <div class="pull-refresh-track" :style="trackStyle">
@@ -79,6 +79,7 @@ function setup(props, { emit }) {
     isDone.value = false
   }
   const touchmove = e => {
+    e.prent
     moveY = e.touches[0].pageY
     let distance = moveY - startY
     if (distance < 0 && offsetY.value <= 0) {
