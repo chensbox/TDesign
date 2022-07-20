@@ -83,7 +83,7 @@ const onRefresh2 = function (done) {
   height: calc(100vh - 95px);
 }
 .tabs-body {
-  padding: 0;
+  padding: 0 !important;
 }
 
 .demo-pull-refresh {
