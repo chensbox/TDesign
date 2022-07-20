@@ -2,7 +2,7 @@
   <div
     :class="['pull-refresh', modelValue ? 'disable-touch' : '']"
     @touchstart="touchstart"
-    @touchmove.prevent="touchmove"
+    @touchmove.stop="touchmove"
     @touchend="touchend"
   >
     <div class="pull-refresh-track" :style="trackStyle">
