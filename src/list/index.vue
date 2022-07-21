@@ -1,12 +1,13 @@
 <template>
-  <div class="list" ref="listRef">
+  <div :class="bem()" ref="listRef">
     <slot></slot>
-    <div class="place_holder" ref="placeHolderRef"></div>
-    <div class="loading-text" v-if="loading && !error">
-      <icon name="loading" /> <span class="status-text">{{ loadingText }}</span>
+    <div :class="bem('place_holder')" ref="placeHolderRef"></div>
+    <div :class="bem('loading-text')" v-if="loading && !error">
+      <icon name="loading" />
+      <span :class="bem('status-text')">{{ loadingText }}</span>
     </div>
-    <div class="status-text" v-if="finished">{{ finishedText }}</div>
-    <div class="status-text" v-if="error" @click="emitLoad">
+    <div :class="bem('status-text')" v-if="finished">{{ finishedText }}</div>
+    <div :class="bem('status-text')" v-if="error" @click="emitLoad">
       {{ errorText }}
     </div>
   </div>
@@ -14,9 +15,10 @@
 
 <script>
 import { ref, onMounted, watch } from 'vue'
+import { createNamespace } from '../utils'
 import icon from '../icon/index.vue'
 
-const name = 'list'
+const [name, bem] = createNamespace('list')
 
 const components = { icon }
 
@@ -70,7 +72,7 @@ function setup(props, { emit }) {
     observer.observe(placeHolderRef.value)
   })
 
-  return { placeHolderRef, listRef, emitLoad }
+  return { placeHolderRef, listRef, emitLoad, bem }
 }
 export default {
   name,
@@ -82,12 +84,12 @@ export default {
 </script>
 
 <style lang="less" scoped>
-.list {
+.t-list {
   width: 100%;
   background: #fff;
 
-  .loading-text,
-  .status-text {
+  &__loading-text,
+  &__status-text {
     margin: 20px auto;
     font-size: 14px;
     text-align: center;
