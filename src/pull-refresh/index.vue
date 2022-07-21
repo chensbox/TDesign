@@ -38,6 +38,7 @@ import {
 } from '../utils'
 
 const [name, bem] = createNamespace('pull-refresh')
+
 const emits = ['refresh', 'update:modelValue']
 
 const props = {
@@ -59,19 +60,24 @@ function setup(props, { emit }) {
   const duration = ref()
   const isDone = ref(false)
   const pullDistance = props.pullDistance ?? props.headHeight
+
   const trackStyle = computed(() => {
     return {
       transform: `translateY(${offsetY.value}px)`,
       transition: `all ${duration.value}s`
     }
   })
+
   const statusText = computed(() => {
     return offsetY.value < pullDistance ? props.pullingText : props.loosingText
   })
+
   const slotDistance = computed(() => {
     return offsetY.value > pullDistance ? pullDistance : offsetY.value
   })
+
   let startY, moveY
+
   const touchstart = e => (startY = e.touches[0].pageY)
 
   const done = async () => {
@@ -83,10 +89,21 @@ function setup(props, { emit }) {
     offsetY.value = 0
     isDone.value = false
   }
+
   const touchmove = e => {
-    e.prent
+    const isReachTop = !(
+      document.body.scrollTop ||
+      document.documentElement.scrollTop ||
+      window.pageYOffset
+    )
+    // console.log(isReachTop)
     moveY = e.touches[0].pageY
     let distance = moveY - startY
+
+    if (distance < 0 && isReachTop) {
+      e.preventDefault()
+    }
+
     if (distance < 0 && offsetY.value <= 0) {
       return
     }
