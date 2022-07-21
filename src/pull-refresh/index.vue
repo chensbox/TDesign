@@ -96,7 +96,6 @@ function setup(props, { emit }) {
       document.documentElement.scrollTop ||
       window.pageYOffset
     )
-    // console.log(isReachTop)
     moveY = e.touches[0].pageY
     let distance = moveY - startY
 
@@ -132,12 +131,12 @@ function setup(props, { emit }) {
 
   return {
     bem,
-    touchstart,
-    touchmove,
-    touchend,
     isDone,
-    trackStyle,
     offsetY,
+    touchend,
+    touchmove,
+    touchstart,
+    trackStyle,
     statusText,
     slotDistance
   }
