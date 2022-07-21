@@ -15,7 +15,7 @@
 
 <script>
 import { ref, onMounted, watch } from 'vue'
-import { createNamespace } from '../utils'
+import { createNamespace, makeStringProp, makeNumericProp } from '../utils'
 import icon from '../icon/index.vue'
 
 const [name, bem] = createNamespace('list')
@@ -29,11 +29,11 @@ const props = {
   error: Boolean,
   finished: Boolean,
   error: Boolean,
-  loadingText: { type: String, default: '加载中...' },
-  finishedText: { type: String, default: '没有更多了' },
-  errorText: { type: String, default: '请求失败，点击重新加载' },
-  direction: { type: String, default: 'down' },
-  offset: { type: [String, Number], default: 0 }
+  loadingText: makeStringProp('加载中...'),
+  finishedText: makeStringProp('没有更多了'),
+  errorText: makeStringProp('请求失败，点击重新加载'),
+  direction: makeStringProp('down'),
+  offset: makeNumericProp(0)
 }
 
 function setup(props, { emit }) {
