@@ -100,12 +100,12 @@ function setup(props, { emit }) {
     moveY = e.touches[0].pageY
     let distance = moveY - startY
 
-    if (distance < 0 && isReachTop) {
-      e.preventDefault()
-    }
-
     if (distance < 0 && offsetY.value <= 0) {
       return
+    }
+
+    if (distance > 0 && isReachTop) {
+      e.preventDefault()
     }
 
     if (distance > pullDistance) {
