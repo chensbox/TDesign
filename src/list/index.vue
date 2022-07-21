@@ -6,7 +6,9 @@
       <icon name="loading" />
       <span :class="bem('status-text')">{{ loadingText }}</span>
     </div>
-    <div :class="bem('status-text')" v-if="finished">{{ finishedText }}</div>
+    <div :class="bem('status-text')" v-if="finished && !loading">
+      {{ finishedText }}
+    </div>
     <div :class="bem('status-text')" v-if="error" @click="emitLoad">
       {{ errorText }}
     </div>
