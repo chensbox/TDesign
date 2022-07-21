@@ -1,12 +1,12 @@
 <template>
   <div
-    :class="['pull-refresh', modelValue ? 'disable-touch' : '']"
+    :class="bem({ 'disable-touch': modelValue })"
     @touchstart="touchstart"
     @touchmove.stop="touchmove"
     @touchend="touchend"
   >
-    <div class="pull-refresh-track" :style="trackStyle">
-      <div class="pull-refresh-track-header" v-show="slotDistance">
+    <div :class="bem('track')" :style="trackStyle">
+      <div :class="bem('header')" v-show="slotDistance">
         <slot
           v-if="!modelValue && !isDone"
           name="pulling"
@@ -29,22 +29,27 @@
 <script>
 import Icon from '../icon/index.vue'
 import { ref, computed } from 'vue'
-import { sleep } from '../utils'
+import {
+  sleep,
+  createNamespace,
+  makeStringProp,
+  makeNumericProp,
+  numericProp
+} from '../utils'
 
-const name = 'pull-refresh'
-
+const [name, bem] = createNamespace('pull-refresh')
 const emits = ['refresh', 'update:modelValue']
 
 const props = {
   modelValue: Boolean,
-  pullingText: { type: String, default: '下拉即可刷新...' },
-  loosingText: { type: String, default: '释放即可刷新...' },
-  loadingText: { type: String, default: '加载中...' },
-  successDuration: { type: [String, Number], default: 0.5 },
-  animationDuration: { type: [String, Number], default: 0.2 },
-  headHeight: { type: [String, Number], default: 50 },
-  pullDistance: [String, Number],
-  successText: { type: String }
+  pullingText: makeStringProp('下拉即可刷新...'),
+  loosingText: makeStringProp('释放即可刷新...'),
+  loadingText: makeStringProp('加载中...'),
+  successDuration: makeNumericProp(0.5),
+  animationDuration: makeNumericProp(0.2),
+  headHeight: makeNumericProp(50),
+  pullDistance: numericProp,
+  successText: String
 }
 
 const components = { Icon }
@@ -109,6 +114,7 @@ function setup(props, { emit }) {
   }
 
   return {
+    bem,
     touchstart,
     touchmove,
     touchend,
@@ -129,30 +135,33 @@ export default {
 </script>
 
 <style lang="less">
-.pull-refresh {
+.t-pull-refresh {
   overflow: hidden;
-  &-track {
+
+  &__track {
     position: relative;
     height: 100%;
-    &-header {
-      position: absolute;
-      left: 0;
-      top: 0;
-      min-height: 50px;
-      width: 100%;
-      overflow: hidden;
-      color: #969799;
-      font-size: 14px;
-      line-height: 50px;
-      text-align: center;
-      -webkit-transform: translateY(-100%);
-      transform: translateY(-100%);
-    }
     .icon-loading {
       margin-bottom: 3px;
     }
   }
-  &.disable-touch {
+
+  &__header {
+    position: absolute;
+    left: 0;
+    top: 0;
+    min-height: 50px;
+    width: 100%;
+    overflow: hidden;
+    color: #969799;
+    font-size: 14px;
+    line-height: 50px;
+    text-align: center;
+    -webkit-transform: translateY(-100%);
+    transform: translateY(-100%);
+  }
+
+  &--disable-touch {
     pointer-events: none;
   }
 }
