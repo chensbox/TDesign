@@ -1,33 +1,37 @@
 <template>
-  <div class="t-cascader">
-    <span class="t-cascader-title"> 请选择所在地区 </span>
+  <div :class="bem()">
+    <span :class="bem('title')"> 请选择所在地区 </span>
 
-    <div class="t-cascader-tab">
+    <div :class="bem('tab')">
       <div
-        class="t-cascader-tab-item"
+        :class="
+          bem('tab-item', { gray: index == selected.length - 1 && !isFinish })
+        "
         v-for="(item, index) in selected"
         :key="index"
         :ref="setTabsItemRef"
-        :class="{ gray: index == selected.length - 1 && !isFinish }"
         @click="onTabSwitch(index)"
       >
         <span>{{ item.text || item }}</span>
       </div>
 
-      <span class="t-cascader-tab-line" ref="lineRef" />
+      <span :class="bem('tab-line')" ref="lineRef" />
     </div>
 
-    <div class="t-cascader-options" ref="trackRef">
+    <div :class="bem('options')" ref="trackRef">
       <ul
-        class="t-cascader-options-list"
+        :class="bem('options-list')"
         v-for="(item, tabIdx) in selected"
         :key="tabIdx"
       >
         <li
-          class="t-cascader-options-list-item"
+          :class="
+            bem('options-list-item', {
+              active: selected[tabIdx].active == liIdx
+            })
+          "
           v-for="(li, liIdx) in selectList[tabIdx]"
           :key="liIdx"
-          :class="{ active: selected[tabIdx].active == liIdx }"
           @click="onSelect(li, tabIdx, liIdx)"
         >
           {{ li.text }}
@@ -43,14 +47,17 @@
   </div>
 </template>
 <script>
-import { ref } from '@vue/reactivity'
 import icon from '../icon/index.vue'
-import { onMounted, onBeforeUpdate, nextTick } from '@vue/runtime-core'
+import { createNamespace, makeArrayProp } from '../utils'
+import { ref, onMounted, onBeforeUpdate, nextTick } from 'vue'
 
-const name = 'Cascader'
+const [name, bem] = createNamespace('cascader')
+
 const emits = ['finish']
+
 const components = { icon }
-const props = { options: Array }
+const props = { options: makeArrayProp() }
+
 const setup = (props, { emit }) => {
   const selected = ref(['请选择'])
   const tabsItemRefs = []
@@ -99,6 +106,7 @@ const setup = (props, { emit }) => {
     })
   })
   return {
+    bem,
     selected,
     trackRef,
     lineRef,
@@ -122,11 +130,11 @@ export default {
 .t-cascader {
   position: relative;
   background: #fff;
-  &-title {
+  &__title {
     line-height: 50px;
     padding: 15px;
   }
-  &-tab {
+  &__tab {
     position: relative;
     padding: 0 5px;
     &-line {
@@ -146,9 +154,12 @@ export default {
       height: 38px;
       line-height: 38px;
       cursor: pointer;
+      &--gray {
+        color: #969799;
+      }
     }
   }
-  &-options {
+  &__options {
     display: flex;
     width: 100%;
     transition: all 0.4s;
@@ -173,6 +184,11 @@ export default {
           font-weight: bolder;
           transform: translateY(-50%);
         }
+        &--active {
+          background: rgba(25, 137, 250, 0.1);
+          color: #1989fa;
+        }
+
         &:active {
           // background: #f2f3f5;
           background: rgba(25, 137, 250, 0.1);
@@ -180,12 +196,5 @@ export default {
       }
     }
   }
-}
-.active {
-  background: rgba(25, 137, 250, 0.1);
-  color: #1989fa;
-}
-.gray {
-  color: #969799;
 }
 </style>
