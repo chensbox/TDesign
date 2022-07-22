@@ -47,7 +47,6 @@ import signature from '../index.vue'
 import picker from '../../picker/index.vue'
 import { onMounted } from '@vue/runtime-core'
 import Demo from '../../toast/demo/index.vue'
-import { doc } from 'prettier'
 const width = ref(5)
 const color = ref('black')
 const show = ref(false)

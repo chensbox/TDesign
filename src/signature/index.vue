@@ -1,58 +1,43 @@
 <template>
-  <div class="signature">
-    <div class="signature-canvas">
+  <div :class="bem()">
+    <div :class="bem('canvas')">
       <canvas
         ref="canvasRef"
         :width="width"
         :height="fullscreenHeight || height"
-        @touchstart="touchstart"
-        @touchmove="touchmove"
-        @touchend="touchend"
+        @touchstart.prevent="touchstart"
+        @touchmove.prevent="touchmove"
+        @touchend.prevent="touchend"
       ></canvas>
     </div>
-    <div class="signature-control-bar" ref="controlBarRef">
-      <t-button class="signature-button" type="wanner" round @click="reset"
+    <div :class="bem('control-bar')" ref="controlBarRef">
+      <t-button :class="bem('button')" type="wanner" round @click="reset"
         >重置</t-button
       >
-      <t-button class="signature-button" round @click="saveImg">确定</t-button>
+      <t-button :class="bem('button')" round @click="saveImg">确定</t-button>
     </div>
   </div>
 </template>
 
 <script>
-import { nextTick, onMounted, ref } from '@vue/runtime-core'
+import { nextTick, onMounted, ref } from 'vue'
 import TButton from '../button/index.vue'
-const name = 'signature'
+import { makeNumericProp, makeStringProp, createNamespace } from '../utils'
+
+const [name, bem] = createNamespace('signature')
+
 const emits = ['save', 'reset']
+
 const components = { TButton }
+
 const props = {
-  width: {
-    type: [String, Number],
-    default: document.body.clientWidth - 2
-  },
-  height: {
-    type: [String, Number],
-    default: 300
-  },
-  lineWidth: {
-    type: [String, Number],
-    default: 2
-  },
-  color: {
-    type: String,
-    default: 'black'
-  },
-  filename: {
-    type: String,
-    default: 'signatrue'
-  },
-  fullscreen: {
-    type: Boolean
-  },
-  imgType: {
-    type: String,
-    default: 'png'
-  }
+  fullscreen: Boolean,
+  width: makeNumericProp(document.body.clientWidth - 2),
+  height: makeNumericProp(300),
+  lineWidth: makeNumericProp(2),
+  color: makeStringProp('black'),
+  filename: makeStringProp('signatrue'),
+  imgType: makeStringProp('png')
 }
 
 function setup(props, { emit }) {
@@ -109,7 +94,7 @@ function setup(props, { emit }) {
   function reset() {
     ctx.beginPath()
     ctx.clearRect(0, 0, canvas.width, canvas.height)
-    ctx.closePath() //可加入，可不加入
+    ctx.closePath()
     emit('reset')
   }
 
@@ -144,12 +129,13 @@ function setup(props, { emit }) {
     }
   })
   return {
-    touchstart,
-    touchmove,
-    touchend,
+    bem,
     reset,
     saveImg,
+    touchend,
+    touchmove,
     canvasRef,
+    touchstart,
     controlBarRef,
     fullscreenHeight
   }
@@ -164,16 +150,16 @@ export default {
 </script>
 
 <style lang="less">
-.signature {
-  &-canvas {
+.t-signature {
+  &__canvas {
     background: rgb(255, 255, 255);
     border: 1px dashed gray;
   }
-  &-control-bar {
+  &__control-bar {
     display: flex;
     justify-content: flex-end;
   }
-  &-button {
+  &__button {
     margin: 10px 5px;
   }
 }
