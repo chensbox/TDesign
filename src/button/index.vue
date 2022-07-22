@@ -1,18 +1,13 @@
 <script>
+import { createNamespace, makeStringProp, falseProp } from '../utils'
 import Icon from '../icon/index.vue'
+
+const [name, bem] = createNamespace('button')
+
 const props = {
-  type: {
-    type: String,
-    default: 'primary'
-  },
-  size: {
-    type: String,
-    default: 'normal'
-  },
-  plain: {
-    type: Boolean,
-    default: false
-  },
+  type: makeStringProp('primary'),
+  size: makeStringProp('normal'),
+  plain: falseProp,
   color: String,
   icon: String,
   loading: Boolean,
@@ -22,9 +17,11 @@ const props = {
   square: Boolean,
   round: Boolean
 }
-const name = 't-button'
+
 const emits = ['click']
+
 const components = { Icon }
+
 const colorMap = {
   info: '#1989fa',
   warning: '#ff976a',
@@ -33,15 +30,6 @@ const colorMap = {
 }
 
 function setup(props, { slots, emit }) {
-  const classList = [
-    't-button',
-    props.type,
-    props.size,
-    props.disabled ? 'disabled' : '',
-    props.square ? 'square' : '',
-    props.round ? 'round' : ''
-  ]
-
   const style = { background: props.color }
 
   if (props.plain) {
@@ -60,8 +48,8 @@ function setup(props, { slots, emit }) {
   }
 
   return {
+    bem,
     style,
-    classList,
     slots,
     onClick
   }
@@ -78,7 +66,15 @@ export default {
 
 <template>
   <button
-    :class="classList"
+    :class="
+      bem({
+        [type]: type,
+        [size]: size,
+        disabled,
+        square,
+        round
+      })
+    "
     :style="style"
     @click="onClick"
     :disabled="disabled"
@@ -103,6 +99,64 @@ export default {
   outline: none;
   border-radius: 3px;
   cursor: pointer;
+
+  &--default {
+    border: 1px solid #ebedf0;
+    background: #ffffff;
+    color: #323233;
+  }
+  &--info {
+    background: #1989fa;
+  }
+  &--warning {
+    background: #ff976a;
+  }
+  &--danger {
+    background: #ee0a24;
+  }
+  &--primary {
+    background: #07c160;
+  }
+
+  &--large {
+    height: 50px;
+    width: 100%;
+    padding: 5px 15px;
+    font-size: 20px;
+  }
+  &--normal {
+    height: 42px;
+    padding: 0 15px;
+    font-size: 16px;
+  }
+  &--small {
+    height: 32px;
+    padding: 0 8px;
+  }
+  &--mini {
+    height: 24px;
+    padding: 0 4px;
+    font-size: 10px;
+  }
+
+  &--square {
+    border-radius: 0;
+  }
+  &--round {
+    border-radius: 999rem;
+  }
+
+  &--disabled {
+    cursor: not-allowed;
+    opacity: 0.6;
+    &:active {
+      filter: brightness(100%) !important;
+    }
+  }
+
+  &:active {
+    filter: brightness(90%);
+  }
 }
 
 .btn-text {
@@ -110,60 +164,6 @@ export default {
   vertical-align: middle;
 }
 
-.default {
-  border: 1px solid #ebedf0;
-  background: #ffffff;
-  color: #323233;
-}
-.info {
-  background: #1989fa;
-}
-.warning {
-  background: #ff976a;
-}
-.danger {
-  background: #ee0a24;
-}
-.primary {
-  background: #07c160;
-}
-
-.large {
-  height: 50px;
-  width: 100%;
-  padding: 5px 15px;
-  font-size: 20px;
-}
-.normal {
-  height: 42px;
-  padding: 0 15px;
-  font-size: 16px;
-}
-.small {
-  height: 32px;
-  padding: 0 8px;
-  // line-height: 32px;
-}
-.mini {
-  height: 24px;
-  padding: 0 4px;
-  // line-height: 24px;
-  font-size: 10px;
-}
-.plain {
-  color: inherit;
-  background: #ffffff;
-}
-button:active {
-  filter: brightness(90%);
-}
-.disabled {
-  cursor: not-allowed;
-  opacity: 0.6;
-  &:active {
-    filter: brightness(100%);
-  }
-}
 * {
   -webkit-touch-callout: none; /*系统默认菜单被禁用*/
   -webkit-user-select: none; /*webkit浏览器*/
@@ -171,11 +171,5 @@ button:active {
   -moz-user-select: none; /*火狐*/
   -ms-user-select: none; /*IE10*/
   user-select: none;
-}
-.square {
-  border-radius: 0;
-}
-.round {
-  border-radius: 999rem;
 }
 </style>

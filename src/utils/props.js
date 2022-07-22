@@ -5,6 +5,11 @@ export const truthProp = {
   default: true
 }
 
+export const falseProp = {
+  type: Boolean,
+  default: false
+}
+
 export const makeRequiredProp = type => ({
   type,
   required: true
