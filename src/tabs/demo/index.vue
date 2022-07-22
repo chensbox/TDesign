@@ -80,7 +80,7 @@ const active3 = ref(0)
 const active4 = ref(0)
 const active5 = ref(0)
 const active6 = ref(0)
-const active7 = ref(0)
+const active7 = ref(1)
 const active8 = ref(0)
 const active9 = ref(0)
 </script>

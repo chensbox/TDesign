@@ -1,12 +1,15 @@
 <template>
-  <div :class="['tabs', cover ? 'cover' : '']">
-    <div class="tabs-head" ref="tabsHeadRef">
+  <div :class="bem({ cover })">
+    <div :class="bem('head')" ref="tabsHeadRef">
       <div
-        class="tabs-head-item"
+        :class="
+          bem('tab', {
+            'not-allow': it.props.disable == '' || it.props.disable
+          })
+        "
         v-for="(it, id) in slots"
         :key="id"
         :ref="setTabsItemRef"
-        :class="{ 'not-allow': it.props.disable == '' || it.props.disable }"
         @click="tabsSwitch(id)"
       >
         <span :class="{ blod: attrs.modelValue === id }">
@@ -15,37 +18,38 @@
         </span>
       </div>
 
-      <div
-        :class="['tabs-head-line', lineAnimation ? 'line_animation' : '']"
-        ref="lineRef"
-      />
+      <div :class="bem('line', { animation: lineAnimation })" ref="lineRef" />
     </div>
 
-    <div
-      :class="['tabs-track', tabAnimation ? 'tabs_animation' : '']"
-      ref="trackRef"
-    >
+    <div :class="bem('track', { animation: tabAnimation })" ref="trackRef">
       <slot />
     </div>
   </div>
 </template>
 
 <script>
-import { onBeforeUpdate, onMounted, watch } from '@vue/runtime-core'
-import { ref, toRefs } from '@vue/reactivity'
 import icon from '../icon/index.vue'
-import { smoothMove } from './hooks/smoothMove'
-import { tabsChange } from './hooks/tabsChange'
-import { useSwipeable } from './hooks/useSwipeable'
 
-const name = 'tabs'
+import { ref, toRefs, watch, onMounted, onUnmounted, onBeforeUpdate } from 'vue'
+
+import { smoothMove, tabsChange, useSwipeable } from './hooks'
+
+import {
+  falseProp,
+  createNamespace,
+  makeStringProp,
+  makeNumericProp
+} from '../utils'
+
+const [name, bem] = createNamespace('tabs')
+
 const props = {
-  lineAnimation: { type: Boolean, default: false },
-  tabAnimation: { type: Boolean, default: false },
-  swipeable: { type: Boolean, default: false },
-  color: { type: String, default: '#0052d9' },
   cover: Boolean,
-  swipeThreshold: { type: [Number, String], default: 5 }
+  lineAnimation: falseProp,
+  tabAnimation: falseProp,
+  swipeable: falseProp,
+  color: makeStringProp('#0052d9'),
+  swipeThreshold: makeNumericProp(5)
 }
 
 const components = { icon }
@@ -61,7 +65,9 @@ function setup(props, { attrs, slots, emit }) {
   const tabsHeadRef = ref()
   const useSlot = slots.default()
   slots = useSlot[0].children instanceof Array ? useSlot[0].children : useSlot
+
   const setTabsItemRef = el => tabsItemRefs.push(el)
+
   const tabsSwitch = index => {
     if (index === active) {
       return
@@ -87,15 +93,15 @@ function setup(props, { attrs, slots, emit }) {
   )
 
   onMounted(() => {
-    const initSelectEl = tabsItemRefs[attrs.modelValue]
-
-    const isDisabled = initSelectEl.classList.value.includes('not-allow')
-
-    if (isDisabled) {
-      tabsSwitch(attrs.modelValue + 1)
-    } else {
-      tabsSwitch(attrs.modelValue)
-    }
+    const index = attrs.modelValue
+    const tabCount = tabsItemRefs.length
+    const initSelectEl = tabsItemRefs[index]
+    const isDisabled = initSelectEl.classList.value.includes(
+      `${bem('tab')}--not-alow`
+    )
+    console.log(initSelectEl.classList.value)
+    // console.log(`${bem('tab')}--not-allow`)
+    tabsSwitch(isDisabled ? (index + 1) % tabCount : index)
 
     if (props.swipeable) {
       trackRef.value.addEventListener('touchstart', touchstart)
@@ -106,22 +112,31 @@ function setup(props, { attrs, slots, emit }) {
 
   onBeforeUpdate(() => (tabsItemRefs.length = 0))
 
+  onUnmounted(() => {
+    if (props.swipeable) {
+      trackRef.value.removeEventListener('touchstart', touchstart)
+      trackRef.value.removeEventListener('touchmove', touchmove)
+      trackRef.value.removeEventListener('touchend', touchend)
+    }
+  })
+
   watch(
     () => attrs.modelValue,
     () => tabsSwitch(attrs.modelValue)
   )
 
   return {
+    bem,
     slots,
     attrs,
-    tabsSwitch,
-    setTabsItemRef,
-    touchstart,
-    touchmove,
-    touchend,
-    tabsHeadRef,
     lineRef,
-    trackRef
+    trackRef,
+    touchend,
+    touchmove,
+    touchstart,
+    tabsSwitch,
+    tabsHeadRef,
+    setTabsItemRef
   }
 }
 
@@ -129,15 +144,15 @@ export default {
   name,
   props,
   emits,
-  components,
-  setup
+  setup,
+  components
 }
 </script>
 
 <style lang="less">
-.tabs {
+.t-tabs {
   overflow: hidden;
-  &-head {
+  &__head {
     display: flex;
     position: relative;
     overflow-x: scroll;
@@ -146,35 +161,16 @@ export default {
     justify-content: space-between;
     transition: all 0.4s;
     background: #ffffff;
-    &-item {
-      position: relative;
-      display: inline-block;
-      flex: 1 0 auto; //很关键
-      z-index: 999;
-      margin: 0 14px;
-      padding: 0 5px;
-      font-size: 14px;
-      user-select: none;
-      text-align: center;
-      cursor: pointer;
-      color: #646566;
-    }
-    &-line {
-      position: absolute;
-      height: 3px;
-      width: 15px;
-      border-radius: 4px;
-      bottom: 0;
-      left: 28px;
-      background: v-bind(color);
-    }
   }
-  &-track {
+  &__track {
     display: flex;
     width: 100%;
     height: 100%;
+    &--animation {
+      transition: all 0.4s;
+    }
   }
-  &-body {
+  &__panel {
     box-sizing: border-box;
     flex-shrink: 0;
     min-height: 100px;
@@ -183,40 +179,59 @@ export default {
     font-size: 16px;
     background-color: #ffffff;
   }
-}
+  &__tab {
+    position: relative;
+    display: inline-block;
+    flex: 1 0 auto; //很关键
+    z-index: 999;
+    margin: 0 14px;
+    padding: 0 5px;
+    font-size: 14px;
+    user-select: none;
+    text-align: center;
+    cursor: pointer;
+    color: #646566;
+    &--not-allow {
+      cursor: not-allowed !important;
+      opacity: 0.4;
+    }
+  }
+  &__line {
+    position: absolute;
+    height: 3px;
+    width: 15px;
+    border-radius: 4px;
+    bottom: 0;
+    left: 28px;
+    background: v-bind(color);
+    &--animation {
+      transition: all 0.4s;
+    }
+  }
 
-.line_animation {
-  transition: all 0.4s;
-}
-.tabs_animation {
-  transition: all 0.4s;
-}
-.blod {
-  font-weight: bold;
-  color: #323233;
-}
-.not-allow {
-  cursor: not-allowed !important;
-  opacity: 0.4;
-}
-
-.cover {
-  .tabs-head {
-    background: #eeeeee;
-    &-line {
+  &--cover {
+    .t-tabs__head {
+      background: #eeeeee;
+    }
+    .t-tabs__line {
       height: 70%;
       top: 50%;
       transform: translateY(-50%);
       background: #ffffff !important;
       box-shadow: rgb(0 0 0 / 15%) 0px 2px 4px;
     }
-    &-item {
+    .t-tabs__tab {
       margin: 0;
       span {
         padding: 0 10px;
       }
     }
   }
+}
+
+.blod {
+  font-weight: bold;
+  color: #323233;
 }
 
 * {
