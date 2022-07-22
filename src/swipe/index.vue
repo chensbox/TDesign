@@ -1,7 +1,7 @@
 <template>
-  <div class="swipe">
+  <div :class="bem()">
     <div
-      class="swipe-track"
+      :class="bem('track')"
       ref="trackRef"
       :style="trackStyle"
       @touchstart.prevent="touchstart"
@@ -10,27 +10,32 @@
     >
       <slot />
     </div>
-    <div class="dot" v-if="showIndicators">
+    <div :class="bem('dot')" v-if="showIndicators">
       <div
-        class="dot-item"
+        :class="
+          bem('dot-item', {
+            active: (active % 4) + 1 == i
+          })
+        "
         v-for="i in dotCount"
         :key="i"
-        :class="{ active: (active % 4) + 1 == i }"
       ></div>
     </div>
   </div>
 </template>
 
 <script>
-import { ref } from '@vue/reactivity'
-import { computed, onMounted, onUnmounted } from '@vue/runtime-core'
-const name = 'swipe'
+import { ref, computed, onMounted, onUnmounted } from 'vue'
+import { makeNumericProp, truthProp, createNamespace } from '../utils'
+
+const [name, bem] = createNamespace('swipe')
+
 const emits = ['change']
 const props = {
-  autoplay: { type: [String, Number], default: 2000 },
-  duration: { type: [String, Number], default: 0.5 },
-  loop: { type: Boolean, default: true },
-  showIndicators: { type: Boolean, default: true }
+  autoplay: makeNumericProp(2000),
+  duration: makeNumericProp(0.5),
+  loop: truthProp,
+  showIndicators: truthProp
 }
 
 function setup(props, { emit }) {
@@ -49,12 +54,12 @@ function setup(props, { emit }) {
   let clientWidth,
     startX,
     moveX,
+    task,
     slotCount,
     firstSlot,
     lastSlot,
     startTimeStamp,
     endTimeStamp,
-    task,
     isTouching = false,
     curX = 0,
     index = 0
@@ -141,13 +146,14 @@ function setup(props, { emit }) {
     clearInterval(task)
   })
   return {
-    touchstart,
-    touchmove,
+    bem,
+    active,
     touchend,
     trackRef,
-    trackStyle,
     dotCount,
-    active
+    touchmove,
+    touchstart,
+    trackStyle
   }
 }
 
@@ -160,18 +166,18 @@ export default {
 </script>
 
 <style lang="less">
-.swipe {
+.t-swipe {
   position: relative;
   overflow: hidden;
   height: 30vh;
   width: 100%;
-  &-track {
+  &__track {
     display: flex;
     height: 100%;
     width: 100%;
     cursor: grab;
   }
-  .dot {
+  &__dot {
     position: absolute;
     left: 50%;
     bottom: 5%;
@@ -186,7 +192,7 @@ export default {
       border-radius: 50%;
       transition: all 0.4s;
       background: rgba(235, 237, 240, 0.5);
-      &.active {
+      &--active {
         background: white;
       }
     }
