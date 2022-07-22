@@ -73,7 +73,9 @@ function setup(props, { attrs, slots, emit }) {
       return
     }
     active = index
-    if (tabsItemRefs[index].classList.value.includes('not-allow')) {
+
+    const classList = tabsItemRefs[index].classList.value
+    if (classList.includes(`${bem('tab')}--not-allow`)) {
       return
     }
 
@@ -97,10 +99,9 @@ function setup(props, { attrs, slots, emit }) {
     const tabCount = tabsItemRefs.length
     const initSelectEl = tabsItemRefs[index]
     const isDisabled = initSelectEl.classList.value.includes(
-      `${bem('tab')}--not-alow`
+      `${bem('tab')}--not-allow`
     )
-    console.log(initSelectEl.classList.value)
-    // console.log(`${bem('tab')}--not-allow`)
+
     tabsSwitch(isDisabled ? (index + 1) % tabCount : index)
 
     if (props.swipeable) {
