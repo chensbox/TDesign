@@ -85,7 +85,11 @@ export default {
           {
             path:'list',
             title:'List 列表'
-          }
+          },
+          {
+            path: 'rend',
+            title: 'rend 测试'
+          },
         ],
       },
       {
@@ -102,7 +106,7 @@ export default {
           {
             path: 'icon',
             title: 'Icon 图标',
-          },
+          }
         ]
       }
     ],
