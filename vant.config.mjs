@@ -90,6 +90,10 @@ export default {
             path: 'rend',
             title: 'rend 测试'
           },
+          {
+            path: 'notify',
+            title: 'Notify 消息通知'
+          },
         ],
       },
       {
