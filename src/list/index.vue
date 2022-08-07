@@ -1,7 +1,11 @@
 <template>
   <div :class="bem()" ref="listRef">
     <slot></slot>
-    <div :class="bem('place_holder')" ref="placeHolderRef"></div>
+    <div
+      :class="bem('place_holder')"
+      style="height: 1px"
+      ref="placeHolderRef"
+    ></div>
     <div :class="bem('loading-text')" v-if="loading && !error">
       <icon name="loading" />
       <span :class="bem('status-text')">{{ loadingText }}</span>
