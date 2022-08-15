@@ -7,6 +7,7 @@
       :class="bem('item', { active: active == i + offset })"
       v-for="i in 5"
       :key="i"
+      @click="onClick(i)"
     >
       {{ i + offset }}
     </li>
@@ -28,14 +29,18 @@ function setup(props) {
   const pagesCount = ref(13)
   const active = ref(1)
   const middle = Math.floor(5 / 2)
+
+  const leftMove = () =>
+    active.value > middle + 1 && pagesCount.value - active.value >= middle
+
+  const rightMove = () =>
+    active.value > middle && active.value + middle < pagesCount.value
+
   const prePage = () => {
     if (active.value == 1) {
       return
     }
-    if (
-      active.value > middle + 1 &&
-      pagesCount.value - active.value >= middle
-    ) {
+    if (leftMove()) {
       offset.value--
     }
     active.value--
@@ -44,12 +49,22 @@ function setup(props) {
     if (active.value == pagesCount.value) {
       return
     }
-    if (active.value > middle && active.value + middle < pagesCount.value) {
+    if (rightMove()) {
       offset.value++
     }
     active.value++
   }
-  return { bem, active, offset, prePage, nextPage, pagesCount }
+
+  const onClick = i => {}
+  return {
+    bem,
+    active,
+    offset,
+    onClick,
+    prePage,
+    nextPage,
+    pagesCount
+  }
 }
 export default {
   name,
