@@ -37,10 +37,8 @@ function setup(props) {
       pagesCount.value - active.value >= middle
     ) {
       offset.value--
-      active.value--
-    } else {
-      active.value--
     }
+    active.value--
   }
   const nextPage = () => {
     if (active.value == pagesCount.value) {
@@ -48,10 +46,8 @@ function setup(props) {
     }
     if (active.value > middle && active.value + middle < pagesCount.value) {
       offset.value++
-      active.value++
-    } else {
-      active.value++
     }
+    active.value++
   }
   return { bem, active, offset, prePage, nextPage, pagesCount }
 }
