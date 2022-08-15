@@ -94,6 +94,10 @@ export default {
             path: 'notify',
             title: 'Notify 消息通知'
           },
+          {
+            path: 'pagination',
+            title: 'Pagination  分页'
+          },
         ],
       },
       {
