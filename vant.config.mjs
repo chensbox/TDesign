@@ -7,12 +7,12 @@ export default {
     site: {
       publicPath: '/TDesign/site-dist',
     },
-    configureVite(config){
+    configureVite (config) {
       const { BUILD_TARGET } = process.env;
       if (BUILD_TARGET === 'site') {
         // 修改文档站点构建配置
         config.server.fs = {
-          strict:false
+          strict: false
         }
       }
       return config
@@ -79,12 +79,12 @@ export default {
             title: 'Swipe 轮播',
           },
           {
-            path:'pull-refresh',
-            title:'PullRefresh 下拉刷新'
+            path: 'pull-refresh',
+            title: 'PullRefresh 下拉刷新'
           },
           {
-            path:'list',
-            title:'List 列表'
+            path: 'list',
+            title: 'List 列表'
           },
           {
             path: 'rend',
@@ -98,11 +98,15 @@ export default {
             path: 'pagination',
             title: 'Pagination  分页'
           },
+          {
+            path: 'infinite-list',
+            title: 'InfiniteScroll 无限滚动'
+          },
         ],
       },
       {
-        title:"Beta",
-        items:[
+        title: "Beta",
+        items: [
           {
             path: 'signature',
             title: 'Signature 电子签名',
