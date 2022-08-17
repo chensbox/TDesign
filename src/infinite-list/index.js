@@ -1,20 +1,20 @@
-const onScroll = (el, binding) => {
-  const { scrollHeight, scrollTop, clientHeight } = el
-
-  if (scrollHeight - clientHeight - scrollTop <= 10) {
-    binding.value()
-  }
-}
 export const infiniteList = {
   name: 'infiniteList',
 
   mounted(el, binding, vnode, prevVnode) {
-    el.addEventListener('scroll', () => {
-      onScroll(el, binding)
-    })
+    binding.onScroll = () => {
+      const { scrollHeight, scrollTop, clientHeight } = el
+
+      if (scrollHeight - clientHeight - scrollTop <= 10) {
+        binding.value()
+      }
+    }
+    el.addEventListener('scroll', binding.onScroll)
   },
 
-  unmounted(el, binding, vnode, prevVnode) {}
+  unmounted(el, binding) {
+    el.removeEventListener('scroll', binding.onScroll)
+  }
 }
 
 export default {
