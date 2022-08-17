@@ -19,8 +19,7 @@ function onclick() {
   show.value = true
 }
 function functionCall() {
-  const app = notify({ show: true })
-  console.log(app)
+  const app = notify({ message: 'nih' })
 }
 </script>
 

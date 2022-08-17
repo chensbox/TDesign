@@ -1,32 +1,25 @@
 <template>
   <transition appear>
-    <div :class="bem()" v-if="modelValue">消息通知</div>
+    <div :class="bem()" v-if="modelValue">{{ message }}</div>
   </transition>
 </template>
 
 <script>
 import { ref, watch } from 'vue'
-import { createNamespace } from '../utils'
+import { createNamespace, makeNumericProp, makeStringProp } from '../utils'
 const [name, bem] = createNamespace('notify ')
 const emits = ['update:modelValue']
 const props = {
-  modelValue: Boolean
+  modelValue: Boolean,
+  type: makeStringProp('danger'),
+  message: String,
+  color: String,
+  background: String,
+  onOpened: Function,
+  onClose: Function,
+  duration: makeNumericProp(2000)
 }
 function setup(props, { emit }) {
-  let timer
-  const close = () => {
-    if (timer) {
-      clearTimeout(timer)
-    }
-    timer = setTimeout(() => {
-      emit('update:modelValue', false)
-    }, 2000)
-  }
-  watch(
-    () => props.modelValue,
-    val => val && close(),
-    { immediate: true }
-  )
   return { bem }
 }
 export default {
@@ -37,15 +30,17 @@ export default {
 }
 </script>
 
-<style lang="less">
+<style lang="less" scoped>
 .t-notify {
   position: fixed;
   top: 0;
   left: 0;
   height: 30px;
   width: 100%;
+  text-align: center;
   background: #ee0a24;
 }
+
 .v-enter-active,
 .v-leave-active {
   transition: all 0.25s ease-out;
