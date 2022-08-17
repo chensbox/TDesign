@@ -32,7 +32,7 @@ export default {
   margin: 0;
 }
 .list {
-  overflow: scroll;
+  overflow: auto;
   height: 300px;
   background: #ccc;
 
