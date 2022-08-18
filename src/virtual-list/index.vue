@@ -37,9 +37,17 @@ function setup(props, { emit }) {
       start * itemHeight.value
     }px, 0)`
   }
+  let tick
   const handleScroll = () => {
-    const scrollTop = listBoxRef.value.scrollTop
-    updateVisibleData(scrollTop)
+    if (tick) {
+      return
+    }
+    tick = true
+    requestAnimationFrame(() => {
+      const scrollTop = listBoxRef.value.scrollTop
+      updateVisibleData(scrollTop)
+      tick = false
+    })
   }
   onMounted(() => {
     const offsetTop = listBoxRef.value.offsetTop
