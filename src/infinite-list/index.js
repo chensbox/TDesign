@@ -2,12 +2,20 @@ export const infiniteList = {
   name: 'infiniteList',
 
   mounted(el, binding, vnode, prevVnode) {
+    let tick
     binding.onScroll = () => {
-      const { scrollHeight, scrollTop, clientHeight } = el
-
-      if (scrollHeight - clientHeight - scrollTop <= 10) {
-        binding.value()
+      if (tick) {
+        return
       }
+      tick = true
+      requestAnimationFrame(() => {
+        const { scrollHeight, scrollTop, clientHeight } = el
+
+        if (scrollHeight - clientHeight - scrollTop <= 10) {
+          binding.value()
+        }
+        tick = false
+      })
     }
     el.addEventListener('scroll', binding.onScroll)
   },
