@@ -1,15 +1,11 @@
 <template>
-  <div :class="bem()">
-    <t-button>df</t-button>
-  </div>
+  <div :class="bem()"></div>
 </template>
 
 <script>
-import TButton from '../button/index.vue'
 import { createNamespace } from '../utils'
 const [name, bem] = createNamespace('skeleton')
 export default {
-  components: { TButton },
   name,
   setup() {
     return { bem }
