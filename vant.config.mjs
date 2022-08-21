@@ -86,9 +86,13 @@ export default {
             path: 'list',
             title: 'List 列表'
           },
+          // {
+          //   path: 'rend',
+          //   title: 'rend 测试'
+          // },
           {
-            path: 'rend',
-            title: 'rend 测试'
+            path:'skeleton',
+            title:'skeleton 骨架屏'
           },
           {
             path: 'notify',
