@@ -1,8 +1,8 @@
 <template>
   <demo-block>
     <collapse>
-      <collapse-item name="1"></collapse-item>
-      <collapse-item name="2"></collapse-item>
+      <collapse-item title="标题1" name="1"> 标题1的内容 </collapse-item>
+      <collapse-item title="标题2" name="2"> 标题2的内容 </collapse-item>
     </collapse>
   </demo-block>
 </template>
