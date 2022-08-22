@@ -99,6 +99,10 @@ export default {
             title: 'Notify 消息通知'
           },
           {
+            path: 'collapse',
+            title: 'Collapse 折叠面板'
+          },
+          {
             path: 'pagination',
             title: 'Pagination  分页'
           }
