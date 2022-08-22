@@ -91,8 +91,8 @@ export default {
           //   title: 'rend 测试'
           // },
           {
-            path:'skeleton',
-            title:'skeleton 骨架屏'
+            path: 'skeleton',
+            title: 'skeleton 骨架屏'
           },
           {
             path: 'notify',
@@ -101,12 +101,17 @@ export default {
           {
             path: 'pagination',
             title: 'Pagination  分页'
-          },
+          }
+        ],
+      },
+      {
+        title: '功能指令',
+        items: [
           {
             path: 'infinite-list',
             title: 'InfiniteScroll 无限滚动'
-          },
-        ],
+          }
+        ]
       },
       {
         title: "Beta",

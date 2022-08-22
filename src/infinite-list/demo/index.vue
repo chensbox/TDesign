@@ -1,6 +1,12 @@
 <template>
   <demo-block title="基础用法">
-    <div class="list" v-infinite-list="load" hah hi>
+    <div
+      class="list"
+      v-infinite-list="load"
+      :infinite-scroll-disabled="false"
+      :infinite-scroll-distance="300"
+      infinite-scroll-immediate
+    >
       <div v-for="i in count" :key="i">{{ i }}</div>
     </div>
   </demo-block>
