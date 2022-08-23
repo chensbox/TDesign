@@ -10,7 +10,7 @@
 </template>
 
 <script>
-import { ref, inject, watch, computed, nextTick } from 'vue'
+import { ref, inject, watch, computed, nextTick, onMounted } from 'vue'
 import { createNamespace, makeNumericProp } from '../utils'
 const props = {
   title: String,
@@ -24,23 +24,24 @@ function setup(props) {
   const height = ref('0')
   console.log(parent)
   const expanded = computed(() => parent.isExpanded(props.name))
-  watch(
-    expanded,
-    (newValue, oldValue) => {
-      nextTick(() => {
-        const { offsetHeight } = content.value
-        const contentHeitht = `${offsetHeight}px`
-        height.value = newValue ? contentHeitht : '0'
-      })
-    },
-    { immediate: true }
-  )
+  watch(expanded, (newValue, oldValue) => {
+    const { offsetHeight } = content.value
+    const contentHeitht = `${offsetHeight}px`
+    height.value = newValue ? contentHeitht : '0'
+  })
 
   const toggle = (newValue = !expanded.value) => {
     parent.toggle(props.name, newValue)
   }
   const onclick = () => toggle()
-
+  onMounted(() => {
+    const { offsetHeight } = content.value
+    const contentHeitht = `${offsetHeight}px`
+    height.value = expanded.value ? contentHeitht : '0'
+    setTimeout(() => {
+      wrapper.value.style.transition = 'height 0.25s ease-out'
+    })
+  })
   return { bem, wrapper, content, onclick, height }
 }
 export default {
@@ -61,7 +62,6 @@ export default {
     overflow: hidden;
     height: 0;
     will-change: height;
-    transition: height 0.25s ease-out;
   }
   &__content {
     padding: 30px 10px;
