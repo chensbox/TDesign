@@ -24,23 +24,22 @@ function setup(props) {
   const height = ref('0')
   console.log(parent)
   const expanded = computed(() => parent.isExpanded(props.name))
-  watch(expanded, (newValue, oldValue) => {
+
+  const setWrapperHeight = () => {
     const { offsetHeight } = content.value
     const contentHeitht = `${offsetHeight}px`
-    height.value = newValue ? contentHeitht : '0'
-  })
+    height.value = expanded.value ? contentHeitht : '0'
+  }
+  watch(expanded, () => setWrapperHeight())
 
   const toggle = (newValue = !expanded.value) => {
     parent.toggle(props.name, newValue)
   }
   const onclick = () => toggle()
+
   onMounted(() => {
-    const { offsetHeight } = content.value
-    const contentHeitht = `${offsetHeight}px`
-    height.value = expanded.value ? contentHeitht : '0'
-    setTimeout(() => {
-      wrapper.value.style.transition = 'height 0.25s ease-out'
-    })
+    setWrapperHeight()
+    setTimeout(() => (wrapper.value.style.transition = 'height 0.25s ease-out'))
   })
   return { bem, wrapper, content, onclick, height }
 }
