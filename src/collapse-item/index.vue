@@ -35,13 +35,21 @@ function setup(props) {
   const toggle = (newValue = !expanded.value) => {
     parent.toggle(props.name, newValue)
   }
+
   const onclick = () => toggle()
 
   onMounted(() => {
     setWrapperHeight()
     setTimeout(() => (wrapper.value.style.transition = 'height 0.25s ease-out'))
   })
-  return { bem, wrapper, content, onclick, height }
+
+  return {
+    bem,
+    height,
+    wrapper,
+    content,
+    onclick
+  }
 }
 export default {
   name,
