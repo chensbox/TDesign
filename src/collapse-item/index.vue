@@ -2,7 +2,7 @@
   <div :class="bem()">
     <div :class="bem('title')" @click="onclick">{{ title }}</div>
     <div :class="bem('wrapper')" ref="wrapper" :style="{ height }">
-      <div :class="bem('content')">
+      <div :class="bem('content')" ref="content">
         <slot></slot>
       </div>
     </div>
@@ -10,7 +10,7 @@
 </template>
 
 <script>
-import { ref, inject } from 'vue'
+import { ref, inject, watch, computed, nextTick } from 'vue'
 import { createNamespace, makeNumericProp } from '../utils'
 const props = {
   title: String,
@@ -20,14 +20,28 @@ const [name, bem] = createNamespace('collapse-item')
 function setup(props) {
   const parent = inject('COLLAPSE')
   const wrapper = ref()
+  const content = ref()
+  const height = ref('0')
   console.log(parent)
-  const height = ref('')
-  const onclick = () => {
-    console.log(1)
-    // wrapper.value.style.height = wrapper.value.style.height === '' ? '0px' : ''
-    height.value = height.value === '' ? '0px' : ''
+  const expanded = computed(() => parent.isExpanded(props.name))
+  watch(
+    expanded,
+    (newValue, oldValue) => {
+      nextTick(() => {
+        const { offsetHeight } = content.value
+        const contentHeitht = `${offsetHeight}px`
+        height.value = newValue ? contentHeitht : '0'
+      })
+    },
+    { immediate: true }
+  )
+
+  const toggle = (newValue = !expanded.value) => {
+    parent.toggle(props.name, newValue)
   }
-  return { bem, wrapper, onclick, height }
+  const onclick = () => toggle()
+
+  return { bem, wrapper, content, onclick, height }
 }
 export default {
   name,
@@ -45,7 +59,9 @@ export default {
   }
   &__wrapper {
     overflow: hidden;
-    transition: height 0.4s ease-in-out;
+    height: 0;
+    will-change: height;
+    transition: height 0.25s ease-out;
   }
   &__content {
     padding: 30px 10px;
