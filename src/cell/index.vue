@@ -1,5 +1,5 @@
 <template>
-  <div class="cell" @click="$emit('click')">
+  <div class="cell" @click="$emit('click', $event)">
     <div class="cell-title cell-item">
       <icon class="left-icon" :name="icon" size="17px" v-if="icon" />
       {{ title }}
