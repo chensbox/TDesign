@@ -15,27 +15,36 @@ const props = {
 }
 
 function setup(props, { emit, expose }) {
-  const toggle = (name, expanded) => {
+  const toggle = (name, expand) => {
     let newValue
-    const { modelValue } = props
-    if (expanded) {
+    const { modelValue, accordion } = props
+    if (accordion) {
+      newValue = modelValue === name ? '' : name
+    } else if (expand) {
       newValue = modelValue.concat(name)
     } else {
       newValue = modelValue.filter(n => n !== name)
     }
+
     emit('update:modelValue', newValue)
   }
   const isExpanded = name => {
-    const { modelValue } = props
+    const { modelValue, accordion } = props
+    if (accordion) {
+      return name === modelValue
+    }
     return modelValue.includes(name)
   }
-  const childState = {}
+  const childState = Object.create(null)
   const updateState = (name, state) => {
     childState[name] = state
   }
   provide('COLLAPSE', { toggle, isExpanded, updateState })
 
   const toggleAll = expand => {
+    if (props.accordion) {
+      return
+    }
     const newValue = []
     const names = Object.keys(childState)
     if (expand === undefined) {

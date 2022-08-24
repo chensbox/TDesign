@@ -49,7 +49,7 @@ export default {
     font-weight: 200;
   }
   &-title {
-    color: #646566;
+    color: #323233;
     .left-icon {
       margin: 0 3px 3px 0;
     }
@@ -71,7 +71,7 @@ export default {
     bottom: 0;
     left: 50%;
     transform: scaleY(0.5) translateX(-50%);
-    width: 90%;
+    width: 92%;
     height: 1px;
     background: #ebedf0;
     content: ' ';

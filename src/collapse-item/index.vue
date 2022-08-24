@@ -1,6 +1,10 @@
 <template>
   <div :class="bem()">
-    <div :class="bem('title')" @click="onclick">{{ title }}</div>
+    <cell
+      :class="bem('title', { expanded })"
+      :title="title"
+      @click="onclick"
+    ></cell>
     <div :class="bem('wrapper')" ref="wrapper" :style="{ height }">
       <div :class="bem('content')" ref="content">
         <slot></slot>
@@ -10,21 +14,20 @@
 </template>
 
 <script>
-import icon from '../icon/index.vue'
+import cell from '../cell/index.vue'
 import { ref, inject, watch, computed, nextTick, onMounted } from 'vue'
-import { createNamespace, makeNumericProp } from '../utils'
+import { createNamespace, numericProp } from '../utils'
 const props = {
-  title: String,
-  name: makeNumericProp()
+  name: numericProp,
+  title: String
 }
-const components = { icon }
+const components = { cell }
 const [name, bem] = createNamespace('collapse-item')
 function setup(props) {
   const parent = inject('COLLAPSE')
   const wrapper = ref()
   const content = ref()
   const height = ref('0')
-  console.log(parent)
   const expanded = computed(() => parent.isExpanded(props.name))
 
   const setWrapperHeight = () => {
@@ -51,7 +54,8 @@ function setup(props) {
     height,
     wrapper,
     content,
-    onclick
+    onclick,
+    expanded
   }
 }
 export default {
@@ -67,9 +71,16 @@ export default {
   &__title {
     padding: 0 10px;
     line-height: 40px;
-    border: 1px solid #ccc;
-    border-width: 0px 0 0.5px 0;
     background: #fff;
+    .icon {
+      transition: all 0.2s;
+      transform: rotate(0deg);
+    }
+    &--expanded {
+      .icon {
+        transform: rotate(90deg);
+      }
+    }
   }
   &__wrapper {
     overflow: hidden;
@@ -77,10 +88,24 @@ export default {
     will-change: height;
   }
   &__content {
-    padding: 30px 10px;
-    border: 1px solid #ccc;
-    border-width: 0px 0 0.5px 0;
+    position: relative;
+    padding: 15px;
+    font-size: 14px;
+    color: #969799;
+    line-height: 1.5;
     background: #fff;
+    &::after {
+      position: absolute;
+      box-sizing: border-box;
+      pointer-events: none;
+      bottom: 0;
+      left: 50%;
+      transform: scaleY(0.5) translateX(-50%);
+      width: 92%;
+      height: 1px;
+      background: #ebedf0;
+      content: ' ';
+    }
   }
 }
 </style>
