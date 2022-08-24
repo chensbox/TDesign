@@ -35,9 +35,12 @@ export default {
 
 <style lang="less" scoped>
 .cell {
+  display: flex;
   position: relative;
   padding: 0 15px;
   min-height: 43px;
+  justify-content: space-between;
+  align-content: center;
   cursor: pointer;
   background: #fff;
   &-input-value {
@@ -60,6 +63,18 @@ export default {
   }
   &-placeholder {
     color: #c8c9cc;
+  }
+  &:not(.cell:last-child)::after {
+    position: absolute;
+    box-sizing: border-box;
+    pointer-events: none;
+    bottom: 0;
+    left: 50%;
+    transform: scaleY(0.5) translateX(-50%);
+    width: 90%;
+    height: 1px;
+    background: #ebedf0;
+    content: ' ';
   }
 }
 

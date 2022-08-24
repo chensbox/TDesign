@@ -10,12 +10,14 @@
 </template>
 
 <script>
+import icon from '../icon/index.vue'
 import { ref, inject, watch, computed, nextTick, onMounted } from 'vue'
 import { createNamespace, makeNumericProp } from '../utils'
 const props = {
   title: String,
   name: makeNumericProp()
 }
+const components = { icon }
 const [name, bem] = createNamespace('collapse-item')
 function setup(props) {
   const parent = inject('COLLAPSE')
@@ -54,6 +56,7 @@ function setup(props) {
 }
 export default {
   name,
+  components,
   props,
   setup
 }
@@ -64,6 +67,8 @@ export default {
   &__title {
     padding: 0 10px;
     line-height: 40px;
+    border: 1px solid #ccc;
+    border-width: 0px 0 0.5px 0;
     background: #fff;
   }
   &__wrapper {
@@ -74,7 +79,7 @@ export default {
   &__content {
     padding: 30px 10px;
     border: 1px solid #ccc;
-    border-width: 1px 0 1px 0;
+    border-width: 0px 0 0.5px 0;
     background: #fff;
   }
 }
