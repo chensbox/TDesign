@@ -1,15 +1,61 @@
 <template>
-  <div :class="bem()"></div>
+  <div :class="bem()">
+    <template v-if="loading">
+      <div :class="bem('avatar', [avatarShape])"></div>
+      <div :class="bem('content')">
+        <div :class="bem('title')"></div>
+        <div
+          :class="bem('row')"
+          :style="{ width }"
+          v-for="(width, index) in rows"
+        ></div>
+      </div>
+    </template>
+    <template v-else>
+      <slot></slot>
+    </template>
+  </div>
 </template>
 
 <script>
-import { createNamespace } from '../utils'
+import { computed } from '@vue/reactivity'
+import {
+  createNamespace,
+  makeNumericProp,
+  makeStringProp,
+  numericProp,
+  truthProp
+} from '../utils'
 const [name, bem] = createNamespace('skeleton')
+
+const props = {
+  title: Boolean,
+  avatar: Boolean,
+  round: Boolean,
+  row: numericProp,
+  rowWidth: [...numericProp, Array],
+  loading: truthProp,
+  animate: truthProp,
+  titleWidth: makeNumericProp('40%'),
+  avatarSize: makeStringProp('32px'),
+  avatarShape: makeStringProp('round')
+}
+function setup(props) {
+  const rows = computed(() => {
+    const { row, rowWidth } = props
+    if (Array.isArray(rowWidth) && rowWidth.length === +row) {
+      return rowWidth
+    }
+    const rowItems = new Array(row - 1).fill(rowWidth ?? '100%')
+    rowItems.push('60%')
+    return rowItems
+  })
+  return { bem, rows }
+}
 export default {
   name,
-  setup() {
-    return { bem }
-  }
+  props,
+  setup
 }
 </script>
 
@@ -24,18 +70,51 @@ export default {
   }
 }
 .t-skeleton {
-  position: fixed;
-  top: 0;
+  // position: fixed;
+  // top: 0;
+  // left: 0;
+  // bottom: 0;
+  // right: 0;
+  display: flex;
   overflow: hidden;
-  top: 0;
-  left: 0;
-  bottom: 0;
-  right: 0;
-  // margin: 10px auto;
-  width: 100vw;
-  height: 100vh;
-  // border-radius: 20px;
-  background: rgba(0, 0, 0, 0.12);
+  padding: 0px 16px;
+  // background: rgba(0, 0, 0, 0.12);
+  &__content {
+    flex: 1;
+  }
+  &__title,
+  &__row {
+    position: relative;
+    height: 16px;
+    // background-color: #f2f3f5;
+    background: rgba(0, 0, 0, 0.06);
+
+    &:last-child {
+      width: 60%;
+    }
+  }
+
+  &__row {
+    margin-top: 12px;
+  }
+
+  &__title {
+    margin: 20px 0;
+    width: 40%;
+  }
+
+  &__avatar {
+    flex-shrink: 0;
+    margin-top: 15px;
+    width: 32px;
+    height: 32px;
+    margin-right: 16px;
+    background: rgba(0, 0, 0, 0.06);
+
+    &--round {
+      border-radius: 50%;
+    }
+  }
 
   &::after {
     content: '';
