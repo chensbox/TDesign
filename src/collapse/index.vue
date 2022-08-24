@@ -14,7 +14,7 @@ const props = {
   accordion: Boolean
 }
 
-function setup(props, { emit }) {
+function setup(props, { emit, expose }) {
   const toggle = (name, expanded) => {
     let newValue
     const { modelValue } = props
@@ -29,9 +29,31 @@ function setup(props, { emit }) {
     const { modelValue } = props
     return modelValue.includes(name)
   }
-  const childNames = []
-  const activeList = ref(props.modelValue)
-  provide('COLLAPSE', { toggle, isExpanded, childNames, activeList })
+  const childState = {}
+  const updateState = (name, state) => {
+    childState[name] = state
+  }
+  provide('COLLAPSE', { toggle, isExpanded, updateState })
+
+  const toggleAll = expand => {
+    const newValue = []
+    const names = Object.keys(childState)
+    if (expand === undefined) {
+      for (const name in childState) {
+        !childState[name] && newValue.push(name)
+      }
+      return emit('update:modelValue', newValue)
+    }
+
+    if (expand) {
+      emit('update:modelValue', names)
+    } else {
+      emit('update:modelValue', newValue)
+    }
+  }
+
+  expose({ toggleAll })
+
   return { bem }
 }
 export default { name, props, setup }

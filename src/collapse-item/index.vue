@@ -29,6 +29,7 @@ function setup(props) {
     const { offsetHeight } = content.value
     const contentHeitht = `${offsetHeight}px`
     height.value = expanded.value ? contentHeitht : '0'
+    parent.updateState(props.name, expanded.value)
   }
   watch(expanded, () => setWrapperHeight())
 
