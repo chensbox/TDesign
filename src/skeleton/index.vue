@@ -1,5 +1,5 @@
 <template>
-  <div :class="bem()">
+  <div :class="bem({ animate: animate && loading, fullscreen })">
     <template v-if="loading">
       <div :class="bem('avatar', [avatarShape])"></div>
       <div :class="bem('content')">
@@ -8,6 +8,7 @@
           :class="bem('row')"
           :style="{ width }"
           v-for="(width, index) in rows"
+          :key="index"
         ></div>
       </div>
     </template>
@@ -32,6 +33,7 @@ const props = {
   title: Boolean,
   avatar: Boolean,
   round: Boolean,
+  fullscreen: Boolean,
   row: numericProp,
   rowWidth: [...numericProp, Array],
   loading: truthProp,
@@ -70,15 +72,9 @@ export default {
   }
 }
 .t-skeleton {
-  // position: fixed;
-  // top: 0;
-  // left: 0;
-  // bottom: 0;
-  // right: 0;
   display: flex;
   overflow: hidden;
   padding: 0px 16px;
-  // background: rgba(0, 0, 0, 0.12);
   &__content {
     flex: 1;
   }
@@ -116,22 +112,33 @@ export default {
     }
   }
 
-  &::after {
-    content: '';
-    position: absolute;
+  &--animate {
+    &::after {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      z-index: 1;
+      animation: var-skeleton-animation 1s infinite;
+      background: linear-gradient(
+        90deg,
+        hsla(0, 0%, 100%, 0),
+        hsla(0, 0%, 100%, 0.3),
+        hsla(0, 0%, 100%, 0)
+      );
+      transition: 0.25s background-color;
+    }
+  }
+  &--fullscreen {
+    position: fixed;
+    padding-top: 130px;
     top: 0;
     left: 0;
-    width: 100%;
-    height: 100%;
-    z-index: 1;
-    animation: var-skeleton-animation 1s infinite;
-    background: linear-gradient(
-      90deg,
-      hsla(0, 0%, 100%, 0),
-      hsla(0, 0%, 100%, 0.3),
-      hsla(0, 0%, 100%, 0)
-    );
-    transition: 0.25s background-color;
+    bottom: 0;
+    right: 0;
+    background: rgba(0, 0, 0, 0.12);
   }
 }
 </style>
