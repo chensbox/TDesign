@@ -58,8 +58,7 @@ function setup(props) {
     if (Array.isArray(rowWidth) && rowWidth.length === +row) {
       return rowWidth
     }
-    const rowItems = new Array(row - 1).fill(rowWidth ?? '100%')
-    rowItems.push('60%')
+    const rowItems = new Array(+row).fill(rowWidth ?? '100%')
     return rowItems
   })
 
