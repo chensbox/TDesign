@@ -100,7 +100,7 @@ export default {
     background: rgba(0, 0, 0, 0.06);
 
     &:last-child {
-      width: 60%;
+      width: 60% !important;
     }
     &--round {
       border-radius: 16px;
