@@ -1,17 +1,26 @@
 <template>
   <div :class="bem({ animate: animate && loading, fullscreen })">
     <template v-if="loading">
-      <div :class="bem('avatar', [avatarShape])"></div>
+      <div
+        :class="bem('avatar', [avatarShape])"
+        :style="avatarStyle"
+        v-if="avatar"
+      ></div>
+
       <div :class="bem('content')">
-        <div :class="bem('title')"></div>
         <div
-          :class="bem('row')"
+          :class="bem('title', [rowShape])"
+          :style="{ width: titleWidth }"
+        ></div>
+        <div
+          :class="bem('row', [rowShape])"
           :style="{ width }"
           v-for="(width, index) in rows"
           :key="index"
         ></div>
       </div>
     </template>
+
     <template v-else>
       <slot></slot>
     </template>
@@ -40,7 +49,8 @@ const props = {
   animate: truthProp,
   titleWidth: makeNumericProp('40%'),
   avatarSize: makeStringProp('32px'),
-  avatarShape: makeStringProp('round')
+  avatarShape: makeStringProp('round'),
+  rowShape: makeStringProp('round')
 }
 function setup(props) {
   const rows = computed(() => {
@@ -52,7 +62,13 @@ function setup(props) {
     rowItems.push('60%')
     return rowItems
   })
-  return { bem, rows }
+
+  const avatarStyle = computed(() => ({
+    width: props.avatarSize,
+    height: props.avatarSize
+  }))
+
+  return { bem, rows, avatarStyle }
 }
 export default {
   name,
@@ -66,12 +82,12 @@ export default {
   from {
     transform: translateX(-100%);
   }
-
   to {
     transform: translateX(100%);
   }
 }
 .t-skeleton {
+  position: relative;
   display: flex;
   overflow: hidden;
   padding: 0px 16px;
@@ -82,11 +98,13 @@ export default {
   &__row {
     position: relative;
     height: 16px;
-    // background-color: #f2f3f5;
     background: rgba(0, 0, 0, 0.06);
 
     &:last-child {
       width: 60%;
+    }
+    &--round {
+      border-radius: 16px;
     }
   }
 
@@ -106,7 +124,9 @@ export default {
     height: 32px;
     margin-right: 16px;
     background: rgba(0, 0, 0, 0.06);
-
+    &--square {
+      border-radius: 10%;
+    }
     &--round {
       border-radius: 50%;
     }
@@ -114,7 +134,7 @@ export default {
 
   &--animate {
     &::after {
-      content: '';
+      content: ' ';
       position: absolute;
       top: 0;
       left: 0;
