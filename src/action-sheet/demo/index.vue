@@ -18,7 +18,12 @@
       <cell title="自定义面板"></cell>
     </cell-group>
   </demo-block>
-  <action-sheet v-model="show"></action-sheet>
+  <action-sheet
+    v-model="show"
+    :actions="actions"
+    cancel-text="取消"
+    description="这是一段描述信息"
+  ></action-sheet>
 </template>
 
 <script setup>
@@ -27,5 +32,10 @@ import cellGroup from '../../cell-group/index.vue'
 import cell from '../../cell/index.vue'
 import { ref } from '@vue/reactivity'
 
-const show = ref(true)
+const actions = [
+  { name: '选项一' },
+  { name: '选项二' },
+  { name: '选项三', subname: '描述信息' }
+]
+const show = ref(false)
 </script>
