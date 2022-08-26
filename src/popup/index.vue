@@ -18,10 +18,9 @@
 </template>
 
 <script>
-import { reactive, ref } from '@vue/reactivity'
+import { ref, reactive, nextTick, watchEffect } from 'vue'
 import overlay from '../overlay/index.vue'
 import icon from '../icon/index.vue'
-import { watchEffect } from '@vue/runtime-core'
 const components = { overlay, icon }
 const props = {
   modelValue: Boolean,
@@ -85,7 +84,7 @@ const setup = (props, { emit }) => {
   const stop = watchEffect(() => {
     if (props.modelValue) {
       lazyLoad.value = props.modelValue
-      stop()
+      nextTick(() => stop())
     }
   })
   const onclick = event => {

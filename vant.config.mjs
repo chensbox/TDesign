@@ -67,6 +67,10 @@ export default {
             title: 'Overlay 遮罩层',
           },
           {
+            path: 'action-sheet',
+            title: 'ActionSheet 动作面板'
+          },
+          {
             path: 'picker',
             title: 'Picker 选择器',
           },
@@ -92,7 +96,7 @@ export default {
           // },
           {
             path: 'skeleton',
-            title: 'skeleton 骨架屏'
+            title: 'Skeleton 骨架屏'
           },
           {
             path: 'notify',
