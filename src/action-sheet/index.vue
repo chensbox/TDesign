@@ -6,7 +6,7 @@
     :modelValue="modelValue"
     @update:modelValue="close"
   >
-    <button :class="bem('description')">{{ description }}</button>
+    <div :class="bem('description')">{{ description }}</div>
     <div :class="bem('content')">
       <button
         v-for="(item, index) in actions"
@@ -14,7 +14,7 @@
         :class="bem('item')"
       >
         <span :class="bem('name')">{{ item.name }}</span>
-        <p :class="bem('subname')">{{ item.subname }}</p>
+        <p :class="bem('subname')" v-if="item.subname">{{ item.subname }}</p>
       </button>
     </div>
     <button :class="bem('cancel')" v-if="cancelText">{{ cancelText }}</button>
@@ -113,12 +113,27 @@ export default {
   }
 
   &__description {
+    display: block;
     position: relative;
     padding: 20px 16px;
     color: #969799;
     font-size: 14px;
     line-height: 20px;
     text-align: center;
+    border: none;
+    background: #fff;
+
+    &::after {
+      position: absolute;
+      box-sizing: border-box;
+      content: ' ';
+      pointer-events: none;
+      right: 16px;
+      bottom: 0;
+      left: 16px;
+      border-bottom: 1px solid #ebedf0;
+      transform: scaleY(0.5);
+    }
   }
 }
 </style>
