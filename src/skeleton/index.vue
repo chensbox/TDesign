@@ -152,7 +152,6 @@ export default {
   }
   &--fullscreen {
     position: fixed;
-    padding-top: 130px;
     top: 0;
     left: 0;
     bottom: 0;

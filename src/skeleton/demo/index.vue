@@ -15,7 +15,7 @@
       row-shape="square"
     ></skeleton>
   </demo-block>
-  <demo-block title="自定义每一行宽度">
+  <demo-block title="自定义段落宽度">
     <skeleton
       avatar
       row="4"
@@ -25,9 +25,10 @@
 
   <demo-block title="加载状态">
     <Button @click="loading = !loading" style="margin-left: 16px" size="small"
-      >切换</Button
+      >切换状态</Button
     >
-    <skeleton avatar row="3" :loading="loading">
+
+    <skeleton avatar row="3" :loading="loading" :fullscreen="fullscreen">
       <div>
         <img
           class="avatar"
@@ -37,7 +38,7 @@
       <div>
         <p style="margin: 20px 0 8px 0; font-weight: bold">这是标题这是标题</p>
         <p style="line-height: 30px">
-          在代码阅读过程中人们说脏话的频率是衡量代码质量的唯一标准，在代码阅读过程中人们说脏话的频率是衡量代码质量
+          在代码阅读过程中人们说脏话的频率是衡量代码质量的唯一标准，在代码阅读过程中人们说脏话的
         </p>
       </div>
     </skeleton>
@@ -48,6 +49,14 @@ import { ref } from 'vue'
 import skeleton from '../index.vue'
 import Button from '../../button/index.vue'
 const loading = ref(true)
+const fullscreen = ref(false)
+
+const openFullscreen = () => {
+  fullscreen.value = true
+  setTimeout(() => {
+    fullscreen.value = false
+  }, 2000)
+}
 </script>
 
 <style lang="less">
