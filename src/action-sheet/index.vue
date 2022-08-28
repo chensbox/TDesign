@@ -1,53 +1,90 @@
 <template>
   <popup
-    round
-    position="bottom"
     :class="bem()"
+    :round="round"
+    position="bottom"
+    :closeable="closeable"
     :modelValue="modelValue"
     @update:modelValue="close"
   >
-    <div :class="bem('description')">{{ description }}</div>
-    <div :class="bem('content')">
-      <button
-        v-for="(item, index) in actions"
-        :key="index"
-        :class="bem('item')"
-      >
-        <span :class="bem('name')">{{ item.name }}</span>
-        <p :class="bem('subname')" v-if="item.subname">{{ item.subname }}</p>
+    <slot>
+      <div :class="bem('description')" v-if="description">
+        {{ description }}
+      </div>
+      <div :class="bem('content')">
+        <button
+          v-for="(item, index) in actions"
+          :key="index"
+          :class="
+            bem('item', {
+              loading: item.loading,
+              disabled: item.disabled
+            })
+          "
+          @click="onClickAction(item, index)"
+        >
+          <template v-if="!item.loading">
+            <span :class="bem('name')" :style="{ color: item.color }">
+              {{ item.name }}
+            </span>
+            <p :class="bem('subname')" v-if="item.subname">
+              {{ item.subname }}
+            </p>
+          </template>
+
+          <template v-else>
+            <icon name="loading"></icon>
+          </template>
+        </button>
+      </div>
+      <button :class="bem('cancel')" v-if="cancelText" @click="onClickAction">
+        {{ cancelText }}
       </button>
-    </div>
-    <button :class="bem('cancel')" v-if="cancelText">{{ cancelText }}</button>
+    </slot>
   </popup>
 </template>
 
 <script>
 import { ref, onUnmounted } from 'vue'
+import Icon from '../icon/index.vue'
 import Popup from '../popup/index.vue'
-import { falseProp, truthProp, makeArrayProp, createNamespace } from '../utils'
+import { truthProp, makeArrayProp, createNamespace } from '../utils'
 
 const [name, bem] = createNamespace('action-sheet')
 const props = {
   modelValue: Boolean,
   closeable: Boolean,
-  round: Boolean,
   overlay: Boolean,
   title: String,
   description: String,
   cancelText: String,
   beforeClose: Function,
+  round: truthProp,
   safeAreainsetBottom: truthProp,
-  closeOnClickAction: falseProp,
+  closeOnClickAction: truthProp,
   actions: makeArrayProp()
 }
-const components = { Popup }
+const components = { Popup, Icon }
 
 function setup(props, { emit }) {
   const updateModelValue = event => {
     emit('update:modelValue', event)
   }
 
-  const close = () => updateModelValue(false)
+  const close = () => emit('update:modelValue', false)
+
+  const onClickAction = (item, index) => {
+    const { disabled, loading } = item
+    const { closeOnClickAction } = props
+    if (disabled || loading) {
+      return
+    }
+
+    emit('select', item, index)
+    if (closeOnClickAction) {
+      close()
+    }
+  }
 
   window.addEventListener('popstate', close)
   onUnmounted(() => {
@@ -56,7 +93,8 @@ function setup(props, { emit }) {
 
   return {
     bem,
-    close
+    close,
+    onClickAction
   }
 }
 
@@ -84,11 +122,18 @@ export default {
     &--disabled {
       cursor: not-allowed;
       opacity: 0.6;
+      color: #c8c9cc;
       &:active {
-        //filter: brightness(100%) !important;
+        background: #fff !important;
       }
     }
-
+    &--loading {
+      color: #c8c9cc;
+      cursor: default;
+      &:active {
+        background: #fff !important;
+      }
+    }
     &:active {
       background: #f2f3f5;
     }
@@ -121,7 +166,6 @@ export default {
     line-height: 20px;
     text-align: center;
     border: none;
-    background: #fff;
 
     &::after {
       position: absolute;

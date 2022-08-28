@@ -110,6 +110,7 @@ export default {
 }
 
 .close-icon {
+  z-index: 100;
   position: absolute;
   cursor: pointer;
   color: '#c8c9cc' !important;
