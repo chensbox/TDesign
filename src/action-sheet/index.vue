@@ -67,11 +67,14 @@ const props = {
 const components = { Popup, Icon }
 
 function setup(props, { emit }) {
-  const updateModelValue = event => {
-    emit('update:modelValue', event)
+  const close = async (item, index) => {
+    const { beforeClose } = props
+    if (beforeClose) {
+      const res = await beforeClose(item, index)
+      if (!res) return
+    }
+    emit('update:modelValue', false)
   }
-
-  const close = () => emit('update:modelValue', false)
 
   const onClickAction = (item, index) => {
     const { disabled, loading } = item
@@ -82,7 +85,7 @@ function setup(props, { emit }) {
 
     emit('select', item, index)
     if (closeOnClickAction) {
-      close()
+      close(item, index)
     }
   }
 

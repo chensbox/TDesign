@@ -47,7 +47,7 @@
     :actions="actions5"
     cancel-text="取消"
     @select="onSelect2"
-    :closeOnClickAction="false"
+    :before-close="beforeClose"
   ></action-sheet>
 
   <action-sheet v-model="show6" closeable>
@@ -98,16 +98,29 @@ const onSelect = (item, index) => {
   console.log(item, index)
 }
 
-const onSelect2 = item => {
-  if (item.name === '异步关闭') {
-    actions5.value[2].loading = true
+// const onSelect2 = item => {
+//   if (item.name === '异步关闭') {
+//     actions5.value[2].loading = true
+//     setTimeout(() => {
+//       actions5.value[2].loading = false
+//       show5.value = false
+//     }, 3000)
+//   } else {
+//     show5.value = false
+//   }
+// }
+
+function beforeClose(item) {
+  if (item.name !== '异步关闭') {
+    return true
+  }
+  actions5.value[2].loading = true
+  return new Promise((resolve, reject) => {
     setTimeout(() => {
       actions5.value[2].loading = false
-      show5.value = false
-    }, 3000)
-  } else {
-    show5.value = false
-  }
+      resolve(true)
+    }, 2000)
+  })
 }
 </script>
 
