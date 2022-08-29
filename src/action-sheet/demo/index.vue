@@ -46,7 +46,6 @@
     v-model="show5"
     :actions="actions5"
     cancel-text="取消"
-    @select="onSelect2"
     :before-close="beforeClose"
   ></action-sheet>
 

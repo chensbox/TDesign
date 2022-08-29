@@ -45,7 +45,7 @@
 </template>
 
 <script>
-import { ref, onUnmounted, watchEffect } from 'vue'
+import { onUnmounted, watchEffect } from 'vue'
 import Icon from '../icon/index.vue'
 import Popup from '../popup/index.vue'
 import { truthProp, makeArrayProp, createNamespace } from '../utils'
