@@ -2,7 +2,7 @@
   <ul :class="bem()">
     <li
       :class="bem('pre-button', { disable: modelValue == 1 })"
-      @click="prePage"
+      @click="updateModelValue(modelValue - 1)"
     >
       {{ prevText }}
     </li>
@@ -10,13 +10,13 @@
       :class="bem('item', { active: page.active })"
       v-for="page in pages"
       :key="page.number"
-      @click="onClick(page)"
+      @click="updateModelValue(page.number)"
     >
       {{ page.number }}
     </li>
     <li
       :class="bem('next-button', { disable: modelValue == count })"
-      @click="nextPage"
+      @click="updateModelValue(modelValue + 1)"
     >
       {{ nextText }}
     </li>
@@ -44,7 +44,7 @@ const props = {
   itemsPerPage: makeNumericProp(10),
   showPageSize: makeNumericProp(5)
 }
-function setup(props) {
+function setup(props, { emit }) {
   const count = computed(() => {
     const { pageCount, totalItems, itemsPerPage } = props
     const count = +pageCount || Math.ceil(+totalItems / +itemsPerPage)
