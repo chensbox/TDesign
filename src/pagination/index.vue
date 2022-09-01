@@ -1,73 +1,117 @@
 <template>
   <ul :class="bem()">
-    <li :class="bem('pre-button', { disable: active == 1 })" @click="prePage">
-      上一页
-    </li>
     <li
-      :class="bem('item', { active: active == i + offset })"
-      v-for="i in 5"
-      :key="i"
-      @click="onClick(i)"
+      :class="bem('pre-button', { disable: modelValue == 1 })"
+      @click="prePage"
     >
-      {{ i + offset }}
+      {{ prevText }}
     </li>
     <li
-      :class="bem('next-button', { disable: active == pagesCount })"
+      :class="bem('item', { active: page.active })"
+      v-for="page in pages"
+      :key="page.number"
+      @click="onClick(page)"
+    >
+      {{ page.number }}
+    </li>
+    <li
+      :class="bem('next-button', { disable: modelValue == count })"
       @click="nextPage"
     >
-      下一页
+      {{ nextText }}
     </li>
   </ul>
 </template>
 
 <script>
-import { ref } from 'vue'
-import { createNamespace } from '../utils'
+import { ref, computed, watchEffect } from 'vue'
+import {
+  createNamespace,
+  makeNumericProp,
+  makeStringProp,
+  numericProp
+} from '../utils'
 const [name, bem] = createNamespace('pagination')
+
+const makePage = (number, text, active) => ({ number, text, active })
+const clamp = (num, min, max) => Math.min(Math.max(num, min), max)
+const props = {
+  modelValue: Number,
+  prevText: makeStringProp('上一页'),
+  nextText: makeStringProp('下一页'),
+  pageCount: numericProp,
+  totalItems: makeNumericProp(0),
+  itemsPerPage: makeNumericProp(10),
+  showPageSize: makeNumericProp(5)
+}
 function setup(props) {
-  const offset = ref(0)
-  const pagesCount = ref(13)
-  const active = ref(1)
-  const middle = Math.floor(5 / 2)
+  const count = computed(() => {
+    const { pageCount, totalItems, itemsPerPage } = props
+    const count = +pageCount || Math.ceil(+totalItems / +itemsPerPage)
+    return Math.max(1, count)
+  })
 
-  const leftMove = () =>
-    active.value > middle + 1 && pagesCount.value - active.value >= middle
+  const pages = computed(() => {
+    const items = []
+    const pageCount = count.value
+    const showPageSize = +props.showPageSize
+    const { modelValue, forceEllipses } = props
 
-  const rightMove = () =>
-    active.value > middle && active.value + middle < pagesCount.value
+    let startPage = 1
+    let endPage = pageCount
+    const isMaxSized = showPageSize < pageCount
 
-  const prePage = () => {
-    if (active.value == 1) {
-      return
+    if (isMaxSized) {
+      startPage = Math.max(modelValue - Math.floor(showPageSize / 2), 1)
+      endPage = startPage + showPageSize - 1
+
+      if (endPage > pageCount) {
+        endPage = pageCount
+        startPage = endPage - showPageSize + 1
+      }
     }
-    if (leftMove()) {
-      offset.value--
+
+    for (let number = startPage; number <= endPage; number++) {
+      const page = makePage(number, number, number === modelValue)
+      items.push(page)
     }
-    active.value--
+
+    // if (isMaxSized && showPageSize > 0 && forceEllipses) {
+    //   if (startPage > 1) {
+    //     const prevPages = makePage(startPage - 1, '...')
+    //     items.unshift(prevPages)
+    //   }
+
+    //   if (endPage < pageCount) {
+    //     const nextPages = makePage(endPage + 1, '...')
+    //     items.push(nextPages)
+    //   }
+    // }
+    return items
+  })
+
+  const updateModelValue = (value, emitChange) => {
+    value = clamp(value, 1, count.value)
+
+    if (props.modelValue !== value) {
+      emit('update:modelValue', value)
+
+      if (emitChange) {
+        emit('change', value)
+      }
+    }
   }
-  const nextPage = () => {
-    if (active.value == pagesCount.value) {
-      return
-    }
-    if (rightMove()) {
-      offset.value++
-    }
-    active.value++
-  }
-
-  const onClick = i => {}
+  watchEffect(() => updateModelValue(props.modelValue))
   return {
     bem,
-    active,
-    offset,
-    onClick,
-    prePage,
-    nextPage,
-    pagesCount
+    count,
+    pages,
+    updateModelValue
   }
 }
 export default {
   name,
+  props,
   setup
 }
 </script>
