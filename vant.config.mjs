@@ -117,7 +117,11 @@ export default {
         items: [
           {
             path: 'infinite-list',
-            title: 'InfiniteScroll 无限滚动'
+            title: 'v-infinite-list'
+          },
+          {
+            path: 'txt',
+            title: 'v-txt'
           }
         ]
       },
