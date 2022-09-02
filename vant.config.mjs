@@ -120,6 +120,10 @@ export default {
             title: 'v-infinite-list'
           },
           {
+            path: "lazy-load",
+            title: "v-lazy-load"
+          },
+          {
             path: 'txt',
             title: 'v-txt'
           }
