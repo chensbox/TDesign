@@ -4,21 +4,23 @@
       :class="bem('pre-button', { disable: modelValue == 1 })"
       @click="updateModelValue(modelValue - 1)"
     >
-      {{ prevText }}
+      <slot name="prev-text">{{ prevText }}</slot>
     </li>
+
     <li
       :class="bem('item', { active: page.active })"
       v-for="page in pages"
       :key="page.number"
       @click="updateModelValue(page.number)"
     >
-      {{ page.number }}
+      <slot :page="page">{{ page.text }}</slot>
     </li>
+
     <li
       :class="bem('next-button', { disable: modelValue == count })"
       @click="updateModelValue(modelValue + 1)"
     >
-      {{ nextText }}
+      <slot name="next-text">{{ nextText }}</slot>
     </li>
   </ul>
 </template>
@@ -27,11 +29,15 @@
 import { ref, computed, watchEffect } from 'vue'
 import {
   createNamespace,
+  falseProp,
   makeNumericProp,
   makeStringProp,
   numericProp
 } from '../utils'
+
 const [name, bem] = createNamespace('pagination')
+
+const emits = ['change', 'update:modelValue']
 
 const makePage = (number, text, active) => ({ number, text, active })
 const clamp = (num, min, max) => Math.min(Math.max(num, min), max)
@@ -42,7 +48,8 @@ const props = {
   pageCount: numericProp,
   totalItems: makeNumericProp(0),
   itemsPerPage: makeNumericProp(10),
-  showPageSize: makeNumericProp(5)
+  showPageSize: makeNumericProp(5),
+  forceEllipses: falseProp
 }
 function setup(props, { emit }) {
   const count = computed(() => {
@@ -76,21 +83,21 @@ function setup(props, { emit }) {
       items.push(page)
     }
 
-    // if (isMaxSized && showPageSize > 0 && forceEllipses) {
-    //   if (startPage > 1) {
-    //     const prevPages = makePage(startPage - 1, '...')
-    //     items.unshift(prevPages)
-    //   }
+    if (isMaxSized && showPageSize > 0 && forceEllipses) {
+      if (startPage > 1) {
+        const prevPages = makePage(startPage - 1, '...')
+        items.unshift(prevPages)
+      }
 
-    //   if (endPage < pageCount) {
-    //     const nextPages = makePage(endPage + 1, '...')
-    //     items.push(nextPages)
-    //   }
-    // }
+      if (endPage < pageCount) {
+        const nextPages = makePage(endPage + 1, '...')
+        items.push(nextPages)
+      }
+    }
     return items
   })
 
-  const updateModelValue = (value, emitChange) => {
+  const updateModelValue = (value, emitChange = true) => {
     value = clamp(value, 1, count.value)
 
     if (props.modelValue !== value) {
@@ -101,7 +108,7 @@ function setup(props, { emit }) {
       }
     }
   }
-  watchEffect(() => updateModelValue(props.modelValue))
+  watchEffect(() => updateModelValue(props.modelValue, false))
   return {
     bem,
     count,
@@ -112,6 +119,7 @@ function setup(props, { emit }) {
 export default {
   name,
   props,
+  emits,
   setup
 }
 </script>
