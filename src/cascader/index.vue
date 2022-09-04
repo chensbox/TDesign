@@ -4,9 +4,7 @@
 
     <div :class="bem('tab')">
       <div
-        :class="
-          bem('tab-item', { gray: index == selected.length - 1 && !isFinish })
-        "
+        :class="bem('tab-item', { gray: isGray(index) })"
         v-for="(item, index) in selected"
         :key="index"
         :ref="setTabsItemRef"
@@ -25,11 +23,7 @@
         :key="tabIdx"
       >
         <li
-          :class="
-            bem('options-list-item', {
-              active: selected[tabIdx].active == liIdx
-            })
-          "
+          :class="bem('options-list-item', { active: isActive(tabIdx, liIdx) })"
           v-for="(li, liIdx) in selectList[tabIdx]"
           :key="liIdx"
           @click="onSelect(li, tabIdx, liIdx)"
@@ -39,7 +33,7 @@
             name="check"
             class="check"
             size="16px"
-            v-if="selected[tabIdx].active == liIdx"
+            v-if="isActive(tabIdx, liIdx)"
           />
         </li>
       </ul>
@@ -98,15 +92,19 @@ const setup = (props, { emit }) => {
     })
   }
 
+  const isGray = index => {
+    return !isFinish.value && index == selected.value.length - 1
+  }
+  const isActive = (tabIndex, liIndex) => {
+    return selected.value[tabIndex].active == liIndex
+  }
   onBeforeUpdate(() => (tabsItemRefs.length = 0))
 
-  onMounted(() => {
-    nextTick(() => {
-      onTabSwitch(tabIndex.value)
-    })
-  })
+  onMounted(() => nextTick(() => onTabSwitch(tabIndex.value)))
   return {
     bem,
+    isGray,
+    isActive,
     selected,
     trackRef,
     lineRef,
