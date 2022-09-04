@@ -1,3 +1,31 @@
+<template>
+  <button
+    :class="
+      bem({
+        [type]: type,
+        [size]: size,
+        disabled,
+        square,
+        round
+      })
+    "
+    :style="style"
+    @click="onClick"
+    :disabled="disabled"
+  >
+    <icon :name="icon || loadingType" v-if="icon || loading" />
+    <span
+      :class="{ [bem('loading-text')]: icon }"
+      v-if="!loading && slots.default"
+    >
+      <slot></slot>
+    </span>
+    <span :class="bem('loading-text')" v-if="loading && loadingText">
+      {{ loadingText }}
+    </span>
+  </button>
+</template>
+
 <script>
 import { createNamespace, makeStringProp, falseProp } from '../utils'
 import Icon from '../icon/index.vue'
@@ -33,7 +61,7 @@ function setup(props, { slots, emit }) {
   const style = { background: props.color }
 
   if (props.plain) {
-    const color = props.color ? props.color : colorMap[props.type]
+    const color = props.color ?? colorMap[props.type]
     style.color = color
     style.border = `1px solid ${color}`
     style.background = '#ffffff'
@@ -64,41 +92,16 @@ export default {
 }
 </script>
 
-<template>
-  <button
-    :class="
-      bem({
-        [type]: type,
-        [size]: size,
-        disabled,
-        square,
-        round
-      })
-    "
-    :style="style"
-    @click="onClick"
-    :disabled="disabled"
-  >
-    <icon :name="icon || loadingType" class="btn-icon" v-if="icon || loading" />
-    <span :class="{ 'btn-text': icon }" v-if="!loading && slots.default">
-      <slot />
-    </span>
-    <span class="btn-text" v-if="loading && loadingText">
-      {{ loadingText }}
-    </span>
-  </button>
-</template>
-
 <style lang="less">
 .t-button {
   color: #fff;
   font-size: 16px;
   line-height: 100%;
-  background-color: #f44;
   border: none;
   outline: none;
   border-radius: 3px;
   cursor: pointer;
+  user-select: none;
 
   &--default {
     border: 1px solid #ebedf0;
@@ -146,6 +149,11 @@ export default {
     border-radius: 999rem;
   }
 
+  &__loading-text {
+    margin: 0 2px;
+    vertical-align: middle;
+  }
+
   &--disabled {
     cursor: not-allowed;
     opacity: 0.6;
@@ -162,14 +170,5 @@ export default {
 .btn-text {
   margin: 0 2px;
   vertical-align: middle;
-}
-
-* {
-  -webkit-touch-callout: none; /*系统默认菜单被禁用*/
-  -webkit-user-select: none; /*webkit浏览器*/
-  -khtml-user-select: none; /*早期浏览器*/
-  -moz-user-select: none; /*火狐*/
-  -ms-user-select: none; /*IE10*/
-  user-select: none;
 }
 </style>
