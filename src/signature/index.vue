@@ -11,7 +11,7 @@
       ></canvas>
     </div>
     <div :class="bem('control-bar')" ref="controlBarRef">
-      <t-button :class="bem('button')" type="wanner" round @click="reset"
+      <t-button :class="bem('button')" type="danger" round @click="reset"
         >重置</t-button
       >
       <t-button :class="bem('button')" round @click="saveImg">确定</t-button>
