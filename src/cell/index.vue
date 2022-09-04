@@ -1,15 +1,15 @@
 <template>
-  <div class="cell" @click="$emit('click', $event)">
-    <div class="cell-title cell-item">
-      <icon class="left-icon" :name="icon" size="17px" v-if="icon" />
+  <div :class="bem()" @click="$emit('click', $event)">
+    <div :class="[bem('title'), bem('item')]">
+      <icon :class="bem('left-icon')" :name="icon" size="17px" v-if="icon" />
       {{ title }}
     </div>
-    <div class="cell-input-value cell-item">
+    <div :class="[bem('input-value'), bem('item')]">
       <slot>
-        <span class="cell-placeholder">{{ placeholder }}</span>
+        <span :class="bem('placeholder')">{{ placeholder }}</span>
       </slot>
     </div>
-    <div class="cell-value cell-item">
+    <div :class="[bem('value'), bem('item')]">
       {{ value }}
       <icon name="right" />
     </div>
@@ -18,7 +18,10 @@
 
 <script>
 import icon from '../icon/index.vue'
+import { createNamespace } from '../utils'
+const [name, bem] = createNamespace('cell')
 export default {
+  name,
   components: { icon },
   props: {
     title: String,
@@ -26,15 +29,15 @@ export default {
     icon: String,
     placeholder: String
   },
-  data() {
-    return {}
-  },
-  emits: ['click']
+  emits: ['click'],
+  setup() {
+    return { bem }
+  }
 }
 </script>
 
 <style lang="less" scoped>
-.cell {
+.t-cell {
   display: flex;
   position: relative;
   padding: 0 15px;
@@ -42,26 +45,27 @@ export default {
   justify-content: space-between;
   align-content: center;
   cursor: pointer;
+  user-select: none;
   background: #fff;
-  &-input-value {
+  &__input-value {
     color: #323233;
     font-size: 16px;
     font-weight: 200;
   }
-  &-title {
+  &__title {
     color: #323233;
-    .left-icon {
-      margin: 0 3px 3px 0;
-    }
   }
-  &-value {
+  &__left-icon {
+    margin: 0 3px 3px 0;
+  }
+  &__value {
     color: #969799;
   }
-  &-item {
+  &__item {
     font-size: 14px;
     line-height: 43px;
   }
-  &-placeholder {
+  &__placeholder {
     color: #c8c9cc;
   }
   &:not(.cell:last-child)::after {
@@ -76,14 +80,5 @@ export default {
     background: #ebedf0;
     content: ' ';
   }
-}
-
-* {
-  -webkit-touch-callout: none; /*系统默认菜单被禁用*/
-  -webkit-user-select: none; /*webkit浏览器*/
-  -khtml-user-select: none; /*早期浏览器*/
-  -moz-user-select: none; /*火狐*/
-  -ms-user-select: none; /*IE10*/
-  user-select: none;
 }
 </style>
