@@ -1,60 +1,80 @@
 <template>
-  <div class="dialog-warp" ref="dialogRef" v-show="modelValue">
-    <div class="dialog-content">
-      <h3 class="dialog-content-title">{{ title }}</h3>
-      <div class="dialog-content-text">
-        <slot>
-          {{ message }}
-        </slot>
+  <transition name="slide-fade">
+    <div :class="bem()" ref="dialogRef" v-show="modelValue">
+      <div :class="bem('content')">
+        <p :class="bem('title')">{{ title }}</p>
+        <div :class="bem('text')">
+          <slot>
+            {{ message }}
+          </slot>
+        </div>
+      </div>
+
+      <div :class="bem('footer', { 'button-border': showConfirmButton })">
+        <t-button
+          v-if="showCancelButton"
+          :class="bem('cancel-button')"
+          square
+          loading-type="loading"
+          :loading="cancelLoading"
+          @click="onClick('cancel')"
+        >
+          {{ cancelButtonText }}
+        </t-button>
+
+        <t-button
+          v-if="showConfirmButton"
+          :class="bem('confirm-button')"
+          square
+          loading-type="loading"
+          :loading="confirmLoading"
+          @click="onClick('confirm')"
+          >{{ confirmButtonText }}</t-button
+        >
       </div>
     </div>
-    <div class="dialog-button" :class="{ 'button-border': type == 'confirm' }">
-      <t-button
-        v-if="type == 'confirm'"
-        class="dialog-button-cancel"
-        square
-        loading-type="loading"
-        :loading="cancelLoading"
-        @click="handleClick('cancel')"
-        >取消</t-button
-      >
-      <t-button
-        class="dialog-button-confirm"
-        square
-        loading-type="loading"
-        :loading="confirmLoading"
-        @click="handleClick('confirm')"
-        >确定</t-button
-      >
-    </div>
-    <overlay :show="modelValue && maskShow"></overlay>
-  </div>
+  </transition>
+
+  <overlay :show="modelValue && overlay"></overlay>
 </template>
 
 <script>
-import { ref, toRef, toRefs } from '@vue/reactivity'
-import { onMounted } from '@vue/runtime-core'
+import { ref } from 'vue'
 import overlay from '../overlay/index.vue'
 import TButton from '../button/index.vue'
-import { sleep } from '../utils'
-const name = 'TDialog'
+import {
+  createNamespace,
+  makeStringProp,
+  sleep,
+  truthProp,
+  falseProp
+} from '../utils'
+
+const [name, bem] = createNamespace('dialog')
+
 const props = {
   callback: Function,
   modelValue: Boolean,
   title: String,
   message: String,
   beforClose: Function,
-  type: { type: String, default: 'alert' }
+  overlay: truthProp,
+  showConfirmButton: truthProp,
+  showCancelButton: falseProp,
+  confirmButtonText: makeStringProp('确认'),
+  cancelButtonText: makeStringProp('取消')
 }
+
 const emits = ['confirm', 'cancel', 'update:modelValue']
+
 const components = { overlay, TButton }
-const setup = (props, { attrs, slots, emit }) => {
+
+function setup(props, { emit }) {
   const dialogRef = ref()
-  const maskShow = ref(true)
   const confirmLoading = ref(false)
   const cancelLoading = ref(false)
-  function handleClick(action) {
-    // dialogRef.value.style.opacity = 0
+
+  function onClick(action) {
     if (confirmLoading.value || cancelLoading.value) {
       return
     }
@@ -73,7 +93,6 @@ const setup = (props, { attrs, slots, emit }) => {
     confirmLoading.value = false
     cancelLoading.value = false
     if (props.callback) {
-      maskShow.value = false
       props.callback(action)
     } else {
       emit(action)
@@ -84,9 +103,9 @@ const setup = (props, { attrs, slots, emit }) => {
   }
 
   return {
-    handleClick,
+    bem,
+    onClick,
     dialogRef,
-    maskShow,
     confirmLoading,
     cancelLoading
   }
@@ -101,7 +120,7 @@ export default {
 </script>
 
 <style lang="less" scoped>
-.dialog-warp {
+.t-dialog {
   overflow: hidden;
   box-sizing: border-box;
   z-index: 100;
@@ -112,55 +131,68 @@ export default {
   border-radius: 16px;
   transform: translate(-50%, -50%);
   background: #fff;
-  transition: opacity 0.2s ease-out;
-  animation: scaleIn 0.2s ease-out;
-  .dialog-content {
+  // transition: opacity 0.2s ease-out;
+  // animation: scaleIn 0.2s ease-out;
+  &__content {
     padding: 20px;
-    &-text {
-      max-height: 50vh;
-      font-size: 14px;
-      line-height: 20px;
-      white-space: pre-wrap;
-      text-align: center;
-      word-wrap: break-word;
-    }
-    &-title {
-      font-weight: 400;
-      margin-bottom: 10px;
-      text-align: center;
-    }
   }
-  .dialog-button {
+  &__text {
+    max-height: 50vh;
+    font-size: 14px;
+    line-height: 20px;
+    white-space: pre-wrap;
+    text-align: center;
+    word-wrap: break-word;
+  }
+  &__title {
+    font-weight: 400;
+    margin-bottom: 10px;
+    text-align: center;
+  }
+  &__footer {
     display: flex;
     border-top: 0.5px solid #ebedf0;
+    &--button-border {
+      .t-button:last-child {
+        border-left: 0.5px solid #ebedf0;
+      }
+    }
     .t-button {
       flex: 1;
       height: 45px;
       background: #fff;
     }
-    &-confirm {
-      color: red;
-    }
-    &-cancel {
-      flex: 1;
-      color: #333;
-    }
+  }
+  &__confirm-button {
+    color: red;
+  }
+  &__cancel-button {
+    flex: 1;
+    color: #333 !important;
   }
 }
-.button-border {
-  .t-button:last-child {
-    border-left: 0.5px solid #ebedf0;
-  }
-}
+
 @keyframes scaleIn {
   0% {
     opacity: 0;
     transform: translate(-50%, -50%) scale(0.8);
   }
-
   100% {
     opacity: 1;
     transform: translate(-50%, -50%) scale(1);
   }
+}
+.slide-fade-enter-active,
+.slide-fade-leave-active {
+  transition: all 0.25s ease-in-out;
+}
+
+.slide-fade-enter-from {
+  opacity: 0;
+  transform: translate(-50%, -50%) scale(0.7);
+}
+.slide-fade-leave-to {
+  opacity: 0;
+  transform: translate(-50%, -50%) scale(0.9);
 }
 </style>

@@ -1,24 +1,18 @@
 import dialog_sfc from './dialog.vue'
-import { sleep } from '../utils'
+import { Defer } from '../utils'
 import { render, h } from 'vue'
 
-function Dialog(props = {}) {
-  props.modelValue = true
-  const mountNode = document.createElement('div')
-  document.body.appendChild(mountNode)
+let instance
+function Dialog(option = {}) {
+  const { promise, resolve, reject } = Defer()
 
-  return new Promise((resolve, reject) => {
-    props.callback = action => {
-      ;(action === 'confirm' ? resolve : reject)()
-      Vnode.el.style.opacity = 0
-      sleep(200).then(() => {
-        document.body.removeChild(mountNode)
-      })
-    }
+  const wrapper = {
+    setup() {}
+  }
 
-    const Vnode = h(dialog_sfc, props)
-    render(Vnode, mountNode)
-  })
+  ;({ instance } = mountComponent(wrapper))
+  console.log(instance)
+  return promise
 }
 
 Dialog.alert = function (option) {

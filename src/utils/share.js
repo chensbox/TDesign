@@ -34,7 +34,7 @@ export function usePopupState() {
   }
 }
 
-export function mountComponent(RootComponent) {
+export function MountComponent(RootComponent) {
   const app = createApp(RootComponent)
   const root = document.createElement('div')
 
@@ -46,5 +46,12 @@ export function mountComponent(RootComponent) {
       app.unmount()
       document.body.removeChild(root)
     }
+  }
+}
+
+export function RewriteRender(render) {
+  const instance = getCurrentInstance()
+  if (instance) {
+    instance.render = render
   }
 }
