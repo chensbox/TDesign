@@ -1,6 +1,6 @@
 <template>
-  <transition name="slide-fade">
-    <div :class="bem()" ref="dialogRef" v-show="modelValue">
+  <transition name="slide-fade" appear>
+    <div :class="bem()" v-if="modelValue">
       <div :class="bem('content')">
         <p :class="bem('title')">{{ title }}</p>
         <div :class="bem('text')">
@@ -10,7 +10,7 @@
         </div>
       </div>
 
-      <div :class="bem('footer', { 'button-border': showConfirmButton })">
+      <div :class="bem('footer', { 'button-border': showComfirmButton })">
         <t-button
           v-if="showCancelButton"
           :class="bem('cancel-button')"
@@ -23,32 +23,25 @@
         </t-button>
 
         <t-button
-          v-if="showConfirmButton"
-          :class="bem('confirm-button')"
+          v-if="showComfirmButton"
+          :class="bem('comfirm-button')"
           square
           loading-type="loading"
-          :loading="confirmLoading"
-          @click="onClick('confirm')"
-          >{{ confirmButtonText }}</t-button
+          :loading="comfirmLoading"
+          @click="onClick('comfirm')"
+          >{{ comfirmButtonText }}</t-button
         >
       </div>
     </div>
   </transition>
-
   <overlay :show="modelValue && overlay"></overlay>
 </template>
 
 <script>
-import { ref } from 'vue'
+import { computed, ref } from 'vue'
 import overlay from '../overlay/index.vue'
 import TButton from '../button/index.vue'
-import {
-  createNamespace,
-  makeStringProp,
-  sleep,
-  truthProp,
-  falseProp
-} from '../utils'
+import { createNamespace, makeStringProp, truthProp, falseProp } from '../utils'
 
 const [name, bem] = createNamespace('dialog')
 
@@ -59,54 +52,49 @@ const props = {
   message: String,
   beforClose: Function,
   overlay: truthProp,
-  showConfirmButton: truthProp,
+  showComfirmButton: truthProp,
   showCancelButton: falseProp,
-  confirmButtonText: makeStringProp('确认'),
+  comfirmButtonText: makeStringProp('确认'),
   cancelButtonText: makeStringProp('取消')
 }
 
-const emits = ['confirm', 'cancel', 'update:modelValue']
+const emits = ['comfirm', 'cancel', 'update:modelValue']
 
 const components = { overlay, TButton }
 
 function setup(props, { emit }) {
-  const dialogRef = ref()
-  const confirmLoading = ref(false)
-  const cancelLoading = ref(false)
+  const loading = ref(false)
+  const comfirmLoading = computed(() => loading.value === 'comfirm')
+  const cancelLoading = computed(() => loading.value === 'cancel')
 
-  function onClick(action) {
-    if (confirmLoading.value || cancelLoading.value) {
+  const onClick = action => {
+    if (loading.value) {
       return
     }
+
     if (props.beforClose) {
-      if (action == 'confirm') {
-        confirmLoading.value = true
-      } else {
-        cancelLoading.value = true
-      }
+      loading.value = action
       return props.beforClose(action, close.bind(null, action))
     }
+
     close(action)
   }
 
-  function close(action) {
-    confirmLoading.value = false
-    cancelLoading.value = false
+  const close = action => {
+    loading.value = false
+
     if (props.callback) {
       props.callback(action)
-    } else {
-      emit(action)
     }
-    sleep().then(() => {
-      emit('update:modelValue', false)
-    })
+
+    emit(action)
+    emit('update:modelValue', false)
   }
 
   return {
     bem,
     onClick,
-    dialogRef,
-    confirmLoading,
+    comfirmLoading,
     cancelLoading
   }
 }
@@ -131,8 +119,7 @@ export default {
   border-radius: 16px;
   transform: translate(-50%, -50%);
   background: #fff;
-  // transition: opacity 0.2s ease-out;
-  // animation: scaleIn 0.2s ease-out;
+
   &__content {
     padding: 20px;
   }
@@ -163,7 +150,7 @@ export default {
       background: #fff;
     }
   }
-  &__confirm-button {
+  &__comfirm-button {
     color: red;
   }
   &__cancel-button {
@@ -172,24 +159,14 @@ export default {
   }
 }
 
-@keyframes scaleIn {
-  0% {
-    opacity: 0;
-    transform: translate(-50%, -50%) scale(0.8);
-  }
-  100% {
-    opacity: 1;
-    transform: translate(-50%, -50%) scale(1);
-  }
-}
 .slide-fade-enter-active,
 .slide-fade-leave-active {
-  transition: all 0.25s ease-in-out;
+  transition: all 0.2s ease-in-out;
 }
 
 .slide-fade-enter-from {
   opacity: 0;
-  transform: translate(-50%, -50%) scale(0.7);
+  transform: translate(-50%, -50%) scale(0.8);
 }
 .slide-fade-leave-to {
   opacity: 0;

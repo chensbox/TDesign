@@ -40,7 +40,7 @@ export default {
   },
   methods: {
     beforClose(action, done) {
-      if (action == 'confirm') {
+      if (action == 'comfirm') {
         sleep(2000).then(done)
       } else {
         done()
@@ -54,10 +54,10 @@ export default {
         beforClose: this.beforClose
       })
         .then(() => {
-          Toast('确定')
+          Toast('你点击了确定')
         })
         .catch(() => {
-          Toast('取消')
+          Toast('你点击了取消')
         })
     },
     onClick() {
@@ -67,10 +67,10 @@ export default {
           '如果解决方法是丑陋的，那就肯定还有更好的解决方法，只是还没有发现而已。'
       })
         .then(() => {
-          Toast('确定')
+          Toast('你点击了确定')
         })
         .catch(() => {
-          Toast('取消')
+          Toast('你点击了取消')
         })
     },
     onClick2() {
@@ -79,7 +79,7 @@ export default {
         message:
           '如果解决方法是丑陋的，那就肯定还有更好的解决方法，只是还没有发现而已。'
       }).then(() => {
-        Toast('确定')
+        Toast('你点击了确定')
       })
     },
     notTitle() {
@@ -87,7 +87,7 @@ export default {
         message:
           '如果解决方法是丑陋的，那就肯定还有更好的解决方法，只是还没有发现而已。'
       }).then(() => {
-        Toast('确定')
+        Toast('你点击了确定')
       })
     }
   }
