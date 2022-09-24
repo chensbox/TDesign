@@ -151,7 +151,7 @@ export default {
     }
   }
   &__comfirm-button {
-    color: red;
+    color: #165dff;
   }
   &__cancel-button {
     flex: 1;
