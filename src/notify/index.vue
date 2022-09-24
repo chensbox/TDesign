@@ -76,7 +76,7 @@ export default {
 .top-leave-active,
 .bottom-enter-active,
 .bottom-leave-active {
-  transition: all 0.25s ease-out;
+  transition: all 0.2s ease-out;
 }
 
 .top-enter-from,

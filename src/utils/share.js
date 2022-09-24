@@ -55,3 +55,17 @@ export function RewriteRender(render) {
     instance.render = render
   }
 }
+
+export const isObject = val => !!val && typeof val === 'object'
+
+export const noop = () => {}
+
+export function preventDefault(event, isStopPropagation) {
+  if (typeof event.cancelable !== 'boolean' || event.cancelable) {
+    event.preventDefault()
+  }
+
+  if (isStopPropagation) {
+    event.stopPropagation()
+  }
+}

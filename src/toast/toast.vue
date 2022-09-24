@@ -7,7 +7,7 @@
         v-if="showLoading || state.icon"
       />
       <p>{{ state.message }}</p>
-      <overlay :transparent="true" :show="forbidClick" />
+      <overlay transparent :show="forbidClick" />
     </div>
   </transition>
 </template>

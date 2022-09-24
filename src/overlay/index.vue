@@ -2,9 +2,9 @@
   <teleport to="body">
     <transition name="slide-fade">
       <div
-        :class="['mask', transparent ? 'transparent' : '']"
+        :class="bem({ transparent })"
         v-if="show"
-        @touchmove.prevent="touchmove"
+        @touchmove="onTouchmove"
         @click="$emit('click')"
       >
         <slot></slot>
@@ -14,17 +14,24 @@
 </template>
 
 <script>
+import { noop, preventDefault, createNamespace, truthProp } from '../utils'
+const [name, bem] = createNamespace('overlay')
 export default {
+  name,
   props: {
     show: Boolean,
-    transparent: Boolean
+    transparent: Boolean,
+    lockScroll: truthProp
   },
-  emits: ['click']
+  emits: ['click'],
+  setup({ lockScroll }) {
+    return { bem, onTouchmove: lockScroll ? preventDefault : noop }
+  }
 }
 </script>
 
 <style lang="less" scoped>
-.mask {
+.t-overlay {
   display: flex;
   align-items: center;
   justify-content: center;
@@ -35,6 +42,9 @@ export default {
   left: 0;
   top: 0;
   background: rgba(0, 0, 0, 0.7);
+  &--transparent {
+    background: rgba(0, 0, 0, 0);
+  }
 }
 .transparent {
   background: rgba(0, 0, 0, 0);
