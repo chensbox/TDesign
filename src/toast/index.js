@@ -1,56 +1,83 @@
-import toast_sfc from './toast.vue'
-import { sleep, createInstance } from '../utils'
-import { ref } from 'vue'
+import ToastComponet from './toast.vue'
+import { extend, MountComponent, isObject, useExpose } from '../utils'
+import { getCurrentInstance, h, reactive, ref, watch } from 'vue'
 
-function destroy(instance, mountNode) {
-  instance.unmount(mountNode)
-  document.body.removeChild(mountNode)
+const defaultOptions = {
+  message: '',
+  icon: undefined,
+  duration: 2500,
+  position: 'middle',
+  forbidClick: false,
+  loadingType: undefined
 }
-function Toast(props) {
-  props = parsObj(props)
-  props.message = ref(props.message)
-  props.icon = ref(props.icon)
-  props.destroy = function () {
-    destroy(instance, mountNode)
+
+let instance
+
+const initInstance = () => {
+  const message = ref('')
+  const state = reactive({
+    modelValue: false,
+    onClose: () => close()
+  })
+
+  const open = options => {
+    extend(state, options, { modelValue: true })
   }
-  const { instance, mountNode } = createInstance(toast_sfc, props)
-  instance.message = props.message
-  instance.icon = props.icon
-  instance.close = props.destroy
-  console.log(instance)
+  const close = () => (state.modelValue = false)
+
+  const render = () => h(ToastComponet, state)
+
+  watch(message, newVal => {
+    state.message = newVal
+  })
+
+  const wrapper = {
+    setup() {
+      getCurrentInstance().render = render
+      return { open, close, message }
+    }
+  }
+  instance = MountComponent(wrapper).instance
+}
+
+const parseOptions = message => {
+  return isObject(message) ? message : { message }
+}
+const createMethod = type => {
+  let icon
+  switch (type) {
+    case 'loading':
+      icon = 'loading-spinner'
+      break
+    case 'success':
+      icon = 'check'
+      break
+    case 'fail':
+      icon = 'close-circle'
+  }
+  return options => Toast(extend({ icon }, parseOptions(options)))
+}
+
+function Toast(options) {
+  if (!instance) {
+    initInstance()
+  }
+  options = parseOptions(options)
+  instance.open(extend({}, defaultOptions, options))
   return instance
 }
 
-Toast.success = function (option) {
-  option = parsObj(option)
-  return Toast({ ...option, icon: 'check' })
+Toast.loading = createMethod('loading')
+Toast.success = createMethod('success')
+Toast.fail = createMethod('fail')
+
+ToastComponet.install = app => {
+  app.component(ToastComponet.name, ToastComponet)
+  app.config.globalProperties.$toast = Toast
 }
 
-Toast.fail = function (option) {
-  option = parsObj(option)
-  return Toast({ ...option, icon: 'close-circle' })
-}
+Toast.Component = ToastComponet
 
-Toast.loading = function (option) {
-  option = parsObj(option)
-  return Toast({ ...option, showLoading: true, icon: 'loading-spinner' })
-}
-
-function parsObj(message) {
-  if (typeof message !== 'object') {
-    return { message }
-  }
-  return message
-}
-
-toast_sfc.install = function (app) {
-  app.component(toast_sfc.name, toast_sfc)
-}
-
-Toast.Component = toast_sfc
-
-Toast.install = function (app) {
-  app.use(Toast.Component)
-}
+Toast.install = app => app.use(Toast.Component)
 
 export { Toast }

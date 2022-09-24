@@ -43,7 +43,7 @@ function onClick() {
 }
 
 function baseText() {
-  Toast('提示内容')
+  console.log(Toast('提示内容'))
 }
 
 function loading() {
@@ -76,7 +76,7 @@ function diyIcon2() {
 
 function updateMessage() {
   let second = 3
-  const toast = Toast.loading({
+  const toast = Toast({
     message: '倒计时 3 秒',
     duration: 0,
     forbidClick: true
@@ -84,10 +84,9 @@ function updateMessage() {
 
   const task = setInterval(() => {
     if (--second) {
-      toast.message.value = `倒计时 ${second} 秒`
+      toast.message = `倒计时 ${second} 秒`
     } else {
-      toast.message.value = 'success'
-      toast.icon.value = 'check-circle'
+      toast.message = '结束'
       clearInterval(task)
       setTimeout(toast.close, 1000)
     }

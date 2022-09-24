@@ -1,68 +1,48 @@
 <template>
   <transition name="slide-fade" appear>
-    <div class="toast" ref="toastRef" :style="style">
-      <icon
-        :name="state.icon"
-        class="toast-icon"
-        v-if="showLoading || state.icon"
-      />
-      <p>{{ state.message }}</p>
-      <overlay transparent :show="forbidClick" />
+    <div :class="bem({ padding: !!icon })" v-if="modelValue">
+      <icon :name="icon" :class="bem('icon')" v-if="icon" />
+      <p>{{ message }}</p>
+      <overlay transparent :show="forbidClick && modelValue" />
     </div>
   </transition>
 </template>
 
 <script>
-import { reactive, ref, toRefs } from '@vue/reactivity'
-import { sleep } from '../utils'
-import { onMounted } from '@vue/runtime-core'
+import { watch } from 'vue'
+import { createNamespace, makeNumericProp, falseProp } from '../utils'
 import icon from '../icon/index.vue'
 import overlay from '../overlay/index.vue'
 
-const name = 'toast'
+const [name, bem] = createNamespace('toast')
 
 const components = { icon, overlay }
 
 const props = {
-  success: Boolean,
-  fail: Boolean,
-  destroy: Function,
+  modelValue: falseProp,
+  message: String,
   position: String,
-  showLoading: Boolean,
-  icon: [String, Object],
-  duration: { type: Number, default: 2000 },
-  message: { type: [String, Object], require: true },
-  forbidClick: { type: Boolean, default: false },
-  loadingType: { type: String, default: 'circle' }
+  icon: String,
+  duration: makeNumericProp(2000),
+  forbidClick: falseProp,
+  loadingType: makeNumericProp('circle')
 }
 
-const setup = (props, { expose }) => {
-  const style = reactive({})
-  const state = reactive({
-    message: props.message,
-    icon: props.icon
-  })
-  const toastRef = ref()
+let timer
+function setup(props, { emit }) {
+  const close = () => emit('close')
 
-  const close = () => {
-    if (toastRef.value) {
-      toastRef.value.style.opacity = 0
-      sleep(250).then(props.destroy)
-    }
+  if (props.duration) {
+    timer = setTimeout(close, props.duration)
   }
 
-  if (props.showLoading || props.icon.value) {
-    style.padding = '25px 15px'
-  }
-
-  onMounted(() => {
-    if (props.duration > 0) {
-      sleep(props.duration).then(close)
+  watch(props, () => {
+    clearTimeout(timer)
+    if (props.modelValue && props.duration > 0) {
+      timer = setTimeout(close, props.duration)
     }
   })
-
-  expose({ close })
-  return { state, toastRef, style }
+  return { bem }
 }
 export default {
   name,
@@ -73,7 +53,7 @@ export default {
 </script>
 
 <style lang="less" scoped>
-.toast {
+.t-toast {
   z-index: 1000;
   position: fixed;
   left: 50%;
@@ -87,14 +67,16 @@ export default {
   pointer-events: none;
   user-select: none;
   transform: translate(-50%, -50%);
-  transition: opacity 0.25s ease-in;
   color: #ffff;
-  // background: rgba(0, 0, 0, 0.7);
-  background: #4a4a4b;
 
-  &-icon {
+  // background: #4a4a4b;
+  background: rgba(0, 0, 0, 0.7);
+  &__icon {
     margin-bottom: 5px;
     font-size: 40px !important;
+  }
+  &--padding {
+    padding: 20px 10px;
   }
 }
 

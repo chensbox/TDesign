@@ -2,6 +2,8 @@ import { createApp, reactive, getCurrentInstance } from 'vue'
 
 export const extend = Object.assign
 
+export const noop = () => {}
+
 export function useExpose(apis) {
   const instance = getCurrentInstance()
   if (instance) {
@@ -57,8 +59,6 @@ export function RewriteRender(render) {
 }
 
 export const isObject = val => !!val && typeof val === 'object'
-
-export const noop = () => {}
 
 export function preventDefault(event, isStopPropagation) {
   if (typeof event.cancelable !== 'boolean' || event.cancelable) {
