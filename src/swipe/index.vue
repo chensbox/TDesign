@@ -12,11 +12,7 @@
     </div>
     <div :class="bem('dot')" v-if="showIndicators">
       <div
-        :class="
-          bem('dot-item', {
-            active: (active % 4) + 1 == i
-          })
-        "
+        :class="bem('dot-item', { active: isActive(i) })"
         v-for="i in dotCount"
         :key="i"
       ></div>
@@ -70,9 +66,8 @@ function setup(props, { emit }) {
     startX = clientWidth + 1
     moveX = clientWidth
 
-    //人为调用touch事件函数模拟向右滑动
     touchstart()
-    setTimeout(touchend) //必须在在下一轮事件循环触发
+    setTimeout(touchend)
   }
   const join = () => {
     if (index == 0) {
@@ -132,6 +127,10 @@ function setup(props, { emit }) {
     endTimeStamp = Date.now()
     emit('change', (active.value % 4) + 1)
   }
+
+  const isActive = index => {
+    return (active.value % 4) + 1 === index
+  }
   onMounted(() => {
     dotCount.value = slotCount = trackRef.value.children.length
     firstSlot = trackRef.value.children[0]
@@ -147,7 +146,7 @@ function setup(props, { emit }) {
   })
   return {
     bem,
-    active,
+    isActive,
     touchend,
     trackRef,
     dotCount,
