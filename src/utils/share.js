@@ -69,3 +69,7 @@ export function preventDefault(event, isStopPropagation) {
     event.stopPropagation()
   }
 }
+
+export function raf(callback) {
+  return window.requestAnimationFrame(callback)
+}

@@ -2,26 +2,22 @@
   <div :class="bem({ cover })">
     <div :class="bem('head')" ref="tabsHeadRef">
       <div
-        :class="
-          bem('tab', {
-            'not-allow': it.props.disable == '' || it.props.disable
-          })
-        "
-        v-for="(it, id) in slots"
+        :class="bem('tab', { disabled: it.disabled })"
+        v-for="(it, id) in tabsList"
         :key="id"
         :ref="setTabsItemRef"
         @click="tabsSwitch(id)"
       >
-        <span :class="{ blod: attrs.modelValue === id }">
-          <icon :name="it.props.icon" v-if="it.props.icon" />
-          {{ it.props.title }}
+        <span :class="{ blod: modelValue === id }">
+          <icon :name="it.icon" v-if="it.icon" />
+          {{ it.title }}
         </span>
       </div>
 
-      <div :class="bem('line', { animation: lineAnimation })" ref="lineRef" />
+      <div :class="bem('line', { animation: true })" ref="lineRef" />
     </div>
 
-    <div :class="bem('track', { animation: tabAnimation })" ref="trackRef">
+    <div :class="bem('track', { animation })" ref="trackRef">
       <slot />
     </div>
   </div>
@@ -30,23 +26,25 @@
 <script>
 import icon from '../icon/index.vue'
 
-import { ref, toRefs, watch, onMounted, onUnmounted, onBeforeUpdate } from 'vue'
+import { ref, watch, onMounted, onUnmounted, onBeforeUpdate } from 'vue'
 
-import { smoothMove, tabsChange, useSwipeable } from './hooks'
+import { useSwipeable } from './hooks'
 
 import {
+  raf,
   falseProp,
   createNamespace,
   makeStringProp,
-  makeNumericProp
+  makeNumericProp,
+  numericProp
 } from '../utils'
 
 const [name, bem] = createNamespace('tabs')
 
 const props = {
+  modelValue: numericProp,
   cover: Boolean,
-  lineAnimation: falseProp,
-  tabAnimation: falseProp,
+  animation: falseProp,
   swipeable: falseProp,
   color: makeStringProp('#0052d9'),
   swipeThreshold: makeNumericProp(5)
@@ -56,51 +54,101 @@ const components = { icon }
 
 const emits = ['update:modelValue']
 
-function setup(props, { attrs, slots, emit }) {
+function setup(props, { slots, emit }) {
   let active
-  const { color, swipeThreshold } = toRefs(props)
+  const { swipeThreshold } = props
   const lineRef = ref()
+  const tabsList = ref([])
   const tabsItemRefs = []
   const trackRef = ref()
   const tabsHeadRef = ref()
-  const useSlot = slots.default()
-  slots = useSlot[0].children instanceof Array ? useSlot[0].children : useSlot
+
+  const formatSlot = () => {
+    let newSlotList
+    const slotList = slots.default()
+    const [slotElement] = slotList
+    if (slotElement.children instanceof Array) {
+      newSlotList = slotElement.children
+    } else {
+      newSlotList = slotList
+    }
+
+    tabsList.value = newSlotList.map(slots => {
+      const { props } = slots
+      props.disabled = 'disabled' in props && props.disabled !== false
+      return props
+    })
+  }
 
   const setTabsItemRef = el => tabsItemRefs.push(el)
 
+  const smoothScroll = (el, cur) => {
+    const mid = el.value.clientWidth / 2
+    const isLeft = mid > cur
+
+    let distance = 0
+    if (isLeft && el.value.scrollLeft) {
+      distance = Math.abs(mid - cur) * -1
+    } else if (!isLeft) {
+      distance = Math.abs(mid - cur)
+    }
+
+    const macroTick = () => {
+      raf(() => {
+        if (Math.round(distance)) {
+          el.value.scrollLeft += Math.round(distance / 8)
+          distance -= Math.round(distance / 8)
+          macroTick()
+        }
+      })
+    }
+    macroTick()
+  }
   const tabsSwitch = index => {
     if (index === active) {
       return
     }
-    active = index
 
-    const classList = tabsItemRefs[index].classList.value
-    if (classList.includes(`${bem('tab')}--not-allow`)) {
+    const isDisabled = tabsList.value.at(index).disabled
+
+    if (isDisabled) {
       return
     }
 
-    const cur = tabsChange(index, tabsItemRefs, lineRef, trackRef, tabsHeadRef)
+    active = index
+    const offsetX = index * -100
+    const [tabText] = tabsItemRefs.at(index).childNodes
+    const { left, width } = tabText.getBoundingClientRect()
+    const middle = left + width / 2
+    lineRef.value.style.width = `${width}px`
+    lineRef.value.style.left = `${left + tabsHeadRef.value.scrollLeft}px`
+    trackRef.value.style.transform = `translateX(${offsetX}%)`
 
-    if (slots.length > swipeThreshold.value) {
-      smoothMove(tabsHeadRef, cur)
+    if (tabsList.value.length > swipeThreshold) {
+      smoothScroll(tabsHeadRef, middle)
     }
 
     emit('update:modelValue', index)
   }
-
   const { touchstart, touchmove, touchend } = useSwipeable(
-    attrs,
+    props,
     tabsItemRefs,
     tabsSwitch
   )
 
+  watch(
+    () => props.modelValue,
+    () => tabsSwitch(props.modelValue)
+  )
+
+  formatSlot()
+
+  onBeforeUpdate(() => (tabsItemRefs.length = 0))
+
   onMounted(() => {
-    const index = attrs.modelValue
+    const index = props.modelValue
     const tabCount = tabsItemRefs.length
-    const initSelectEl = tabsItemRefs[index]
-    const isDisabled = initSelectEl.classList.value.includes(
-      `${bem('tab')}--not-allow`
-    )
+    const isDisabled = tabsList.value.at(index).disabled
 
     tabsSwitch(isDisabled ? (index + 1) % tabCount : index)
 
@@ -111,8 +159,6 @@ function setup(props, { attrs, slots, emit }) {
     }
   })
 
-  onBeforeUpdate(() => (tabsItemRefs.length = 0))
-
   onUnmounted(() => {
     if (props.swipeable) {
       trackRef.value.removeEventListener('touchstart', touchstart)
@@ -121,16 +167,10 @@ function setup(props, { attrs, slots, emit }) {
     }
   })
 
-  watch(
-    () => attrs.modelValue,
-    () => tabsSwitch(attrs.modelValue)
-  )
-
   return {
     bem,
-    slots,
-    attrs,
     lineRef,
+    tabsList,
     trackRef,
     touchend,
     touchmove,
@@ -183,7 +223,7 @@ export default {
   &__tab {
     position: relative;
     display: inline-block;
-    flex: 1 0 auto; //很关键
+    flex: 1 0 auto;
     z-index: 999;
     margin: 0 14px;
     padding: 0 5px;
@@ -192,7 +232,7 @@ export default {
     text-align: center;
     cursor: pointer;
     color: #646566;
-    &--not-allow {
+    &--disabled {
       cursor: not-allowed !important;
       opacity: 0.4;
     }
@@ -235,16 +275,15 @@ export default {
   color: #323233;
 }
 
-* {
-  -webkit-touch-callout: none; /*系统默认菜单被禁用*/
-  -webkit-user-select: none; /*webkit浏览器*/
-  -khtml-user-select: none; /*早期浏览器*/
-  -moz-user-select: none; /*火狐*/
-  -ms-user-select: none; /*IE10*/
+[class^='t-tabs'] {
+  -webkit-touch-callout: none;
+  -webkit-user-select: none;
+  -khtml-user-select: none;
+  -moz-user-select: none;
+  -ms-user-select: none;
   user-select: none;
-}
-
-::-webkit-scrollbar {
-  display: none; /* Chrome Safari */
+  ::-webkit-scrollbar {
+    display: none;
+  }
 }
 </style>
