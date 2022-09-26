@@ -48,7 +48,7 @@
   <demo-block title="禁用标签">
     <tabs v-model="active7" line-animation tab-animation>
       <tab title="标签1" icon="setting">标签1内容区</tab>
-      <tab title="标签2" icon="info-circle" disable>标签2内容区</tab>
+      <tab title="标签2" icon="info-circle" disabled>标签2内容区</tab>
       <tab title="标签3" icon="question-circle">标签3内容区</tab>
     </tabs>
   </demo-block>
