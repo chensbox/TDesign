@@ -109,9 +109,9 @@ function setup(props, { slots, emit }) {
       return
     }
 
-    const isDisabled = tabsList.value.at(index).disabled
+    const { disabled } = tabsList.value.at(index)
 
-    if (isDisabled) {
+    if (disabled) {
       return
     }
 
@@ -148,9 +148,9 @@ function setup(props, { slots, emit }) {
   onMounted(() => {
     const index = props.modelValue
     const tabCount = tabsItemRefs.length
-    const isDisabled = tabsList.value.at(index).disabled
+    const { disabled } = tabsList.value.at(index)
 
-    tabsSwitch(isDisabled ? (index + 1) % tabCount : index)
+    tabsSwitch(disabled ? (index + 1) % tabCount : index)
 
     if (props.swipeable) {
       trackRef.value.addEventListener('touchstart', touchstart)
