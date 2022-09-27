@@ -18,16 +18,14 @@
     </div>
 
     <div :class="bem('track', { animation })" ref="trackRef">
-      <slot />
+      <slot></slot>
     </div>
   </div>
 </template>
 
 <script>
 import icon from '../icon/index.vue'
-
-import { ref, watch, onMounted, onUnmounted, onBeforeUpdate } from 'vue'
-
+import { ref, watch, provide, onMounted, onBeforeUpdate } from 'vue'
 import { useSwipeable } from './hooks'
 
 import {
@@ -36,7 +34,8 @@ import {
   createNamespace,
   makeStringProp,
   makeNumericProp,
-  numericProp
+  numericProp,
+  truthProp
 } from '../utils'
 
 const [name, bem] = createNamespace('tabs')
@@ -46,6 +45,7 @@ const props = {
   cover: falseProp,
   animation: falseProp,
   swipeable: falseProp,
+  lazyRender: truthProp,
   color: makeStringProp('#0052d9'),
   swipeThreshold: makeNumericProp(5)
 }
@@ -55,6 +55,7 @@ const components = { icon }
 const emits = ['update:modelValue']
 
 function setup(props, { slots, emit }) {
+  provide('tabs', props)
   let active
   const { swipeThreshold, swipeable, modelValue } = props
   const lineRef = ref()
@@ -175,6 +176,7 @@ export default {
 <style lang="less">
 .t-tabs {
   overflow: hidden;
+
   &__head {
     display: flex;
     position: relative;
@@ -185,14 +187,17 @@ export default {
     transition: all 0.4s;
     background: #ffffff;
   }
+
   &__track {
     display: flex;
     width: 100%;
     height: 100%;
+
     &--animation {
       transition: all 0.4s;
     }
   }
+
   &__panel {
     box-sizing: border-box;
     flex-shrink: 0;
@@ -202,6 +207,7 @@ export default {
     font-size: 16px;
     background-color: #ffffff;
   }
+
   &__tab {
     position: relative;
     display: inline-block;
@@ -214,11 +220,13 @@ export default {
     text-align: center;
     cursor: pointer;
     color: #646566;
+
     &--disabled {
       cursor: not-allowed !important;
       opacity: 0.4;
     }
   }
+
   &__line {
     position: absolute;
     height: 3px;
@@ -227,6 +235,7 @@ export default {
     bottom: 0;
     left: 28px;
     background: v-bind(color);
+
     &--animation {
       transition: all 0.4s;
     }
@@ -236,6 +245,7 @@ export default {
     .t-tabs__head {
       background: #eeeeee;
     }
+
     .t-tabs__line {
       height: 70%;
       top: 50%;
@@ -243,8 +253,10 @@ export default {
       background: #ffffff !important;
       box-shadow: rgb(0 0 0 / 15%) 0px 2px 4px;
     }
+
     .t-tabs__tab {
       margin: 0;
+
       span {
         padding: 0 10px;
       }
@@ -264,6 +276,7 @@ export default {
   -moz-user-select: none;
   -ms-user-select: none;
   user-select: none;
+
   ::-webkit-scrollbar {
     display: none;
   }

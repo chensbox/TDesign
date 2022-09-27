@@ -1,18 +1,40 @@
 <template>
-  <div class="t-tabs__panel">
-    <slot>
+  <div class="t-tabs__panel" ref="self">
+    <slot v-if="shouldRender">
       <div class="empty">{{ title }}内容区</div>
     </slot>
   </div>
 </template>
 <script>
+import { computed, ref } from '@vue/reactivity'
+import { inject, onMounted } from 'vue'
+
 const name = 'tab'
 const props = {
-  title: String,
-  disable: Boolean
+  title: String
 }
 export default {
   name,
-  props
+  props,
+  setup() {
+    let rendered
+    const self = ref()
+    const index = ref()
+    const parent = inject('tabs')
+    const shouldRender = computed(() => {
+      const { lazyRender, modelValue } = parent
+      if (rendered || !lazyRender || modelValue === index.value) {
+        rendered = true
+        return true
+      }
+      return false
+    })
+
+    onMounted(() => {
+      const clientWidth = document.body.clientWidth
+      index.value = self.value.offsetLeft / clientWidth
+    })
+    return { self, shouldRender }
+  }
 }
 </script>
