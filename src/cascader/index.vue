@@ -1,7 +1,6 @@
 <template>
   <div :class="bem()">
-    <span :class="bem('title')"> 请选择所在地区 </span>
-
+    <span :class="bem('title')"> {{ title }} </span>
     <div :class="bem('tab')">
       <div
         :class="bem('tab-item', { gray: isGray(index) })"
@@ -42,7 +41,7 @@
 </template>
 <script>
 import icon from '../icon/index.vue'
-import { createNamespace, makeArrayProp } from '../utils'
+import { createNamespace, makeArrayProp, makeStringProp } from '../utils'
 import { ref, onMounted, onBeforeUpdate, nextTick } from 'vue'
 
 const [name, bem] = createNamespace('cascader')
@@ -50,10 +49,15 @@ const [name, bem] = createNamespace('cascader')
 const emits = ['finish']
 
 const components = { icon }
-const props = { options: makeArrayProp() }
+const props = {
+  title: String,
+  placeholder: makeStringProp('请选择'),
+  options: makeArrayProp(),
+  activeColor: makeStringProp('#1989fa')
+}
 
 const setup = (props, { emit }) => {
-  const selected = ref(['请选择'])
+  const selected = ref([props.placeholder])
   const tabsItemRefs = []
   const lineRef = ref()
   const trackRef = ref()
@@ -62,11 +66,9 @@ const setup = (props, { emit }) => {
   const isFinish = ref(false)
   const setTabsItemRef = el => tabsItemRefs.push(el)
 
-  // console.log(props.options)
-  // selectList.value.push(props.options)
   const onTabSwitch = index => {
     tabIndex.value = index
-    const [tabsNode] = tabsItemRefs[index]['childNodes']
+    const [tabsNode] = tabsItemRefs[index].childNodes
     const { left, width } = tabsNode.getBoundingClientRect()
     const offsetX = index * -100
 
@@ -76,11 +78,11 @@ const setup = (props, { emit }) => {
   }
 
   const onSelect = (val, idx, i) => {
-    isFinish.value = val.children ? false : true
+    isFinish.value = !val.children
     selected.value = selected.value.slice(0, idx)
     selectList.value = selectList.value.slice(0, idx + 1)
     if (val.children) {
-      selected.value.push(val, '请选择')
+      selected.value.push(val, props.placeholder)
     } else {
       selected.value.push(val)
       emit('finish', selected.value)
@@ -138,12 +140,10 @@ export default {
     &-line {
       position: absolute;
       bottom: 0;
-      // left: 15px;
-      // width: 42px;
       height: 3px;
       border-radius: 1rem;
       transition: left 0.4s;
-      background: #1989fa;
+      background: v-bind(activeColor);
     }
     &-item {
       display: inline-block;
@@ -183,8 +183,7 @@ export default {
           transform: translateY(-50%);
         }
         &--active {
-          background: rgba(25, 137, 250, 0.1);
-          color: #1989fa;
+          color: v-bind(activeColor);
         }
 
         &:active {
