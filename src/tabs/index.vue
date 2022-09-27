@@ -43,7 +43,7 @@ const [name, bem] = createNamespace('tabs')
 
 const props = {
   modelValue: numericProp,
-  cover: Boolean,
+  cover: falseProp,
   animation: falseProp,
   swipeable: falseProp,
   color: makeStringProp('#0052d9'),
@@ -56,7 +56,7 @@ const emits = ['update:modelValue']
 
 function setup(props, { slots, emit }) {
   let active
-  const { swipeThreshold } = props
+  const { swipeThreshold, swipeable, modelValue } = props
   const lineRef = ref()
   const tabsList = ref([])
   const tabsItemRefs = []
@@ -130,11 +130,6 @@ function setup(props, { slots, emit }) {
 
     emit('update:modelValue', index)
   }
-  const { touchstart, touchmove, touchend } = useSwipeable(
-    props,
-    tabsItemRefs,
-    tabsSwitch
-  )
 
   watch(
     () => props.modelValue,
@@ -146,24 +141,14 @@ function setup(props, { slots, emit }) {
   onBeforeUpdate(() => (tabsItemRefs.length = 0))
 
   onMounted(() => {
-    const index = props.modelValue
+    const index = modelValue
     const tabCount = tabsItemRefs.length
     const { disabled } = tabsList.value.at(index)
 
     tabsSwitch(disabled ? (index + 1) % tabCount : index)
 
-    if (props.swipeable) {
-      trackRef.value.addEventListener('touchstart', touchstart)
-      trackRef.value.addEventListener('touchmove', touchmove)
-      trackRef.value.addEventListener('touchend', touchend)
-    }
-  })
-
-  onUnmounted(() => {
-    if (props.swipeable) {
-      trackRef.value.removeEventListener('touchstart', touchstart)
-      trackRef.value.removeEventListener('touchmove', touchmove)
-      trackRef.value.removeEventListener('touchend', touchend)
+    if (swipeable) {
+      useSwipeable(props, tabCount, tabsSwitch).addListener(trackRef)
     }
   })
 
@@ -172,9 +157,6 @@ function setup(props, { slots, emit }) {
     lineRef,
     tabsList,
     trackRef,
-    touchend,
-    touchmove,
-    touchstart,
     tabsSwitch,
     tabsHeadRef,
     setTabsItemRef

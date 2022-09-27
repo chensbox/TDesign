@@ -1,3 +1,4 @@
+import { onUnmounted, unref } from 'vue'
 export function useSwipeable(attrs, max, swipe) {
   let startX, moveX, direction
 
@@ -12,15 +13,31 @@ export function useSwipeable(attrs, max, swipe) {
       return
     }
 
-    const to = direction > 0 ? attrs.modelValue - 1 : attrs.modelValue + 1
+    const index = direction > 0 ? attrs.modelValue - 1 : attrs.modelValue + 1
 
-    if (to >= 0 && to < max.length) {
-      swipe(to)
+    if (index >= 0 && index < max) {
+      swipe(index)
     }
   }
+
+  const addListener = target => {
+    target = unref(target)
+
+    target.addEventListener('touchstart', touchstart)
+    target.addEventListener('touchmove', touchmove)
+    target.addEventListener('touchend', touchend)
+
+    onUnmounted(() => {
+      target.removeEventListener('touchstart', touchstart)
+      target.removeEventListener('touchmove', touchmove)
+      target.removeEventListener('touchend', touchend)
+    })
+  }
+
   return {
     touchstart,
     touchmove,
-    touchend
+    touchend,
+    addListener
   }
 }
