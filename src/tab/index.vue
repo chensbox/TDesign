@@ -6,9 +6,8 @@
   </div>
 </template>
 <script>
-import { computed, ref } from '@vue/reactivity'
-import { inject, onMounted } from 'vue'
-
+import { ref, inject, onMounted } from 'vue'
+import { useLazyRender } from '../utils'
 const name = 'tab'
 const props = {
   title: String
@@ -21,11 +20,11 @@ export default {
     const self = ref()
     const index = ref()
     const parent = inject('tabs')
-    const shouldRender = computed(() => {
+
+    const { shouldRender } = useLazyRender(() => {
       const { lazyRender, modelValue } = parent
       if (rendered || !lazyRender || modelValue === index.value) {
-        rendered = true
-        return true
+        return (rendered = true)
       }
       return false
     })

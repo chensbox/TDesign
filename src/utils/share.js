@@ -1,4 +1,12 @@
-import { createApp, reactive, getCurrentInstance } from 'vue'
+import {
+  createApp,
+  reactive,
+  getCurrentInstance,
+  watchEffect,
+  ref,
+  computed,
+  nextTick
+} from 'vue'
 
 export const extend = Object.assign
 
@@ -72,4 +80,15 @@ export function preventDefault(event, isStopPropagation) {
 
 export function raf(callback) {
   return window.requestAnimationFrame(callback)
+}
+
+export function useLazyRender(watchSource) {
+  const shouldRender = ref(false)
+  const unwatch = watchEffect(() => {
+    if (watchSource()) {
+      shouldRender.value = true
+      nextTick(unwatch)
+    }
+  })
+  return { shouldRender }
 }

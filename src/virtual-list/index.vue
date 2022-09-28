@@ -70,6 +70,9 @@ export default {
   position: relative;
   overflow: scroll;
   -webkit-overflow-scrolling: touch;
+  .scroller {
+    will-change: transform;
+  }
 }
 .placeholder {
   position: absolute;
