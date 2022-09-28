@@ -1,6 +1,6 @@
 <template>
   <transition :name="animation">
-    <div class="popup" v-show="modelValue" :style="style">
+    <div :class="bem({ round, [position]: true })" v-show="modelValue">
       <icon
         name="close"
         class="close-icon"
@@ -9,8 +9,8 @@
         v-if="closeable"
         @click="onclick"
       />
-      <template v-if="lazyLoad">
-        <slot />
+      <template v-if="shouldRender">
+        <slot></slot>
       </template>
       <overlay :show="modelValue" @click="onclick" />
     </div>
@@ -18,58 +18,37 @@
 </template>
 
 <script>
-import { ref, reactive, nextTick, watchEffect } from 'vue'
+import { ref } from 'vue'
 import overlay from '../overlay/index.vue'
 import icon from '../icon/index.vue'
+import {
+  makeStringProp,
+  createNamespace,
+  useLazyRender,
+  truthProp
+} from '../utils'
+const [name, bem] = createNamespace('popup')
 const components = { overlay, icon }
 const props = {
   modelValue: Boolean,
-  position: String,
   round: Boolean,
   closeable: Boolean,
-  closeIconPosition: { type: String, default: 'top-right' }
+  lazyRender: truthProp,
+  position: makeStringProp('center'),
+  closeIconPosition: makeStringProp('top-right')
 }
 const emits = ['close']
-//top bottom right left
-const setup = (props, { emit }) => {
-  const animation = ref('slide-fade-bottom')
-  const style = reactive({})
-  const iconPositon = reactive({})
-  const lazyLoad = ref()
-  if (!props.position) {
-    animation.value = 'fade-in'
-    style.left = '50%'
-    style.top = '50%'
-    style.transform = 'translate(-50%, -50%)'
-  }
 
-  if (props.position == 'bottom') {
-    style.left = '0px'
-    style.bottom = '0px'
-    style.width = '100%'
-    animation.value = 'slide-fade-bottom'
-  }
-  if (props.position == 'top') {
-    style.left = '0px'
-    style.top = '0px'
-    style.width = '100%'
-    animation.value = 'slide-fade-top'
-  }
-  if (props.position == 'left') {
-    style.left = '0px'
-    style.top = '0px'
-    style.height = '100%'
-    animation.value = 'slide-fade-left'
-  }
-  if (props.position == 'right') {
-    style.right = '0px'
-    style.top = '0px'
-    style.height = '100%'
-    animation.value = 'slide-fade-right'
-  }
-  if (props.round) {
-    style['border-radius'] = '16px 16px 0 0 '
-  }
+const animationMap = {
+  center: 'fade-in',
+  bottom: 'slide-fade-bottom',
+  top: 'slide-fade-top',
+  left: 'slide-fade-left',
+  right: 'slide-fade-right'
+}
+const setup = (props, { emit }) => {
+  const animation = ref('')
+  const iconPositon = {}
 
   if (props.closeable) {
     iconPositon.color = '#c8c9cc'
@@ -81,32 +60,64 @@ const setup = (props, { emit }) => {
       iconPositon[abscissa] = '15px'
     }
   }
-  const stop = watchEffect(() => {
-    if (props.modelValue) {
-      lazyLoad.value = props.modelValue
-      nextTick(() => stop())
-    }
+
+  animation.value = animationMap[props.position]
+
+  const { shouldRender } = useLazyRender(() => {
+    return props.modelValue || !props.lazyRender
   })
-  const onclick = event => {
-    emit('update:modelValue', false)
-  }
-  return { style, animation, iconPositon, lazyLoad, onclick }
+  const onclick = () => emit('update:modelValue', false)
+
+  return { bem, animation, shouldRender, iconPositon, onclick }
 }
+
 export default {
+  name,
   components,
+  emits,
   props,
   setup
 }
 </script>
 
 <style lang="less" scoped>
-.popup {
+.t-popup {
   overflow: hidden;
   position: fixed;
   z-index: 100;
   min-width: 150px;
   min-height: 120px;
   background: #fff;
+
+  &--center {
+    left: 50%;
+    top: 50%;
+    transform: translate(-50%, -50%);
+  }
+  &--top {
+    left: 0;
+    top: 0;
+    width: 100%;
+  }
+  &--left {
+    left: 0;
+    top: 0;
+    height: 100%;
+  }
+  &--bottom {
+    left: 0;
+    bottom: 0;
+    width: 100%;
+  }
+  &--right {
+    right: 0;
+    top: 0;
+    height: 100%;
+  }
+
+  &--round {
+    border-radius: 16px 16px 0 0;
+  }
 }
 
 .close-icon {

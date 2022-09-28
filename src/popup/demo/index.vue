@@ -3,7 +3,7 @@
     <cell-gropu>
       <cell title="展示弹出层" @click="show = true"></cell>
     </cell-gropu>
-    <popup v-model="show">内容</popup>
+    <popup v-model="show"></popup>
   </demo-block>
 
   <demo-block title="弹出位置">

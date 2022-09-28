@@ -87,7 +87,7 @@ export function useLazyRender(watchSource) {
   const unwatch = watchEffect(() => {
     if (watchSource()) {
       shouldRender.value = true
-      nextTick(unwatch)
+      nextTick(() => unwatch())
     }
   })
   return { shouldRender }
