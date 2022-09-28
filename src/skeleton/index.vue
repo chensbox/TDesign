@@ -58,8 +58,7 @@ function setup(props) {
     if (Array.isArray(rowWidth) && rowWidth.length === +row) {
       return rowWidth
     }
-    const rowItems = new Array(+row).fill(rowWidth ?? '100%')
-    return rowItems
+    return new Array(+row).fill(rowWidth ?? '100%')
   })
 
   const avatarStyle = computed(() => ({
