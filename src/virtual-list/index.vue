@@ -1,6 +1,6 @@
 <template>
-  <div class="virtual-list" @scroll="handleScroll" ref="listBoxRef">
-    <div class="scroller" ref="scrollerRef">
+  <div :class="bem()" @scroll="handleScroll" ref="listBoxRef">
+    <div :class="bem('scroller')" ref="scrollerRef">
       <slot
         v-for="(item, index) in visibleList"
         :key="index"
@@ -8,18 +8,19 @@
         :index="index"
       />
     </div>
-    <div class="placeholder" :style="{ height: scrollHeight + 'px' }" />
+    <div :class="bem('placeholder')" :style="{ height: scrollHeight + 'px' }" />
   </div>
 </template>
 
 <script>
 import { computed, onMounted, ref } from '@vue/runtime-core'
-const name = 'VirtualList'
+import { raf, makeArrayProp, createNamespace } from '../utils'
+const [name, bem] = createNamespace('virtual-list')
 const props = {
-  list: { type: Array, default: () => [] }
+  list: makeArrayProp()
 }
 
-function setup(props, { emit }) {
+function setup(props) {
   const visibleList = ref(props.list.slice(0, 1))
   const scrollerRef = ref()
   const itemHeight = ref(0)
@@ -37,13 +38,15 @@ function setup(props, { emit }) {
       start * itemHeight.value
     }px, 0)`
   }
+
   let tick
   const handleScroll = () => {
     if (tick) {
       return
     }
     tick = true
-    requestAnimationFrame(() => {
+
+    raf(() => {
       const scrollTop = listBoxRef.value.scrollTop
       updateVisibleData(scrollTop)
       tick = false
@@ -56,7 +59,14 @@ function setup(props, { emit }) {
       document.body.clientHeight - offsetTop + 'px'
     updateVisibleData()
   })
-  return { listBoxRef, scrollerRef, scrollHeight, visibleList, handleScroll }
+  return {
+    bem,
+    listBoxRef,
+    scrollerRef,
+    scrollHeight,
+    visibleList,
+    handleScroll
+  }
 }
 export default {
   name,
@@ -66,34 +76,35 @@ export default {
 </script>
 
 <style lang="less">
-.virtual-list {
+.t-virtual-list {
   position: relative;
   overflow: scroll;
   -webkit-overflow-scrolling: touch;
-  .scroller {
+  &__scroller {
     will-change: transform;
   }
-}
-.placeholder {
-  position: absolute;
-  left: 0;
-  top: 0;
-  right: 0;
-  z-index: -999;
+
+  &__placeholder {
+    position: absolute;
+    left: 0;
+    top: 0;
+    right: 0;
+    z-index: -999;
+  }
 }
 
-.virtual-list::-webkit-scrollbar-track-piece {
+.t-virtual-list::-webkit-scrollbar-track-piece {
   background-color: rgba(0, 0, 0, 0);
   border-left: 1px solid rgba(0, 0, 0, 0);
 }
-.virtual-list::-webkit-scrollbar {
+.t-virtual-list::-webkit-scrollbar {
   width: 5px;
   height: 5px;
   -webkit-border-radius: 5px;
   -moz-border-radius: 5px;
   border-radius: 5px;
 }
-.virtual-list::-webkit-scrollbar-thumb {
+.t-virtual-list::-webkit-scrollbar-thumb {
   background-color: rgba(191, 191, 191, 191);
   background-clip: padding-box;
   -webkit-border-radius: 5px;
@@ -101,7 +112,7 @@ export default {
   border-radius: 5px;
   min-height: 28px;
 }
-.virtual-list::-webkit-scrollbar-thumb:hover {
+.t-virtual-list::-webkit-scrollbar-thumb:hover {
   background-color: rgba(0, 0, 0, 0.5);
   -webkit-border-radius: 5px;
   -moz-border-radius: 5px;
