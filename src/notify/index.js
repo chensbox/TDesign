@@ -1,46 +1,44 @@
-import { h, reactive, createApp, getCurrentInstance } from 'vue'
+import { h, reactive, getCurrentInstance } from 'vue'
 import notifyOption from './index.vue'
+import { MountComponent, extend } from '../utils'
 
-let app, timer
-function getInstance() {
-  if (app) {
-    return app
-  }
-  const root = document.createElement('div')
-  document.body.appendChild(root)
+let instance, timer
 
-  app = createApp({
+function initInstance() {
+  const wrapper = {
     setup() {
       const state = reactive({ show: false })
-
-      getCurrentInstance().render = () => h(notifyOption, state)
-
+      const render = () => h(notifyOption, state)
       const close = () => (state.show = false)
 
       const open = props => {
         const duration = props.duration ?? 3000
-        Object.assign(state, props, { show: true })
-        clearTimeout(timer)
-
+        extend(state, props, { show: true })
         if (duration) {
+          clearTimeout(timer)
           timer = setTimeout(close, duration)
         }
       }
 
+      getCurrentInstance().render = render
+
       return { open, close }
     }
-  }).mount(root)
+  }
 
-  return app
+  ;({ instance } = MountComponent(wrapper))
 }
 function Notify(props) {
-  const instance = getInstance()
+  if (!instance) {
+    initInstance()
+  }
   instance.open(props)
   return instance
 }
 
-Notify.Component = notifyOption.install = app =>
-  app.component(notifyOption.name, notifyOption)
+notifyOption.install = app => app.component(notifyOption.name, notifyOption)
+
+Notify.Component = notifyOption
 
 Notify.install = app => {
   app.use(Notify.Component)
