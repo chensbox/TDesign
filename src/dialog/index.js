@@ -1,6 +1,8 @@
 import dialog_sfc from './dialog.vue'
-import { Defer, MountComponent, extend, useExpose } from '../utils'
+import { MountComponent, extend, useExpose } from '../utils'
 import { h, reactive } from 'vue'
+
+let instance
 
 function initInstance() {
   const wrapper = {
@@ -11,7 +13,6 @@ function initInstance() {
       })
 
       const open = option => extend(state, option, { modelValue: true })
-
       const close = () => (state.modelValue = false)
 
       useExpose({ open, close })
@@ -23,19 +24,18 @@ function initInstance() {
   instance = MountComponent(wrapper).instance
 }
 
-let instance
 function Dialog(option = {}) {
-  const { promise, resolve, reject } = Defer()
-  if (!instance) {
-    initInstance()
-  }
+  return new Promise((resolve, reject) => {
+    if (!instance) {
+      initInstance()
+    }
 
-  instance.open(
-    extend({}, Dialog.currentOption, option, {
-      callback: action => (action === 'comfirm' ? resolve : reject)()
-    })
-  )
-  return promise
+    instance.open(
+      extend({}, Dialog.currentOption, option, {
+        callback: action => (action === 'comfirm' ? resolve : reject)()
+      })
+    )
+  })
 }
 
 Dialog.currentOption = {
@@ -49,12 +49,9 @@ Dialog.currentOption = {
   cancelButtonText: undefined
 }
 
-Dialog.alert = function (option) {
-  return Dialog(option)
-}
-Dialog.confirm = function (option) {
-  return Dialog({ ...option, showCancelButton: true })
-}
+Dialog.alert = Dialog
+
+Dialog.confirm = option => Dialog(extend(option, { showCancelButton: true }))
 
 dialog_sfc.install = function (app) {
   app.component(dialog_sfc.name, dialog_sfc)
@@ -64,6 +61,7 @@ Dialog.Component = dialog_sfc
 
 Dialog.install = function (app) {
   app.use(Dialog.Component)
+  app.config.globalProperties.$dialog = Dialog
 }
 
 export { Dialog }
