@@ -1,5 +1,5 @@
 import { h, reactive, getCurrentInstance } from 'vue'
-import notifyOption from './index.vue'
+import NotifyComponent from './index.vue'
 import { MountComponent, extend } from '../utils'
 
 let instance, timer
@@ -8,7 +8,7 @@ function initInstance() {
   const wrapper = {
     setup() {
       const state = reactive({ show: false })
-      const render = () => h(notifyOption, state)
+      const render = () => h(NotifyComponent, state)
       const close = () => (state.show = false)
 
       const open = props => {
@@ -36,9 +36,10 @@ function Notify(props) {
   return instance
 }
 
-notifyOption.install = app => app.component(notifyOption.name, notifyOption)
+NotifyComponent.install = app =>
+  app.component(NotifyComponent.name, NotifyComponent)
 
-Notify.Component = notifyOption
+Notify.Component = NotifyComponent
 
 Notify.install = app => {
   app.use(Notify.Component)
