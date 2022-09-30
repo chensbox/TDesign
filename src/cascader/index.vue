@@ -16,31 +16,21 @@
     </div>
 
     <div :class="bem('options')" ref="trackRef">
-      <ul
-        :class="bem('options-list')"
-        v-for="(item, tabIdx) in selected"
-        :key="tabIdx"
+      <cascader-option
+        v-for="(item, index) in selected"
+        :key="index"
+        :tabIndex="tabIndex"
+        :isActive="isActive"
+        :list="selectList[index]"
+        @select="onSelect"
       >
-        <li
-          :class="bem('options-list-item', { active: isActive(tabIdx, liIdx) })"
-          v-for="(li, liIdx) in selectList[tabIdx]"
-          :key="liIdx"
-          @click="onSelect(li, tabIdx, liIdx)"
-        >
-          {{ li.text }}
-          <icon
-            name="check"
-            class="check"
-            size="16px"
-            v-if="isActive(tabIdx, liIdx)"
-          />
-        </li>
-      </ul>
+      </cascader-option>
     </div>
   </div>
 </template>
 <script>
 import icon from '../icon/index.vue'
+import cascaderOption from './option.vue'
 import { createNamespace, makeArrayProp, makeStringProp } from '../utils'
 import { ref, onMounted, onBeforeUpdate, nextTick } from 'vue'
 
@@ -48,7 +38,7 @@ const [name, bem] = createNamespace('cascader')
 
 const emits = ['finish']
 
-const components = { icon }
+const components = { icon, cascaderOption }
 const props = {
   title: String,
   placeholder: makeStringProp('请选择'),
@@ -77,20 +67,20 @@ const setup = (props, { emit }) => {
     trackRef.value.style.transform = `translateX(${offsetX}%)`
   }
 
-  const onSelect = (val, idx, i) => {
+  const onSelect = (val, tabIndex, liIndex) => {
     isFinish.value = !val.children
-    selected.value = selected.value.slice(0, idx)
-    selectList.value = selectList.value.slice(0, idx + 1)
+    selected.value = selected.value.slice(0, tabIndex)
+    selectList.value = selectList.value.slice(0, tabIndex + 1)
     if (val.children) {
       selected.value.push(val, props.placeholder)
     } else {
       selected.value.push(val)
       emit('finish', selected.value)
     }
-    selected.value[idx].active = i
+    selected.value[tabIndex].active = liIndex
     val.children && selectList.value.push(val.children)
     nextTick(() => {
-      val.children && onTabSwitch(idx + 1)
+      val.children && onTabSwitch(tabIndex + 1)
     })
   }
 
@@ -103,19 +93,20 @@ const setup = (props, { emit }) => {
   onBeforeUpdate(() => (tabsItemRefs.length = 0))
 
   onMounted(() => nextTick(() => onTabSwitch(tabIndex.value)))
+
   return {
     bem,
     isGray,
+    lineRef,
+    onSelect,
     isActive,
     selected,
     trackRef,
-    lineRef,
-    selectList,
     tabIndex,
     isFinish,
-    setTabsItemRef,
+    selectList,
     onTabSwitch,
-    onSelect
+    setTabsItemRef
   }
 }
 export default {
@@ -126,7 +117,7 @@ export default {
   setup
 }
 </script>
-<style lang="less" scoped>
+<style lang="less">
 .t-cascader {
   position: relative;
   background: #fff;
@@ -169,27 +160,27 @@ export default {
       width: 100%;
       font-size: 14px;
       background-color: #ffffff;
-      &-item {
-        position: relative;
-        height: 40px;
-        padding: 0 15px;
-        line-height: 40px;
-        user-select: none;
-        .check {
-          position: absolute;
-          right: 5%;
-          top: 50%;
-          font-weight: bolder;
-          transform: translateY(-50%);
-        }
-        &--active {
-          color: v-bind(activeColor);
-        }
+    }
+    &-item {
+      position: relative;
+      height: 40px;
+      padding: 0 15px;
+      line-height: 40px;
+      user-select: none;
+      .check {
+        position: absolute;
+        right: 5%;
+        top: 50%;
+        font-weight: bolder;
+        transform: translateY(-50%);
+      }
+      &--active {
+        color: v-bind(activeColor);
+      }
 
-        &:active {
-          // background: #f2f3f5;
-          background: rgba(25, 137, 250, 0.1);
-        }
+      &:active {
+        // background: #f2f3f5;
+        background: rgba(25, 137, 250, 0.1);
       }
     }
   }
