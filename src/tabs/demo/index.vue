@@ -6,7 +6,7 @@
   </demo-block>
 
   <demo-block title="自定义颜色">
-    <tabs v-model="active2" color="red">
+    <tabs v-model="active2" color="#41d291">
       <tab :title="'标签' + i" v-for="i in 4" :key="i"> </tab>
     </tabs>
   </demo-block>
