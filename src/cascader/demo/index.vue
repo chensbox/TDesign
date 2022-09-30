@@ -6,7 +6,7 @@
       }}</cell>
     </cell-group>
     <popup v-model="show" round position="bottom">
-      <cascader :options="options" @finish="onFinish" />
+      <cascader :options="options" @finish="onFinish" title="请选择地区" />
     </popup>
   </demo-block>
 </template>
