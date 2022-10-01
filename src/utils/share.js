@@ -92,3 +92,21 @@ export function useLazyRender(watchSource) {
   })
   return { shouldRender }
 }
+
+export function useMutationObserver(target, callback, config = {}) {
+  const defaultConfig = {
+    attributes: true,
+    childList: true,
+    subtree: true,
+    autoDisconnet: true
+  }
+  extend(defaultConfig, config)
+  const observer = new MutationObserver(() => {
+    callback()
+    // if (defaultConfig.autoDisconnet) {
+    //   observer.disconnect()
+    // }
+  })
+  observer.observe(target, defaultConfig)
+  return { disconnect: observer.disconnect }
+}

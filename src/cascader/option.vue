@@ -1,17 +1,17 @@
 <template>
   <ul :class="bem('options-list')">
     <li
-      :class="bem('options-item', { active: isActive(tabIndex, liIndex) })"
-      v-for="(li, liIndex) in list"
-      :key="liIndex"
-      @click="$emit('select', li, tabIndex, liIndex)"
+      :class="bem('options-item', { active: isActive(tabIndex, item) })"
+      v-for="(item, index) in list"
+      :key="index"
+      @click="$emit('select', item, tabIndex, index)"
     >
-      {{ li.text }}
+      {{ item.text }}
       <icon
         name="check"
         class="check"
         size="16px"
-        v-if="isActive(tabIndex, liIndex)"
+        v-if="isActive(tabIndex, item)"
       />
     </li>
   </ul>
@@ -28,7 +28,7 @@ const props = {
 }
 
 export default {
-  name,
+  name: `${name}-option`,
   props,
   components: { icon },
   setup: () => ({ bem })

@@ -19,7 +19,7 @@
       <cascader-option
         v-for="(item, index) in selected"
         :key="index"
-        :tabIndex="tabIndex"
+        :tabIndex="index"
         :isActive="isActive"
         :list="selectList[index]"
         @select="onSelect"
@@ -31,65 +31,117 @@
 <script>
 import icon from '../icon/index.vue'
 import cascaderOption from './option.vue'
-import { createNamespace, makeArrayProp, makeStringProp } from '../utils'
-import { ref, onMounted, onBeforeUpdate, nextTick } from 'vue'
+import {
+  createNamespace,
+  makeArrayProp,
+  makeStringProp,
+  numericProp,
+  useMutationObserver
+} from '../utils'
+import { ref, watch, onMounted, onBeforeUpdate, nextTick } from 'vue'
 
 const [name, bem] = createNamespace('cascader')
 
-const emits = ['finish']
+const emits = ['finish', 'update:modelValue']
 
 const components = { icon, cascaderOption }
 const props = {
   title: String,
+  modelValue: numericProp,
   placeholder: makeStringProp('请选择'),
   options: makeArrayProp(),
   activeColor: makeStringProp('#1989fa')
 }
 
 const setup = (props, { emit }) => {
-  const selected = ref([props.placeholder])
+  let curVal
+  let isFinish = false
+  const { placeholder, options } = props
+  const selected = ref([placeholder])
   const tabsItemRefs = []
   const lineRef = ref()
   const trackRef = ref()
-  const selectList = ref([props.options])
+  const selectList = ref([options])
   const tabIndex = ref(0)
-  const isFinish = ref(false)
   const setTabsItemRef = el => tabsItemRefs.push(el)
 
   const onTabSwitch = index => {
-    tabIndex.value = index
     const [tabsNode] = tabsItemRefs[index].childNodes
     const { left, width } = tabsNode.getBoundingClientRect()
+    if (!left && !width) {
+      return useMutationObserver(tabsNode, () => onTabSwitch(index))
+    }
     const offsetX = index * -100
-
     lineRef.value.style.width = `${width}px`
     lineRef.value.style.left = `${left}px`
     trackRef.value.style.transform = `translateX(${offsetX}%)`
   }
 
   const onSelect = (val, tabIndex, liIndex) => {
-    isFinish.value = !val.children
+    isFinish = !val.children
     selected.value = selected.value.slice(0, tabIndex)
     selectList.value = selectList.value.slice(0, tabIndex + 1)
     if (val.children) {
-      selected.value.push(val, props.placeholder)
+      selected.value.push(val, placeholder)
     } else {
       selected.value.push(val)
       emit('finish', selected.value)
     }
     selected.value[tabIndex].active = liIndex
     val.children && selectList.value.push(val.children)
+
+    emit('update:modelValue', (curVal = val.value))
     nextTick(() => {
       val.children && onTabSwitch(tabIndex + 1)
     })
   }
 
   const isGray = index => {
-    return !isFinish.value && index == selected.value.length - 1
+    return !isFinish && index == selected.value.length - 1
   }
-  const isActive = (tabIndex, liIndex) => {
-    return selected.value[tabIndex].active == liIndex
+  const isActive = (tabIndex, list) => {
+    return selected.value[tabIndex].value == list.value
   }
+
+  const setValue = newVal => {
+    const newSelectOption = []
+    const newSelectTab = []
+    const dfs = treeList => {
+      for (const tree of treeList) {
+        if (tree.value == newVal) {
+          newSelectTab.unshift(tree)
+          tree.children && newSelectOption.unshift(tree.children)
+          return newSelectOption.unshift(treeList)
+        }
+        if (tree.children && dfs(tree.children)) {
+          newSelectTab.unshift(tree)
+          return newSelectOption.unshift(treeList)
+        }
+      }
+    }
+
+    dfs(options)
+    if (!newSelectOption.length || !newSelectTab.length) {
+      return
+    }
+    selected.value = newSelectTab
+    selectList.value = newSelectOption
+    isFinish = !newSelectTab.at(-1)?.children
+    if (!isFinish) {
+      selected.value.push(placeholder)
+    }
+    setTimeout(() => onTabSwitch(selected.value.length - 1))
+  }
+  watch(
+    () => props.modelValue,
+    newVal => {
+      if (newVal && newVal !== curVal) {
+        curVal = newVal
+        setValue(newVal)
+      }
+    },
+    { immediate: true }
+  )
   onBeforeUpdate(() => (tabsItemRefs.length = 0))
 
   onMounted(() => nextTick(() => onTabSwitch(tabIndex.value)))
@@ -102,8 +154,6 @@ const setup = (props, { emit }) => {
     isActive,
     selected,
     trackRef,
-    tabIndex,
-    isFinish,
     selectList,
     onTabSwitch,
     setTabsItemRef
