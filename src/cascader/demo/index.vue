@@ -1,6 +1,6 @@
 <template>
   <demo-block title="基础用法">
-    <input type="text" v-model="select" />
+    <!-- <input type="text" v-model="select" /> -->
     <cell-group>
       <cell title="地区" placeholder="请选择地区" @click="show = true">{{
         value
