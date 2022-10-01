@@ -36,7 +36,7 @@ import {
   makeArrayProp,
   makeStringProp,
   numericProp,
-  useMutationObserver
+  useIntersectionObserver
 } from '../utils'
 import { ref, watch, onMounted, onBeforeUpdate, nextTick } from 'vue'
 
@@ -62,14 +62,13 @@ const setup = (props, { emit }) => {
   const lineRef = ref()
   const trackRef = ref()
   const selectList = ref([options])
-  const tabIndex = ref(0)
   const setTabsItemRef = el => tabsItemRefs.push(el)
 
   const onTabSwitch = index => {
     const [tabsNode] = tabsItemRefs[index].childNodes
     const { left, width } = tabsNode.getBoundingClientRect()
     if (!left && !width) {
-      return useMutationObserver(tabsNode, () => onTabSwitch(index))
+      return useIntersectionObserver(tabsNode, () => onTabSwitch(index))
     }
     const offsetX = index * -100
     lineRef.value.style.width = `${width}px`
@@ -130,7 +129,7 @@ const setup = (props, { emit }) => {
     if (!isFinish) {
       selected.value.push(placeholder)
     }
-    setTimeout(() => onTabSwitch(selected.value.length - 1))
+    nextTick(() => onTabSwitch(selected.value.length - 1))
   }
   watch(
     () => props.modelValue,
@@ -144,7 +143,12 @@ const setup = (props, { emit }) => {
   )
   onBeforeUpdate(() => (tabsItemRefs.length = 0))
 
-  onMounted(() => nextTick(() => onTabSwitch(tabIndex.value)))
+  onMounted(async () => {
+    await nextTick()
+    if (!props.modelValue.trim()) {
+      onTabSwitch(0)
+    }
+  })
 
   return {
     bem,

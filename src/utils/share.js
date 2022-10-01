@@ -96,17 +96,29 @@ export function useLazyRender(watchSource) {
 export function useMutationObserver(target, callback, config = {}) {
   const defaultConfig = {
     attributes: true,
-    childList: true,
-    subtree: true,
+    childList: false,
+    subtree: false,
     autoDisconnet: true
   }
   extend(defaultConfig, config)
   const observer = new MutationObserver(() => {
     callback()
-    // if (defaultConfig.autoDisconnet) {
-    //   observer.disconnect()
-    // }
+    if (defaultConfig.autoDisconnet) {
+      observer.disconnect()
+    }
   })
   observer.observe(target, defaultConfig)
   return { disconnect: observer.disconnect }
+}
+
+export function useIntersectionObserver(
+  target,
+  callback,
+  autoDisconnet = true
+) {
+  const observe = new IntersectionObserver(entries => {
+    callback(entries)
+    if (autoDisconnet) observe.disconnect()
+  })
+  observe.observe(target)
 }
