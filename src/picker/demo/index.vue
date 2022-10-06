@@ -1,7 +1,7 @@
 <template>
   <demo-block title="单列">
     <picker
-      :colums="colums"
+      :columns="colums"
       title="标题"
       @change="onChange"
       @confirm="onConfirm"
@@ -11,7 +11,7 @@
 
   <demo-block title="多列">
     <picker
-      :colums="columns2"
+      :columns="columns2"
       title="标题"
       @change="onChange"
       @confirm="onConfirm"
@@ -21,7 +21,7 @@
 
   <demo-block title="级联选择器">
     <picker
-      :colums="colums3"
+      :columns="colums3"
       title="标题"
       @change="onChange"
       @confirm="onConfirm"
@@ -135,19 +135,19 @@ export default {
   },
   methods: {
     onclick() {},
-    onChange(value, index) {
-      // console.warn(value, index)
+    onChange(value) {
+      let index = value.map(item => item.index)
+      value = value.map(item => item.value)
+
       const msg = '当前值：' + value.join() + '      索引:' + index.join()
-      // Toast({
-      //   text: msg
-      // })
-      console.warn(msg)
+
+      console.log(msg)
     },
-    onConfirm(value, index) {
-      this.onChange(value, index)
+    onConfirm(value) {
+      this.onChange(value)
     },
-    onCancel(value, index) {
-      this.onChange(value, index)
+    onCancel(value) {
+      this.onChange(value)
     }
   }
 }

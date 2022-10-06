@@ -1,155 +1,137 @@
 <template>
-  <div class="picker">
-    <div class="picker-toolbar">
-      <button class="picker-toolbar-cancel" @click="onClick('cancel')">
-        取消
+  <div :class="bem()">
+    <div :class="bem('toolbar')">
+      <button :class="bem('toolbar-cancel')" @click="emitEvent('cancel')">
+        {{ cancelButtonText }}
       </button>
-      <span class="picker-toolbar-title">{{ title }}</span>
-      <button class="picker-toolbar-confirm" @click="onClick('confirm')">
-        确定
+      <span :class="bem('toolbar-title')">{{ title }}</span>
+      <button :class="bem('toolbar-confirm')" @click="emitEvent('confirm')">
+        {{ confirmButtonText }}
       </button>
     </div>
-    <div class="picker-columns">
-      <template v-if="initY">
-        <colum
-          :initY="initY"
-          :itemHeight="itemHeight"
+    <div :class="bem('columns')">
+      <template v-if="initialOffset">
+        <Column
+          v-for="(col, index) in columnsList"
           :list="col"
-          v-for="(col, index) in columsList"
-          :index="index"
           :key="index"
-          @columChange="columChange"
+          :index="index"
+          :itemHeight="itemHeight"
+          :initialOffset="initialOffset"
+          @columnChange="columnChange"
         />
       </template>
-      <div class="picker-columns-mask"></div>
-      <div class="picker-columns-hairline" ref="hairlineRef"></div>
+      <div :class="bem('mask')"></div>
+      <div :class="bem('hairline')" ref="hairlineRef"></div>
     </div>
   </div>
 </template>
 
 <script>
-import { nextTick, onMounted, ref, watch } from '@vue/runtime-core'
+import { nextTick, onMounted, ref, watch } from 'vue'
+import {
+  isObject,
+  createNamespace,
+  makeArrayProp,
+  makeStringProp,
+  useIntersectionObserver
+} from '../utils'
+import Column from './column.vue'
 
-import colum from './colum.vue'
-
-const name = 't-picker'
+const [name, bem] = createNamespace('picker')
 
 const props = {
-  colums: Array,
-  title: String
+  title: String,
+  confirmButtonText: makeStringProp('确定'),
+  cancelButtonText: makeStringProp('取消'),
+  columns: makeArrayProp()
 }
 const emits = ['confirm', 'cancel', 'change']
-const components = { colum }
+const components = { Column }
 
-const setup = function (props, { emit }) {
+function setup(props, { emit }) {
   const hairlineRef = ref()
-  const curY = ref('')
-  const initY = ref('')
+  const initialOffset = ref('')
   const itemHeight = ref('')
-  const columsList = ref([])
-  const [el] = props.colums
+  const columnsList = ref([])
   let isCascader, changeValue
 
-  const onClick = Event => {
-    emit(
-      Event,
-      changeValue.map(it => it.value),
-      changeValue.map(it => it.index)
-    )
-  }
+  const emitEvent = event => emit(event, changeValue)
+
   const formatData = () => {
-    if (typeof el !== 'object') {
-      columsList.value.push(props.colums)
+    const { columns } = props
+    const [el] = columns
+    if (!isObject(el)) {
+      columnsList.value.push(columns)
     } else if (el.values) {
-      columsList.value.push(...props.colums.map(it => it.values))
+      columnsList.value = columns.map(it => it.values)
     } else if (el.children) {
       isCascader = true
-      columsList.value.push(...getChildren(props.colums))
+      columnsList.value = flattenChildren(columns)
     }
-    changeValue = getFirstElement(columsList.value)
-    // console.log(changeValue)
+    changeValue = initChangeValue(columnsList.value)
   }
 
-  const updateColums = (columList, changeIndex, columIndex) => {
-    let target = []
-    columsList.value = columsList.value.slice(0, columIndex + 1)
-    if (columIndex == 0) {
-      target = props.colums[changeIndex]
-    } else {
-      target = columList.value[changeIndex]
-    }
-    const children = getChildren(target.children)
-    columsList.value.push(...children)
-  }
-
-  const getChildren = Treelist => {
-    const children = []
-    const helper = list => {
-      const cur = list.map(it => it.text)
-      cur.value = list
-      children.push(cur)
-      if (list[0].children) {
-        helper(list[0].children)
-      }
-    }
-    helper(Treelist)
+  const updateColumn = (column, changeIndex, columnIndex) => {
+    const target = column.value[changeIndex]
+    const children = flattenChildren(target.children)
+    columnsList.value = columnsList.value.slice(0, columnIndex + 1)
+    columnsList.value = columnsList.value.concat(children)
     return children
   }
 
-  const getFirstElement = li => {
-    return li.map(it => {
-      return {
-        value: it[0],
-        index: 0
-      }
-    })
-  }
-  const columChange = (columList, changeIndex, columIndex) => {
-    if (isCascader && columIndex !== props.colums.length - 1) {
-      updateColums(columList, changeIndex, columIndex)
-
-      if (columIndex == 0) {
-        changeValue = getFirstElement(columsList.value)
-      } else {
-        changeValue[columIndex + 1] = {
-          value: columList.value[changeIndex].children[0].text,
-          index: 0
-        }
-      }
+  const flattenChildren = treelist => {
+    const children = []
+    const list = treelist.map(item => item.text)
+    list.value = treelist
+    children.push(list)
+    if (treelist[0].children) {
+      return children.concat(flattenChildren(treelist[0].children))
     }
-
-    changeValue[columIndex] = {
-      value: columList[changeIndex],
-      index: changeIndex
-    }
-
-    emit(
-      'change',
-      changeValue.map(it => it.value),
-      changeValue.map(it => it.index)
-    )
+    return children
   }
 
-  onMounted(() => {
-    const { value: hairlineEl } = hairlineRef
-
-    nextTick(() => {
-      //解决 picker组件懒渲染的情况下，获取不到hairlineEl.offsetTop的问题
-      curY.value = initY.value =
-        hairlineEl.offsetTop - hairlineEl.clientHeight / 2
-      itemHeight.value = hairlineEl.clientHeight
-    })
+  const makeChangeValue = (column, index) => ({
+    index,
+    value: column[index]
   })
+
+  const initChangeValue = columnList =>
+    columnList.map(column => makeChangeValue(column, 0))
+
+  const columnChange = (column, changeIndex, columnIndex) => {
+    changeValue[columnIndex] = makeChangeValue(column, changeIndex)
+
+    if (isCascader && columnIndex !== props.columns.length - 1) {
+      const children = updateColumn(column, changeIndex, columnIndex)
+
+      changeValue = changeValue
+        .slice(0, columnIndex + 1)
+        .concat(initChangeValue(children))
+    }
+
+    emitEvent('change')
+  }
+
+  onMounted(function init() {
+    const { offsetTop, clientHeight } = hairlineRef.value
+    if (!offsetTop && !clientHeight) {
+      return useIntersectionObserver(hairlineRef.value, init)
+    }
+    initialOffset.value = offsetTop - clientHeight / 2
+    itemHeight.value = clientHeight
+  })
+
   formatData()
 
   return {
-    hairlineRef,
-    curY,
-    initY,
+    bem,
+    emitEvent,
     itemHeight,
-    columsList,
-    columChange,
-    onClick
+    hairlineRef,
+    columnsList,
+    columnChange,
+    initialOffset
   }
 }
 export default {
@@ -162,14 +144,14 @@ export default {
 </script>
 
 <style lang="less">
-.picker {
+.t-picker {
   overflow: hidden;
   height: 307px;
   margin: 10px;
   border-radius: 8px;
   user-select: none;
   background: #ffffff;
-  &-toolbar {
+  &__toolbar {
     display: flex;
     justify-content: space-between;
     height: 44px;
@@ -193,78 +175,68 @@ export default {
       cursor: pointer;
     }
   }
-  &-columns {
+  &__columns {
     display: flex;
     overflow: hidden;
     height: 263px;
     position: relative;
-    &-col {
-      flex: 1;
-      height: 100%;
-      &-wrap {
-        // transition: all 0.5s ease-out;
-        // transform: translateY(110px);
-        cursor: grab;
-        &-item {
-          height: 44px;
-          line-height: 44px;
-          font-size: 16px;
-          color: #323232;
-          text-align: center;
-        }
-      }
+  }
+  &__column {
+    flex: 1;
+    height: 100%;
+    &-wrapper {
+      // transition: all 0.5s ease-out;
+      // transform: translateY(110px);
+      cursor: grab;
     }
-    &-hairline {
-      position: absolute;
+    &-item {
       height: 44px;
-      top: 50%;
-      left: 16px;
-      right: 16px;
-      pointer-events: none;
-      transform: translateY(-50%);
-      &::after {
-        position: absolute;
-        box-sizing: border-box;
-        content: ' ';
-        pointer-events: none;
-        top: -50%;
-        right: -50%;
-        bottom: -50%;
-        left: -50%;
-        border: 1px solid #e7e6e6;
-        transform: scale(0.5);
-        border-width: 1px 0;
-      }
-    }
-    &-mask {
-      position: absolute;
-      top: 0;
-      left: 0;
-      z-index: 1;
-      width: 100%;
-      height: 100%;
-      background-image: linear-gradient(
-          180deg,
-          rgba(255, 255, 255, 0.9),
-          rgba(255, 255, 255, 0.4)
-        ),
-        linear-gradient(
-          0deg,
-          rgba(255, 255, 255, 0.9),
-          rgba(255, 255, 255, 0.4)
-        );
-      background-repeat: no-repeat;
-      background-position: top, bottom;
-      transform: translateZ(0);
-      pointer-events: none;
-      background-size: 100% 110px;
+      line-height: 44px;
+      font-size: 16px;
+      color: #323232;
+      text-align: center;
     }
   }
-}
-ul,
-ol {
-  margin: 0;
-  padding: 0;
-  list-style: none;
+  &__mask {
+    position: absolute;
+    top: 0;
+    left: 0;
+    z-index: 1;
+    width: 100%;
+    height: 100%;
+    background-image: linear-gradient(
+        180deg,
+        rgba(255, 255, 255, 0.9),
+        rgba(255, 255, 255, 0.4)
+      ),
+      linear-gradient(0deg, rgba(255, 255, 255, 0.9), rgba(255, 255, 255, 0.4));
+    background-repeat: no-repeat;
+    background-position: top, bottom;
+    transform: translateZ(0);
+    pointer-events: none;
+    background-size: 100% 110px;
+  }
+  &__hairline {
+    position: absolute;
+    height: 44px;
+    top: 50%;
+    left: 16px;
+    right: 16px;
+    pointer-events: none;
+    transform: translateY(-50%);
+    &::after {
+      position: absolute;
+      box-sizing: border-box;
+      content: ' ';
+      pointer-events: none;
+      top: -50%;
+      right: -50%;
+      bottom: -50%;
+      left: -50%;
+      border: 1px solid #e7e6e6;
+      transform: scale(0.5);
+      border-width: 1px 0;
+    }
+  }
 }
 </style>

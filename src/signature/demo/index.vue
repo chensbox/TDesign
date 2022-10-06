@@ -28,7 +28,7 @@
 
     <popup v-model="show" position="bottom">
       <picker
-        :colums="colum"
+        :columns="colum"
         title="设置线宽和颜色"
         @change="onChange"
         @cancel="show = false"
@@ -67,8 +67,8 @@ const colum = [
 ]
 
 const onChange = e => {
-  width.value = e[0]
-  color.value = e[1]
+  width.value = e[0].value
+  color.value = e[1].value
 }
 function save(event) {
   console.log(event)
